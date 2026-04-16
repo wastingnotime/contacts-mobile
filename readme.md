@@ -40,7 +40,6 @@ Then read these files first:
 - `docs/operating/skills_workflow.md`
 - `docs/operating/packs.md`
 - `docs/operating/best_practices.md`
-- `docs/session_metrics.md`
 - `architecture.md`
 - `groundrules.md`
 - `docs/building/project_structure.md`
@@ -86,5 +85,4 @@ For repositories that expect to use `expose`, released artifacts should normally
 - Keep the MRL loop generic and move language or architecture assumptions into packs.
 - Make licensing an explicit adoption choice; the starter can be reused under one license or adapted into a split-license repository when process material and implementation code need different terms.
 - Treat `work/` as repository memory, not scratch space; preserve original evidence in `work/sources/` before downstream artifacts are created.
-- Use `docs/session_metrics.md` if you want lightweight tracking of session productivity and token efficiency while the repository evolves.
 - Prefer one small slice over broad scaffolding.

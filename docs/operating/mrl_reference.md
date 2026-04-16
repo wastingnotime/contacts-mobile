@@ -121,7 +121,6 @@ To make MRL portable to a fresh repository, keep the framework generic and move 
 
 Use `docs/operating/mrl_starter.md` as the starter layout for new repositories. Use `docs/operating/best_practices.md` for practical guidance such as architecture timing and phase discipline.
 Use `docs/evaluation/validation_modes.md` when the repository needs to decide whether slices are mainly validated headlessly, through interaction assistance, or through lived interaction.
-Use `docs/session_metrics.md` when the repository wants a lightweight way to track session productivity and token efficiency over time.
 
 MRL portability does not require one implementation language or one architecture.
 
