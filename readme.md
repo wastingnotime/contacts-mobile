@@ -1,38 +1,40 @@
-# MRL Starter
+# Contacts Mobile
 
 ## Purpose
 
-This repository is a starter template for the Model Refinement Lab.
+This repository contains the Contacts Mobile project.
 
-Use it to begin a new repository that follows the MRL loop:
+It is shaped with MRL so AI-assisted work stays explicit, testable, and tied to repository artifacts rather than conversational memory.
+
+MRL is the method used here, not the product. The product concern is the Contacts Mobile codebase and the behavior it implements.
+
+Use the MRL loop to refine this repository deliberately:
 
 ```text
 extract -> refine -> build -> egd -> release -> expose -> living -> extract
 ```
 
-This starter separates:
+This repository separates:
 
 - MRL core: the artifact-driven refinement loop and workflow
 - implementation packs: selectable language and architecture defaults
 
-The repository currently includes `python_ddd_monolith` as the example selected pack. If you want another shape such as Go, TypeScript, event sourcing, or a multi-runtime client/server system, keep the MRL core and replace the pack guidance intentionally.
+The repository currently includes `python_ddd_monolith` as the example selected pack. If the product evolves toward another shape such as Go, TypeScript, event sourcing, or a multi-runtime client/server system, keep the MRL core and replace the pack guidance intentionally.
 
-One of the repository's main characteristics is that pre-defined packs can be used to scaffold new MRL projects. That lets adopters keep the same refinement workflow while starting from a language and architecture shape that already fits their context.
-
-MRL itself is AI-agent-friendly rather than tool-specific, but this starter is currently optimized for Codex-style repository workflows. It can still be used well with other AI coding agents when they operate from explicit repository artifacts instead of conversational memory.
+One of the repository's main characteristics is that pre-defined packs can be used to scaffold implementation choices while the MRL workflow keeps the modeling, slicing, build, and evaluation phases explicit.
 
 ---
 
 ## Getting Started
 
-Clone the starter into the new repository name you want:
+Clone this repository into the new repository name you want:
 
 ```bash
 git clone <starter-url> my-new-project
 cd my-new-project
 ```
 
-The preferred way to start a new project is to use this repository as a GitHub template, not as a fork. Forking is more appropriate when working on the starter itself or maintaining a derivative starter.
+The preferred way to start a new project is to use this repository as a GitHub template, not as a fork. Forking is more appropriate when working on the repository itself or maintaining a derivative starter.
 
 Then read these files first:
 
@@ -44,7 +46,7 @@ Then read these files first:
 - `groundrules.md`
 - `docs/building/project_structure.md`
 
-Before writing substantial project-specific code, decide whether the adopting repository will keep the starter's default split license, where MRL starter and workflow material stays under MIT and all other source code, documentation, and artifacts use MPL 2.0, or intentionally replace it with another license or split-license model. Record that choice clearly in the root `LICENSE` and `decisions.md`.
+Before writing substantial project-specific code, decide whether the adopting repository will keep the repository's default split license, where MRL starter and workflow material stays under MIT and all other source code, documentation, and artifacts use MPL 2.0, or intentionally replace it with another license or split-license model. Record that choice clearly in the root `LICENSE` and `decisions.md`.
 
 Then start the loop:
 
@@ -80,9 +82,9 @@ For repositories that expect to use `expose`, released artifacts should normally
 
 ## Notes
 
-- Treat this repository as a template, not as a finished application.
+- Treat this repository as a real project with reusable MRL scaffolding, not just as a starter.
 - Keep domain specifics out of the starter and in the adopting repository.
 - Keep the MRL loop generic and move language or architecture assumptions into packs.
-- Make licensing an explicit adoption choice; the starter can be reused under one license or adapted into a split-license repository when process material and implementation code need different terms.
+- Make licensing an explicit repository choice; this repository can be reused under one license or adapted into a split-license repository when process material and implementation code need different terms.
 - Treat `work/` as repository memory, not scratch space; preserve original evidence in `work/sources/` before downstream artifacts are created.
 - Prefer one small slice over broad scaffolding.
