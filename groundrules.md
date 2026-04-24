@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines implementation rules for AI coding agents and humans working on this project.
+This document defines implementation rules for AI coding agents and humans working on the Contacts Mobile repository.
 
 Its purpose is to preserve architectural coherence while allowing incremental progress.
 
@@ -12,7 +12,7 @@ These rules should be treated as default constraints unless a deliberate archite
 
 ## Primary Objective
 
-The objective of this project is to **refine business models** and make business behavior executable, testable, and inspectable.
+The objective of this repository is to **refine business models** and make business behavior executable, testable, and inspectable.
 
 This is **not** a production rewrite, infrastructure exercise, or framework showcase.
 
