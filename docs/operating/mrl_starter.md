@@ -111,12 +111,12 @@ A new repository should start with this order:
 
 Treat licensing as an explicit adoption decision, not as an accidental consequence of cloning the starter.
 
-The simplest path is to keep one license for the whole adopting repository. That is a good default when you do not need different sharing terms for process artifacts and implementation code.
+The simplest path is still to keep one license for the whole adopting repository. That is a good default when you do not need different sharing terms for process artifacts and implementation code.
 
 When a project needs different terms, a split-license model is also valid. A practical pattern is:
 
-- keep MRL process artifacts and reusable template-style material under a permissive license
-- place project-specific implementation code and runtime assets under the license that fits the shipped product
+- keep MRL process artifacts and reusable template-style material under MIT
+- place all other source code, documentation, and artifacts under MPL 2.0 unless a deliberate repository decision says otherwise
 
 Typical process or template-style material includes:
 
@@ -125,7 +125,7 @@ Typical process or template-style material includes:
 - generic pack definitions under `docs/packs/`
 - generic skill instructions under `.agents/skills/`
 
-Typical project-specific material includes:
+Typical MPL 2.0 material includes:
 
 - code under `src/`
 - tests under `tests/`
@@ -136,7 +136,7 @@ Typical project-specific material includes:
 If you adopt a split-license approach:
 
 - rewrite the root `LICENSE` to explain which parts of the repository are covered by which license
-- include the full text of each applicable license in a dedicated location such as `LICENSES/`
+- include the full text of each applicable license in a dedicated location such as `LICENSES/` when practical
 - update package metadata and release metadata to match the license that applies to the distributed code
 - add header templates or file-level notices when the chosen code license requires clearer per-file scope
 - record the reasoning and scope in `decisions.md`

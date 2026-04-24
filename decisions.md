@@ -127,3 +127,24 @@ Batch several completed changes into a later commit. This was rejected because i
 
 ### Notes
 This rule applies to documentation-only changes as well as code changes.
+
+## DEC-0005 - Split MRL Starter Material From MPL 2.0 Repository Content
+
+- Date: 2026-04-24
+- Status: accepted
+- Owners: both
+
+### Context
+The repository needs a durable rule that distinguishes the MRL starter and workflow material from the repository content that future adopters will treat as project-specific.
+
+### Decision
+Keep the MRL starter and workflow material under MIT. License all other source code, documentation, and artifacts under MPL 2.0 unless a deliberate repository-specific decision states otherwise.
+
+### Consequences
+The starter can remain reusable as process material while project-specific code and docs can use a file-level copyleft license that fits the adoption model. Contributors and downstream maintainers get a clearer boundary between reusable MRL infrastructure and repository-specific content.
+
+### Alternatives considered
+Use a single license for the entire repository. That was rejected because it would collapse the distinction between reusable MRL process material and project-specific content.
+
+### Notes
+The root `LICENSE` should keep this split visible, and repository-specific source files should add license headers or notices when the MPL 2.0 scope needs to be explicit per file.
