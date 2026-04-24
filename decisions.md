@@ -106,3 +106,24 @@ Keep `.codex` as a first-class part of the repository workflow immediately. This
 
 ### Notes
 If future evidence shows that MRL depends on stable capabilities from a specific AI tool, record a follow-up decision describing the required coupling, why generic artifacts were insufficient, and which tool-specific assets should become part of the repository.
+
+## DEC-0004 - Commit After Each Completed Change
+
+- Date: 2026-04-24
+- Status: accepted
+- Owners: both
+
+### Context
+The workflow needs a stable memory rule that keeps completed work visible in version control instead of leaving multiple finished changes bundled together in an uncommitted working tree.
+
+### Decision
+After every completed change, create a commit before starting the next change. The commit should stay scoped to the completed slice or documentation update so the repository history mirrors the MRL artifact trail.
+
+### Consequences
+Completed work becomes easier to inspect, revert, and reference. The history also stays aligned with the repository's explicit-artifact model because each finished change has a corresponding versioned checkpoint.
+
+### Alternatives considered
+Batch several completed changes into a later commit. This was rejected because it weakens traceability and makes the artifact trail less precise.
+
+### Notes
+This rule applies to documentation-only changes as well as code changes.

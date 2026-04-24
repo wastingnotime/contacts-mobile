@@ -68,11 +68,17 @@ Avoid designs that require jumping across many indirection layers to understand 
 
 Whenever possible, time, IDs, external responses, and message processing should be deterministic and controllable.
 
+### 6. Commit after each completed change
+
+When a change is complete, create a commit before starting the next change.
+
+Keep each commit scoped to one completed slice or one completed documentation update so repository history stays aligned with the MRL artifact trail.
+
 ---
 
 ## Architectural Rules
 
-### 6. Respect layer boundaries
+### 7. Respect layer boundaries
 
 Dependencies should point inward:
 
@@ -81,7 +87,7 @@ Dependencies should point inward:
 - interfaces should remain thin
 - infrastructure should implement ports, not define business behavior
 
-### 7. Keep business rules inside the domain or use cases
+### 8. Keep business rules inside the domain or use cases
 
 Do not place business rules in:
 
@@ -93,7 +99,7 @@ Do not place business rules in:
 
 Use repositories for persistence, use cases for orchestration, and domain models/services for rules.
 
-### 8. Use use cases as the main unit of behavior
+### 9. Use use cases as the main unit of behavior
 
 Each meaningful workflow should have a named use case.
 
@@ -112,13 +118,13 @@ Bad examples:
 - `BusinessLogicService`
 - `GeneralProcessor`
 
-### 9. Treat the API facade as an adapter, not as the application core
+### 10. Treat the API facade as an adapter, not as the application core
 
 The API facade may translate requests and responses, but it should not own the workflow logic.
 
 Business orchestration belongs in use cases.
 
-### 10. Keep repositories intention-revealing
+### 11. Keep repositories intention-revealing
 
 Repository methods should express intent clearly.
 
@@ -130,13 +136,13 @@ Prefer:
 
 Avoid repositories becoming large generic query bags.
 
-### 11. Prefer one generic message table over one table per topic
+### 12. Prefer one generic message table over one table per topic
 
 For message simulation, default to a generic SQLite-backed message store.
 
 Do not create one table per topic unless a strong and explicit reason appears.
 
-### 12. Depend on abstractions
+### 13. Depend on abstractions
 
 The model should publish through a message bus port.
 
@@ -146,13 +152,13 @@ Do not leak queue-specific assumptions into the domain or use cases unless the b
 
 ## Modeling Rules
 
-### 13. Prefer behavior-rich models over anemic records
+### 14. Prefer behavior-rich models over anemic records
 
 Domain objects should protect and express valid state transitions.
 
 Avoid turning models into passive data containers with all logic pushed elsewhere.
 
-### 14. Use value objects when they clarify meaning
+### 15. Use value objects when they clarify meaning
 
 When a concept carries meaning, constraints, or formatting rules, prefer a value object over raw primitives.
 
@@ -165,19 +171,19 @@ Likely candidates include:
 - quantities
 - correlation IDs
 
-### 15. Use domain services only when needed
+### 16. Use domain services only when needed
 
 A domain service is appropriate when logic does not fit naturally in one entity/value object.
 
 Do not use services as a default dumping ground for domain behavior.
 
-### 16. Protect invariants at the model boundary
+### 17. Protect invariants at the model boundary
 
 If a state transition is invalid, the model should reject it clearly.
 
 Do not rely on UI validation or test discipline alone to keep state valid.
 
-### 17. Prefer domain events for meaningful internal facts
+### 18. Prefer domain events for meaningful internal facts
 
 When something meaningful happens in the model, represent it explicitly when useful.
 
@@ -193,19 +199,19 @@ Do not emit events for noise.
 
 ## Testing Rules
 
-### 18. Tests are specification, not just regression nets
+### 19. Tests are specification, not just regression nets
 
 Tests should describe intended behavior clearly.
 
 A reader should learn the model by reading tests.
 
-### 19. Prefer domain tests first
+### 20. Prefer domain tests first
 
 When refining rules, begin with the smallest testable unit that captures business behavior.
 
 Usually this means domain tests before infrastructure tests.
 
-### 20. Use integration tests to validate mappings and flows
+### 21. Use integration tests to validate mappings and flows
 
 Integration tests should focus on:
 
@@ -216,7 +222,7 @@ Integration tests should focus on:
 
 Do not overuse integration tests for logic that belongs in simpler domain tests.
 
-### 21. Keep tests deterministic
+### 22. Keep tests deterministic
 
 Tests should not depend on real network access, current wall-clock time, or nondeterministic ordering unless such behavior is under deliberate test.
 
@@ -428,4 +434,3 @@ The default posture for this project is:
 - explicit code over clever code
 
 When unsure, optimize for clarity and model quality, not for production mimicry.
-

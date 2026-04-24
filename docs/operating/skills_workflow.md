@@ -82,6 +82,8 @@ Treat `work/` as repository memory rather than scratch space.
 
 > One skill = one isolated execution context.
 
+When a change is completed, end the change with a commit before starting the next one. This keeps the artifact trail aligned with the loop and prevents unfinished work from drifting across phases.
+
 Preferred execution:
 
 ```bash
