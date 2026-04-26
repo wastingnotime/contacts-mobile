@@ -1,7 +1,14 @@
 This repository uses a split-license model.
 
 - MRL starter and workflow material: MIT License, as stated below.
-- All other source code, documentation, and artifacts: Mozilla Public License 2.0.
+- All other repository source code, documentation, and artifacts: Mozilla Public License 2.0.
+
+For this repository, "MRL starter and workflow material" means the reusable
+process material that defines the Model Refinement Lab loop, skills workflow,
+operating guidance, and implementation-pack scaffolding. Project-specific
+code, domain/application/infrastructure/interface source, tests, semantic
+artifacts, slice artifacts, build artifacts, and non-MRL documentation are
+covered by MPL 2.0.
 
 See https://mozilla.org/MPL/2.0/ for the MPL 2.0 text.
 

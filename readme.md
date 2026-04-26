@@ -46,7 +46,7 @@ Then read these files first:
 - `groundrules.md`
 - `docs/building/project_structure.md`
 
-Before writing substantial project-specific code, decide whether the adopting repository will keep the repository's default split license, where MRL starter and workflow material stays under MIT and all other source code, documentation, and artifacts use MPL 2.0, or intentionally replace it with another license or split-license model. Record that choice clearly in the root `LICENSE` and `decisions.md`.
+This repository keeps the default split-license model recorded in `LICENSE` and `decisions.md`: MRL starter and workflow material stays under MIT, while all other source code, documentation, and artifacts use MPL 2.0.
 
 Then start the loop:
 
