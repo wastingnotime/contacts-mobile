@@ -19,7 +19,7 @@ This repository separates:
 - MRL core: the artifact-driven refinement loop and workflow
 - implementation packs: selectable language and architecture defaults
 
-The repository currently includes `python_ddd_monolith` as the example selected pack. If the product evolves toward another shape such as Go, TypeScript, event sourcing, or a multi-runtime client/server system, keep the MRL core and replace the pack guidance intentionally.
+The repository currently includes `android_compose_client` as the selected pack. The product is a native Android client that consumes the external `axiom-exp-contacts` API and starts with the contacts list flow.
 
 One of the repository's main characteristics is that pre-defined packs can be used to scaffold implementation choices while the MRL workflow keeps the modeling, slicing, build, and evaluation phases explicit.
 
@@ -58,6 +58,8 @@ Then start the loop:
 The semantic placeholders in `docs/semantics/` are intentionally empty. They are meant to be filled by the `extract` phase, not by copying domain content from this starter.
 Preserve original evidence in `work/sources/` before extraction or refinement artifacts are produced elsewhere.
 
+For this repository, the first executable slice is an Android contacts list screen that loads `GET /contacts` from the backend and renders loading, empty, error, and list states.
+
 For repositories that expect to use `expose`, released artifacts should normally be packaged in a portable runtime form, with a container image as the default. That packaging rule belongs to MRL operating guidance rather than to any specific adopting repository's domain semantics.
 
 ---
@@ -74,8 +76,7 @@ For repositories that expect to use `expose`, released artifacts should normally
 /docs/slices/              # one slice document per increment
 /work/sources/             # canonical folder for curated raw evidence and original source material
 /work/changes/             # request, impact, and implementation artifacts
-/src/                      # implementation root shaped by the selected pack
-/tests/                    # executable specification
+/app/                      # Android application module shaped by the selected pack
 ```
 
 ---

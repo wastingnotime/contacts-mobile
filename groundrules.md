@@ -419,6 +419,19 @@ Small coherent steps are preferred over large speculative rewrites.
 
 ---
 
+## Android Client Rule
+
+When the selected pack is Android-oriented, keep the app structure aligned to the Android Gradle project model:
+
+- `app/` for the application module
+- `MainActivity` and composables in the interface layer
+- use cases and repositories in plain Kotlin packages
+- transport and JSON mapping in infrastructure packages
+
+Do not force the repository back into the starter Python layout once an Android client pack has been selected.
+
+---
+
 ## Summary
 
 The default posture for this project is:
