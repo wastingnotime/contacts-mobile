@@ -191,3 +191,24 @@ Product flavors were considered, but they would multiply variants and complicate
 
 ### Notes
 The local-device default uses the host-style loopback URL convention already used elsewhere in the repository. Production must set `contactsApiProductionBaseUrl` explicitly.
+
+## DEC-0008 - Target Android 15 For Play Policy Compatibility
+
+- Date: 2026-05-13
+- Status: accepted
+- Owners: both
+
+### Context
+Google Play's current target API policy requires new apps and updates to target Android 15, and this repository already has the Android 15 SDK installed locally.
+
+### Decision
+The Android app module now compiles and targets API level 35. The `minSdk` remains 24 because that is a separate runtime-compatibility choice and already covers Android 15 devices.
+
+### Consequences
+The app stays compatible with Android 15 devices and is aligned with the current Play target policy. Existing runtime support is unchanged because `minSdk` did not need to move.
+
+### Alternatives considered
+Leaving `targetSdk` at 34 would preserve the current behavior, but it would lag the current Play policy for new submissions and updates. Raising `minSdk` was not necessary and would have reduced device coverage for no benefit.
+
+### Notes
+This is a policy compatibility update, not a feature change.
