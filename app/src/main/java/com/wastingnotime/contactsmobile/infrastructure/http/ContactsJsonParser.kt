@@ -3,7 +3,11 @@ package com.wastingnotime.contactsmobile.infrastructure.http
 object ContactsJsonParser {
     fun parseContacts(payload: String): List<RemoteContact> {
         val objects = extractObjects(payload)
-        return objects.map { parseContact(it) }
+        return objects.map { parseContactObject(it) }
+    }
+
+    fun parseContact(payload: String): RemoteContact {
+        return parseContactObject(payload)
     }
 
     private fun extractObjects(payload: String): List<String> {
@@ -49,7 +53,7 @@ object ContactsJsonParser {
         return results
     }
 
-    private fun parseContact(objectPayload: String): RemoteContact {
+    private fun parseContactObject(objectPayload: String): RemoteContact {
         return RemoteContact(
             id = extractField(objectPayload, "id"),
             first_name = extractField(objectPayload, "first_name"),

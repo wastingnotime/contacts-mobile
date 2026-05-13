@@ -31,4 +31,28 @@ class ContactsJsonParserTest {
             contacts,
         )
     }
+
+    @Test
+    fun `parses a single contact payload`() {
+        val payload = """
+            {
+              "id": "contact-1",
+              "first_name": "Ada",
+              "last_name": "Lovelace",
+              "phone_number": "555-0100"
+            }
+        """.trimIndent()
+
+        val contact = ContactsJsonParser.parseContact(payload)
+
+        assertEquals(
+            RemoteContact(
+                id = "contact-1",
+                first_name = "Ada",
+                last_name = "Lovelace",
+                phone_number = "555-0100",
+            ),
+            contact,
+        )
+    }
 }

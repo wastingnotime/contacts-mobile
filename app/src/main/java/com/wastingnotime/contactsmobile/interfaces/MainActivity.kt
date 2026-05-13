@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wastingnotime.contactsmobile.BuildConfig
+import com.wastingnotime.contactsmobile.application.LoadContactById
 import com.wastingnotime.contactsmobile.application.LoadContacts
 import com.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlConfiguration
 import com.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlResolver
@@ -30,7 +31,8 @@ class MainActivity : ComponentActivity() {
         val apiClient = HttpContactsApiClient(baseUrl)
         val repository = DefaultContactsRepository(apiClient)
         val loadContacts = LoadContacts(repository)
-        val factory = ContactsViewModelFactory(loadContacts)
+        val loadContactById = LoadContactById(repository)
+        val factory = ContactsViewModelFactory(loadContacts, loadContactById)
 
         setContent {
             MaterialTheme {

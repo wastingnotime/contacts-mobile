@@ -38,4 +38,6 @@ private class FakeContactsRepository(
     private val contacts: List<Contact>,
 ) : ContactsRepository {
     override suspend fun loadContacts(): List<Contact> = contacts
+
+    override suspend fun loadContactById(id: String): Contact? = contacts.firstOrNull { it.id == id }
 }

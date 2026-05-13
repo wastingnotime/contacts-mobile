@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,10 +33,10 @@ fun ContactsRoute(
     modifier: Modifier = Modifier,
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
-    val selectedContact = viewModel.selectedContact.collectAsStateWithLifecycle().value
+    val detailUiState = viewModel.detailUiState.collectAsStateWithLifecycle().value
     ContactsScreen(
         uiState = uiState,
-        selectedContact = selectedContact,
+        detailUiState = detailUiState,
         onContactClick = viewModel::openContact,
         onBack = viewModel::closeContactDetail,
         onRefresh = viewModel::refresh,
@@ -48,7 +48,7 @@ fun ContactsRoute(
 @Composable
 fun ContactsScreen(
     uiState: ContactsUiState,
-    selectedContact: Contact?,
+    detailUiState: ContactDetailUiState,
     onContactClick: (Contact) -> Unit,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
@@ -58,16 +58,18 @@ fun ContactsScreen(
     Scaffold(
         topBar = {
             ContactsTopBar(
-                selectedContact = selectedContact,
+                detailUiState = detailUiState,
                 onBack = onBack,
                 onRefresh = onRefresh,
             )
         },
         modifier = modifier,
     ) { paddingValues ->
-        if (selectedContact != null) {
-            ContactDetail(
-                contact = selectedContact,
+        if (detailUiState != ContactDetailUiState.Hidden) {
+            DetailContent(
+                detailUiState = detailUiState,
+                onBack = onBack,
+                onRetry = onRetry,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
@@ -111,22 +113,22 @@ fun ContactsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ContactsTopBar(
-    selectedContact: Contact?,
+    detailUiState: ContactDetailUiState,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
 ) {
+    val title = when (detailUiState) {
+        ContactDetailUiState.Hidden -> "Contacts"
+        is ContactDetailUiState.Loaded -> detailUiState.contact.displayName.ifBlank { "Contact details" }
+        is ContactDetailUiState.Loading -> "Contact details"
+        is ContactDetailUiState.NotFound -> "Contact details"
+        is ContactDetailUiState.Error -> "Contact details"
+    }
+
     TopAppBar(
-        title = {
-            Text(
-                text = if (selectedContact == null) {
-                    "Contacts"
-                } else {
-                    selectedContact.displayName.ifBlank { "Contact details" }
-                },
-            )
-        },
+        title = { Text(text = title) },
         navigationIcon = {
-            if (selectedContact != null) {
+            if (detailUiState != ContactDetailUiState.Hidden) {
                 TextButton(onClick = onBack) {
                     Text(text = "Back")
                 }
@@ -177,6 +179,79 @@ private fun ErrorState(
         onAction = onRetry,
         modifier = modifier,
     )
+}
+
+@Composable
+private fun DetailContent(
+    detailUiState: ContactDetailUiState,
+    onBack: () -> Unit,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (detailUiState) {
+        ContactDetailUiState.Hidden -> Unit
+        is ContactDetailUiState.Loading -> LoadingState(modifier = modifier)
+        is ContactDetailUiState.Loaded -> ContactDetail(
+            contact = detailUiState.contact,
+            modifier = modifier,
+        )
+        is ContactDetailUiState.NotFound -> DetailProblemState(
+            title = "Contact not found",
+            body = "The selected contact is no longer available.",
+            primaryActionLabel = "Retry",
+            onPrimaryAction = onRetry,
+            secondaryActionLabel = "Back",
+            onSecondaryAction = onBack,
+            modifier = modifier,
+        )
+        is ContactDetailUiState.Error -> DetailProblemState(
+            title = "Unable to load contact",
+            body = detailUiState.message,
+            primaryActionLabel = "Retry",
+            onPrimaryAction = onRetry,
+            secondaryActionLabel = "Back",
+            onSecondaryAction = onBack,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun DetailProblemState(
+    title: String,
+    body: String,
+    primaryActionLabel: String,
+    onPrimaryAction: () -> Unit,
+    secondaryActionLabel: String,
+    onSecondaryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.padding(24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+            )
+            Button(onClick = onPrimaryAction) {
+                Text(text = primaryActionLabel)
+            }
+            TextButton(onClick = onSecondaryAction) {
+                Text(text = secondaryActionLabel)
+            }
+        }
+    }
 }
 
 @Composable
@@ -262,6 +337,22 @@ private fun ContactDetail(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                Text(
+                    text = "First name",
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Text(
+                    text = contact.firstName,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = "Last name",
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Text(
+                    text = contact.lastName,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
                 Text(
                     text = "Phone number",
                     style = MaterialTheme.typography.labelLarge,

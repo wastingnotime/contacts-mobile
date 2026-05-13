@@ -9,4 +9,8 @@ class DefaultContactsRepository(
     override suspend fun loadContacts(): List<Contact> {
         return apiClient.fetchContacts().map { it.toDomain() }
     }
+
+    override suspend fun loadContactById(id: String): Contact? {
+        return apiClient.fetchContactById(id)?.toDomain()
+    }
 }
