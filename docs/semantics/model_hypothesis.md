@@ -22,6 +22,7 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsRepository`: the app port for retrieving contacts
 - `ContactsApiClient`: the infrastructure client that performs HTTP requests
 - `LoadContactById`: the use case for loading one contact from the backend
+- request claims headers: explicit claims-style headers sent with every contacts API request
 
 ### Key Value Objects
 
@@ -39,6 +40,7 @@ The repository is a native Android client for the contacts product. Its current 
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
 - moving from detail error or not-found back to loading on retry
+- preserving last known contacts or contact detail while a refresh or reload fails
 
 ### Candidate Use Cases
 
@@ -49,5 +51,4 @@ The repository is a native Android client for the contacts product. Its current 
 
 ### Unresolved Tensions
 
-- whether the app should carry auth headers or rely on the backend's default admin claims
-- whether future slices will need offline caching or only live fetches
+- whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
