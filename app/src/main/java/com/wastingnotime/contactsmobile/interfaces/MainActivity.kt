@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wastingnotime.contactsmobile.BuildConfig
 import com.wastingnotime.contactsmobile.application.LoadContactById
 import com.wastingnotime.contactsmobile.application.LoadContacts
+import com.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthConfiguration
+import com.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeadersResolver
 import com.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlConfiguration
 import com.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlResolver
 import com.wastingnotime.contactsmobile.infrastructure.http.DefaultContactsRepository
@@ -28,7 +30,16 @@ class MainActivity : ComponentActivity() {
                 productionBaseUrl = BuildConfig.CONTACTS_API_PRODUCTION_BASE_URL,
             ),
         )
-        val apiClient = HttpContactsApiClient(baseUrl)
+        val authHeaders = ContactsApiAuthHeadersResolver.resolve(
+            ContactsApiAuthConfiguration(
+                subject = BuildConfig.CONTACTS_API_AUTH_SUBJECT,
+                roles = BuildConfig.CONTACTS_API_AUTH_ROLES,
+            ),
+        )
+        val apiClient = HttpContactsApiClient(
+            baseUrl = baseUrl,
+            authHeaders = authHeaders,
+        )
         val repository = DefaultContactsRepository(apiClient)
         val loadContacts = LoadContacts(repository)
         val loadContactById = LoadContactById(repository)

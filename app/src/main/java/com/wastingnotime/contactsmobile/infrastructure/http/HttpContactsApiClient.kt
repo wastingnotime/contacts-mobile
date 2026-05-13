@@ -6,9 +6,12 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
+import com.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeaders
 
 class HttpContactsApiClient(
     private val baseUrl: String,
+    private val authHeaders: ContactsApiAuthHeaders,
+    private val connectionFactory: (URL) -> HttpURLConnection = { it.openConnection() as HttpURLConnection },
 ) : ContactsApiClient {
     override suspend fun fetchContacts(): List<RemoteContact> = withContext(Dispatchers.IO) {
         val connection = openConnection()
@@ -56,11 +59,12 @@ class HttpContactsApiClient(
     private fun openConnection(path: String): HttpURLConnection {
         val normalizedBaseUrl = baseUrl.trimEnd('/')
         val endpoint = URL("$normalizedBaseUrl/$path")
-        return (endpoint.openConnection() as HttpURLConnection).apply {
+        return connectionFactory(endpoint).apply {
             requestMethod = "GET"
             connectTimeout = 5_000
             readTimeout = 5_000
             setRequestProperty("Accept", "application/json")
+            authHeaders.applyTo(this)
         }
     }
 

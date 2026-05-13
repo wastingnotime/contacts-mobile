@@ -21,6 +21,12 @@ android {
     val contactsApiProductionBaseUrl = providers.gradleProperty("contactsApiProductionBaseUrl")
         .orElse("")
         .get()
+    val contactsApiAuthSubject = providers.gradleProperty("contactsApiAuthSubject")
+        .orElse("admin-user")
+        .get()
+    val contactsApiAuthRoles = providers.gradleProperty("contactsApiAuthRoles")
+        .orElse("admin")
+        .get()
 
     require(contactsApiEnvironment in setOf("emulator", "local_device", "local-device", "device", "production")) {
         "contactsApiEnvironment must be emulator, local_device, or production."
@@ -55,6 +61,16 @@ android {
             "String",
             "CONTACTS_API_PRODUCTION_BASE_URL",
             "\"$contactsApiProductionBaseUrl\"",
+        )
+        buildConfigField(
+            "String",
+            "CONTACTS_API_AUTH_SUBJECT",
+            "\"$contactsApiAuthSubject\"",
+        )
+        buildConfigField(
+            "String",
+            "CONTACTS_API_AUTH_ROLES",
+            "\"$contactsApiAuthRoles\"",
         )
     }
 
