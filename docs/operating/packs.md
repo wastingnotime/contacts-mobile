@@ -89,6 +89,7 @@ This metadata keeps the semantic model shared while making implementation placem
 - `go_service`
 - `event_sourced_domain`
 - `polyglot_client_server`
+- `android_compose_client`
 
 Repositories do not need all packs. They should define only the packs they actually intend to use.
 

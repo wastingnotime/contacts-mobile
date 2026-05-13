@@ -10,12 +10,28 @@ Use it mainly during expectation-gap detection.
 
 ---
 
-## Fill This In
+## Current Background
 
-Capture:
+Contacts apps usually imply a simple and inspectable interaction pattern:
 
-- common concepts in the domain
-- external expectations users may bring
-- standard artifacts or outputs the domain usually implies
-- industry language worth preserving
-- likely omissions to watch for during evaluation
+- the user expects a list of people with names and phone numbers
+- loading should be visible and not silent
+- an empty state should be explicit rather than looking like a failure
+- network failure should be distinguished from an empty data set
+- retry should be available when the transport fails
+
+The backend contract in this repository exposes snake_case JSON fields for contacts:
+
+- `id`
+- `first_name`
+- `last_name`
+- `phone_number`
+
+The mobile app should preserve that transport contract at the boundary and map it into app-facing models internally.
+
+Evaluation should watch for:
+
+- accidental camelCase assumptions at the HTTP boundary
+- hiding network failures behind empty screens
+- coupling the UI directly to transport payloads
+- making the app require live network behavior in unit tests

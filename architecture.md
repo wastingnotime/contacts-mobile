@@ -28,7 +28,7 @@ The MRL core defines:
 
 Implementation shape is selected through a pack.
 
-This repository currently adopts the `python_ddd_monolith` pack. Other repositories may instead adopt:
+This repository currently adopts the `android_compose_client` pack. Other repositories may instead adopt:
 
 - `typescript_application`
 - `go_service`
@@ -41,7 +41,7 @@ If a repository changes pack, record the decision in `decisions.md` and update t
 
 ## Core Intent
 
-Within this repository, the system should behave like a **DDD-inspired modular monolith**.
+Within this repository, the system should behave like a **native Android client** with an explicit API boundary to the contacts backend.
 
 It should prefer:
 
@@ -62,41 +62,27 @@ That statement is local to this selected pack. MRL as a workflow does not requir
 The project follows a layered approach:
 
 ```text
-Tests -----------------> Use Cases -----------------> Domain Models
-Interfaces/API Facade -> Use Cases -----------------> Repositories (ports)
-                                          ---------> Message Bus (port)
-                                          ---------> External APIs (ports)
+UI Screens -------------> Use Cases -----------------> Domain Models
+MainActivity/Compose ---> Use Cases -----------------> Repositories (ports)
+                                       -------------> External API clients (ports)
 ```
 
 A more explicit view:
 
 ```text
-src/app/
-  domain/
-    models/
-    services/
-    events/
-    value_objects/
+app/
+  src/main/java/com/wastingnotime/contactsmobile/
+    domain/
+    application/
+    infrastructure/
+    interfaces/
 
-  application/
-    use_cases/
-    ports/
-    dto/
+  src/main/res/
 
-  interfaces/
-    api_facade/
-
-  infrastructure/
-    sqlite/
-    repositories/
-    message_bus/
-    fakes/
-    clock/
-    ids/
-
-tests/
-  unit/
-  integration/
+  src/test/java/com/wastingnotime/contactsmobile/
+    application/
+    infrastructure/
+    interfaces/
 ```
 
 This is a pack-specific example, not a required layout for every MRL repository.
@@ -110,9 +96,9 @@ They should validate:
 
 - domain invariants
 - use-case behavior
-- persistence boundaries
-- event/message emission
-- frontend-derived workflows
+- API transport mapping
+- state transitions
+- UI-derived workflows
 
 #### 2. Application layer
 The application layer contains **use cases**.
@@ -144,22 +130,21 @@ The domain layer is where invariants and rules live.
 
 Examples:
 
-- order status transitions
-- inventory constraints
-- checkout eligibility
-- cart-to-order conversion rules
-- return eligibility constraints
+- loading contacts from the backend
+- retrying a failed fetch
+- deciding whether a contact list is empty
+- mapping transport payloads into app-facing contact records
 
-The domain should avoid direct dependency on SQLite, HTTP clients, real queues mechanisms, or UI concerns.
+The domain should avoid direct dependency on HTTP clients, Android UI concerns, or platform-specific classes.
 
 #### 4. Interfaces layer
 The interface layer exposes use cases in a convenient shape.
 
-For this project, an **API facade** is acceptable as a boundary adapter. It can:
+For this project, the Android UI is the interface layer. It can:
 
-- translate frontend-like requests into use-case inputs
-- compose response DTOs
-- simulate endpoints if needed
+- render loading, empty, error, and list states
+- trigger refresh and retry actions
+- translate user interaction into use-case calls
 
 This layer should stay thin.
 
@@ -168,12 +153,11 @@ Infrastructure implements ports required by the application/domain.
 
 Examples:
 
-- SQLite repositories
-- SQLite-backed message bus
-- in-memory message bus
+- HTTP contacts clients
 - local fake external APIs
+- in-memory repositories for tests
 - test clocks
-- ID generators
+- deterministic configuration providers
 
 Infrastructure exists to support the model, not define it.
 
@@ -185,7 +169,7 @@ Some models span more than one runtime.
 
 Examples:
 
-- browser client plus Go server
+- Android client plus external HTTP API
 - simulation engine plus UI shell
 - event producer plus projection consumer
 
@@ -213,34 +197,29 @@ Instead of allowing logic to emerge from ad hoc database access, the system shou
 
 State exists, but behavior should control how state changes.
 
-### 2. Use cases before endpoints
-The frontend may inspire workflows, but implementation should be organized around **use cases**, not around controllers or pages.
+### 2. Use cases before screens
+The mobile UI may inspire workflows, but implementation should be organized around **use cases**, not around screens.
 
 Examples:
 
-- `CreateCart`
-- `AddItemToCart`
-- `PlaceOrder`
-- `RequestReturn`
-- `CancelOrder`
+- `LoadContacts`
+- `RefreshContacts`
+- `RetryLoadContacts`
 
 ### 3. Ports and adapters
 External dependencies must be behind ports.
 
 Typical ports:
 
-- `OrderRepository`
-- `CartRepository`
-- `MessageBus`
+- `ContactsRepository`
+- `ContactsApiClient`
 - `Clock`
-- `IdGenerator`
-- `InventoryGateway`
-- `PricingGateway`
+- `BaseUrlProvider`
 
 This allows infrastructure replacement without changing the model.
 
 ### 4. Simple simulation over infrastructure fidelity
-Do not reproduce infrastrcture or production integrations unless the business depends on their precise behavior.
+Do not reproduce infrastructure or production integrations unless the business depends on their precise behavior.
 
 The project should simulate only what is necessary to:
 
@@ -604,33 +583,33 @@ When unsure, prefer the option that is:
 
 Recommended implementation order:
 
-1. define core domain concepts and use-case names
-2. define ports/interfaces
-3. implement in-memory fakes
-4. write domain and use-case tests
-5. implement domain models
-6. implement use cases
-7. implement SQLite repositories
-8. implement SQLite message bus
-9. add API facade adapters
-10. expand scenarios from frontend usage
+1. define the contacts list contract and use-case names
+2. define ports for the contacts repository and API client
+3. implement transport mappers and in-memory fakes
+4. write deterministic mapping and use-case tests
+5. implement the domain model for contacts
+6. implement the load contacts use case
+7. implement the HTTP contacts client
+8. wire the Compose screen to the view model
+9. add configuration for the base URL
+10. expand scenarios from UI feedback
 
 ---
 
 ## Summary
 
-This repository currently uses a **DDD-inspired modular monolith for model refinement**.
+This repository currently uses a **native Android Compose client for model refinement**.
 
 Its main characteristics are:
 
-- behavior-centered domain model
+- behavior-centered contact loading model
 - explicit use cases
 - ports and adapters
-- SQLite-backed persistence
+- HTTP-backed API access
 - local fake external integrations
-- simple message bus simulation
+- Compose UI as the interface layer
 - tests as executable specification
 
 The goal is not to mirror the current system literally.
 
-The goal is to create a cleaner executable model that captures the real business behavior with lower accidental complexity.
+The goal is to create a cleaner executable model that captures the real contacts behavior with lower accidental complexity.

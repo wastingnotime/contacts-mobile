@@ -42,7 +42,7 @@ Add entries as the repository evolves.
 ## DEC-0001 - Separate MRL Core From Implementation Packs
 
 - Date: 2026-03-29
-- Status: accepted
+- Status: superseded
 - Owners: both
 
 ### Context
@@ -64,6 +64,7 @@ Keep one universal Python starter and treat every other shape as an undocumented
 
 ### Notes
 Future pack additions should live under `docs/packs/` and should be referenced by slice documents when the runtime topology matters.
+Superseded by `DEC-0006` for the repository's selected implementation pack.
 
 ## DEC-0002 - Treat Skill Model Guidance As Advisory
 
@@ -148,3 +149,45 @@ Use a single license for the entire repository. That was rejected because it wou
 
 ### Notes
 The root `LICENSE` should keep this split visible, and repository-specific source files should add license headers or notices when the MPL 2.0 scope needs to be explicit per file.
+
+## DEC-0006 - Adopt A Native Android Compose Client Pack
+
+- Date: 2026-05-13
+- Status: accepted
+- Owners: both
+
+### Context
+The requested product for this repository is no longer a backend/lab monolith. The adjacent repositories now provide the contacts API and the web frontend, and this repository needs to become a native Android client that consumes the backend directly.
+
+### Decision
+The repository now adopts an `android_compose_client` pack. The implementation should use Kotlin, the Android Gradle project model, and Jetpack Compose for the interface layer. The first slice is an API-backed contacts list screen that loads `GET /contacts` and renders loading, empty, error, and list states.
+
+### Consequences
+The starter Python pack is no longer the right mental model for implementation. The repo structure should shift toward an Android `app/` module, Kotlin source sets, and explicit transport parsing for the contacts API. The semantic and slice documents should describe client behavior instead of server-side business rules.
+
+### Alternatives considered
+Keep the `python_ddd_monolith` example pack and treat the mobile app as a conceptual overlay. That was rejected because it would hide the real runtime and make the repository misleading for future implementation work.
+
+### Notes
+The API contract being consumed is the external `axiom-exp-contacts` service. The mobile app should treat its `/contacts` endpoint as the source of truth and keep the base URL configurable for emulator, local, and production environments.
+
+## DEC-0007 - Resolve Contacts API Base URL At Build Time
+
+- Date: 2026-05-13
+- Status: accepted
+- Owners: both
+
+### Context
+The Android client needs to talk to the contacts API in three common environments: emulator, local-device development, and production. Hardcoding a single host makes the app awkward to run outside the emulator and hides the deployment contract.
+
+### Decision
+The app now resolves the contacts API base URL from BuildConfig values populated by Gradle properties. The default build targets the emulator host `http://10.0.2.2:8010`. Local-device development uses a separate configurable base URL, and production builds require an explicit production base URL to be provided at configuration time.
+
+### Consequences
+The runtime stays simple because the app still receives a single resolved base URL. Build configuration becomes the explicit place where environment selection lives. Production misconfiguration fails fast during Gradle configuration instead of surfacing later as an app launch failure.
+
+### Alternatives considered
+Product flavors were considered, but they would multiply variants and complicate the already-working unit-test flow for this small slice. A runtime settings screen was also considered, but that would make environment selection a user-facing concern instead of a build concern.
+
+### Notes
+The local-device default uses the host-style loopback URL convention already used elsewhere in the repository. Production must set `contactsApiProductionBaseUrl` explicitly.

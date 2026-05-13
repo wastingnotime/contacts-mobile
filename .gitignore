@@ -9,3 +9,9 @@ runs/
 .codex/
 .notes
 .DS_Store
+.gradle/
+build/
+**/build/
+local.properties
+*.iml
+.kotlin/

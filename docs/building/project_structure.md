@@ -67,16 +67,13 @@ project_root/
     sources/
     changes/
 
-  pyproject.toml               # only when a Python pack uses it
-  package.json                 # only when a JavaScript/TypeScript pack uses it
-  go.mod                       # only when a Go pack uses it
-  .python-version              # optional and pack-specific
+  app/                         # Android app module for the selected mobile pack
+  build.gradle.kts
+  settings.gradle.kts
+  gradle.properties
+  gradle/
   .gitignore
   .env.example                 # only if needed later
-
-  src/                         # shaped by the selected pack
-
-  tests/                       # shaped by the selected pack
 
   scripts/
 
@@ -171,38 +168,22 @@ src/
   ... pack-specific code layout
 ```
 
-### Example: `python_ddd_monolith` pack
+### Example: `android_compose_client` pack
 
 ```text
-src/
-  app/
+app/
+  src/main/java/com/wastingnotime/contactsmobile/
     domain/
-      models/
-      value_objects/
-      services/
-      events/
-      exceptions/
-
     application/
-      use_cases/
-      dto/
-      ports/
-      services/
-
     infrastructure/
-      sqlite/
-        repositories/
-        message_bus/
-        migrations/
-      fakes/
-      clocks/
-      ids/
-      gateways/
-      mappers/
-
     interfaces/
-      api_facade/
-      cli/
+
+  src/main/res/
+
+  src/test/java/com/wastingnotime/contactsmobile/
+    application/
+    infrastructure/
+    interfaces/
 ```
 
 ### Example: `polyglot_client_server` pack
@@ -226,9 +207,9 @@ tests/
 
 ## Purpose
 
-The selected pack defines the concrete layers or modules inside `src/`.
+The selected pack defines the concrete layers or modules inside `app/`.
 
-For the `python_ddd_monolith` pack, the domain layer contains the business model.
+For the `android_compose_client` pack, the interface layer contains the screens and composables.
 
 It should represent:
 
@@ -967,7 +948,7 @@ If the answer is meaningful, register the change in `decisions.md`.
 
 ## Summary
 
-For the `python_ddd_monolith` pack, the structure is organized by architectural responsibility:
+For the legacy `python_ddd_monolith` example pack, the structure is organized by architectural responsibility:
 
 - `domain` for business meaning
 - `application` for use-case orchestration and ports
@@ -977,3 +958,5 @@ For the `python_ddd_monolith` pack, the structure is organized by architectural 
 - `scripts` for local convenience
 
 This structure exists to keep the project legible while the model is being refined.
+
+The selected implementation pack for this repository is `android_compose_client`.
