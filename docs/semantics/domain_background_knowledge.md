@@ -15,10 +15,12 @@ Use it mainly during expectation-gap detection.
 Contacts apps usually imply a simple and inspectable interaction pattern:
 
 - the user expects a list of people with names and phone numbers
+- the user also expects to be able to tap a person and inspect that contact's detail
 - loading should be visible and not silent
 - an empty state should be explicit rather than looking like a failure
 - network failure should be distinguished from an empty data set
 - retry should be available when the transport fails
+- missing detail should be explicit rather than silently reusing stale list data
 
 The backend contract in this repository exposes snake_case JSON fields for contacts:
 
@@ -34,4 +36,5 @@ Evaluation should watch for:
 - accidental camelCase assumptions at the HTTP boundary
 - hiding network failures behind empty screens
 - coupling the UI directly to transport payloads
+- treating list selection as if it were the same thing as a backend-backed detail fetch
 - making the app require live network behavior in unit tests

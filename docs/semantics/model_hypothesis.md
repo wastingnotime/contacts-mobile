@@ -10,16 +10,18 @@ Use it during `extract`, `refine`, and `build` to define vocabulary, boundaries,
 
 ## Current Hypothesis
 
-The repository is a native Android client for the contacts product. Its first slice is a contacts list experience that consumes the external `axiom-exp-contacts` API directly.
+The repository is a native Android client for the contacts product. Its current behavior is a contacts list experience plus an API-backed contact detail experience that both consume the external `axiom-exp-contacts` API directly.
 
 ### Core Concepts
 
 - `Contact`: a read-only contact record loaded from the backend
 - `ContactsList`: the collection state shown on the first screen
+- `ContactDetail`: the selected-contact state shown after tapping a contact
 - `ContactsLoadingState`: the view state while the API request is in flight
 - `ContactsErrorState`: the view state when loading fails
 - `ContactsRepository`: the app port for retrieving contacts
 - `ContactsApiClient`: the infrastructure client that performs HTTP requests
+- `LoadContactById`: the use case for loading one contact from the backend
 
 ### Key Value Objects
 
@@ -34,15 +36,18 @@ The repository is a native Android client for the contacts product. Its first sl
 - rendering an empty list when the backend returns no contacts
 - rendering a populated list when the backend returns contacts
 - moving from error to retry and back to loading
+- loading a contact detail by id from the backend
+- rendering an explicit not-found state when a requested contact is missing
+- moving from detail error or not-found back to loading on retry
 
 ### Candidate Use Cases
 
 - `LoadContacts`
 - `RefreshContacts`
 - `RetryLoadContacts`
+- `LoadContactById`
 
 ### Unresolved Tensions
 
-- whether the first slice should stay list-only or include contact detail next
 - whether the app should carry auth headers or rely on the backend's default admin claims
 - whether future slices will need offline caching or only live fetches
