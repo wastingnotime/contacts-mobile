@@ -6,11 +6,11 @@ Accept.
 
 ## Basis
 
-- The intent bundle is documentation-only and does not change Android runtime behavior.
-- The constituent smoke-test guidance slices are internally coherent and reinforce one another.
-- The guidance makes the runtime-sandbox boundary, backend-readiness preflight, session classification, command sequence, and session record requirements explicit.
+- The intent bundle is coherent and centered on one emulator smoke-test workflow.
+- The constituent slices cover runbook, command reference, discoverability, failure interpretation, outcomes, result classification, session recording, and backend readiness.
+- The guidance remains documentation-only and runtime-contract preserving.
 - `git diff --check` passes.
 
 ## Outcome
 
-The emulator smoke-test guidance intent is accepted as the internal released version.
+The Android emulator smoke-test intent is accepted as the internal released version.
