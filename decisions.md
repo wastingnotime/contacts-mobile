@@ -216,7 +216,7 @@ This is a policy compatibility update, not a feature change.
 ## DEC-0010 - Target Android 16 For The Mobile Client
 
 - Date: 2026-05-14
-- Status: accepted
+- Status: superseded
 - Owners: both
 
 ### Context
@@ -233,6 +233,27 @@ Upgrading Kotlin to 2.x and moving to the Compose Compiler Gradle plugin was con
 
 ### Notes
 If future work needs Kotlin 2.x features, revisit the Compose compiler setup and re-evaluate the library stack separately from the platform target update.
+
+## DEC-0011 - Move The Validation Client Onto The AGP 9.2.1 Toolchain
+
+- Date: 2026-05-14
+- Status: accepted
+- Owners: both
+
+### Context
+This repository is serving as the validation phase before the more complex real project starts. The next project should inherit a known-good AGP 9.x baseline rather than repeating the migration under production pressure.
+
+### Decision
+The Android client now uses AGP 9.2.1, Gradle 9.4.1, AGP built-in Kotlin support, Kotlin 2.3.21 for the Compose compiler plugin, and the Kotlin Compose compiler plugin itself. The previous AGP 8.13.2 decision is superseded.
+
+### Consequences
+The repo absorbs the toolchain transition while the surface area is still small. Future Android work can start from a verified 9.x baseline instead of paying the first upgrade cost later in a larger codebase.
+
+### Alternatives considered
+Staying on AGP 8.13.2 would reduce short-term churn, but it would also defer the migration knowledge and leave the next project to absorb the same compatibility work later.
+
+### Notes
+This is a toolchain-validation decision, not a product behavior change. The Android 16 target stays in place, and the old `kotlin-android` plugin path is intentionally removed.
 
 ## DEC-0009 - Use The `org.wastingnotime` Android Namespace
 
