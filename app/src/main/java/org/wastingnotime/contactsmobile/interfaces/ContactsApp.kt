@@ -233,6 +233,154 @@ private fun ContactsAppDetailWithTransientErrorDarkPreview() {
     )
 }
 
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+    name = "Loaded Compact Light",
+    group = "Width Loaded",
+)
+@Composable
+private fun ContactsAppLoadedCompactLightPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 840,
+    name = "Loaded Expanded Light",
+    group = "Width Loaded",
+)
+@Composable
+private fun ContactsAppLoadedExpandedLightPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+    name = "Loaded Compact Dark",
+    group = "Width Loaded",
+)
+@Composable
+private fun ContactsAppLoadedCompactDarkPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 840,
+    name = "Loaded Expanded Dark",
+    group = "Width Loaded",
+)
+@Composable
+private fun ContactsAppLoadedExpandedDarkPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+    name = "Detail Compact Light",
+    group = "Width Detail",
+)
+@Composable
+private fun ContactsAppDetailCompactLightPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = false,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 840,
+    name = "Detail Expanded Light",
+    group = "Width Detail",
+)
+@Composable
+private fun ContactsAppDetailExpandedLightPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = false,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 360,
+    name = "Detail Compact Dark",
+    group = "Width Detail",
+)
+@Composable
+private fun ContactsAppDetailCompactDarkPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = true,
+    )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 840,
+    name = "Detail Expanded Dark",
+    group = "Width Detail",
+)
+@Composable
+private fun ContactsAppDetailExpandedDarkPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = true,
+    )
+}
+
 private fun previewContacts(): List<Contact> = listOf(
     Contact(
         id = "contact-1",
