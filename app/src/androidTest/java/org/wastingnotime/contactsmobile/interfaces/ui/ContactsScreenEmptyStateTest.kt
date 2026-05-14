@@ -92,6 +92,41 @@ class ContactsScreenEmptyStateTest {
         composeTestRule.onNodeWithText("No matching contacts").assertIsDisplayed()
     }
 
+    @Test
+    fun `centers the error state content horizontally`() {
+        composeTestRule.setContent {
+            TestSurface {
+                ContactsScreen(
+                    uiState = ContactsUiState.Error(message = "Unable to load contacts."),
+                    detailUiState = ContactDetailUiState.Hidden,
+                    createUiState = CreateContactUiState.Hidden,
+                    modifier = Modifier.fillMaxSize(),
+                    onContactClick = {},
+                    onBack = {},
+                    onRefresh = {},
+                    onRetry = {},
+                    onCreateContact = {},
+                    onCloseCreateContact = {},
+                    onCreateFirstNameChange = {},
+                    onCreateLastNameChange = {},
+                    onCreatePhoneNumberChange = {},
+                    onCreateSubmit = {},
+                    onCreateOpenContact = {},
+                )
+            }
+        }
+
+        val rootBounds = composeTestRule.onNodeWithTag("empty-surface").fetchSemanticsNode().boundsInRoot
+        val titleBounds = composeTestRule.onNodeWithText("Unable to load contacts").fetchSemanticsNode().boundsInRoot
+        val bodyBounds = composeTestRule.onNodeWithText("Unable to load contacts.").fetchSemanticsNode().boundsInRoot
+        val actionBounds = composeTestRule.onNodeWithText("Retry").fetchSemanticsNode().boundsInRoot
+
+        assertCentered(rootBounds, titleBounds)
+        assertCentered(rootBounds, bodyBounds)
+        assertCentered(rootBounds, actionBounds)
+        composeTestRule.onNodeWithText("Unable to load contacts").assertIsDisplayed()
+    }
+
     private fun assertCentered(rootBounds: Rect, childBounds: Rect) {
         val rootCenterX = rootBounds.left + (rootBounds.width / 2f)
         val childCenterX = childBounds.left + (childBounds.width / 2f)
