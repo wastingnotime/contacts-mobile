@@ -602,6 +602,10 @@ private fun EditContactForm(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val firstNameFocusRequester = remember { FocusRequester() }
+    val lastNameFocusRequester = remember { FocusRequester() }
+    val phoneNumberFocusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier.padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -617,22 +621,55 @@ private fun EditContactForm(
             value = form.firstName,
             onValueChange = onFirstNameChange,
             label = { Text("First name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { lastNameFocusRequester.requestFocus() },
+            ),
             isError = form.fieldErrors.containsKey(EditContactField.FirstName),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(firstNameFocusRequester)
+                .testTag("edit-first-name"),
         )
         OutlinedTextField(
             value = form.lastName,
             onValueChange = onLastNameChange,
             label = { Text("Last name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { phoneNumberFocusRequester.requestFocus() },
+            ),
             isError = form.fieldErrors.containsKey(EditContactField.LastName),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(lastNameFocusRequester)
+                .testTag("edit-last-name"),
         )
         OutlinedTextField(
             value = form.phoneNumber,
             onValueChange = onPhoneNumberChange,
             label = { Text("Phone number") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    onSubmit()
+                },
+            ),
             isError = form.fieldErrors.containsKey(EditContactField.PhoneNumber),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(phoneNumberFocusRequester)
+                .testTag("edit-phone-number"),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Button(
