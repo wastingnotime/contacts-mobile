@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,9 +26,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -436,6 +446,10 @@ private fun CreateContactForm(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val firstNameFocusRequester = remember { FocusRequester() }
+    val lastNameFocusRequester = remember { FocusRequester() }
+    val phoneNumberFocusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier.padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -451,22 +465,55 @@ private fun CreateContactForm(
             value = form.firstName,
             onValueChange = onFirstNameChange,
             label = { Text("First name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { lastNameFocusRequester.requestFocus() },
+            ),
             isError = form.fieldErrors.containsKey(CreateContactField.FirstName),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(firstNameFocusRequester)
+                .testTag("create-first-name"),
         )
         OutlinedTextField(
             value = form.lastName,
             onValueChange = onLastNameChange,
             label = { Text("Last name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { phoneNumberFocusRequester.requestFocus() },
+            ),
             isError = form.fieldErrors.containsKey(CreateContactField.LastName),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(lastNameFocusRequester)
+                .testTag("create-last-name"),
         )
         OutlinedTextField(
             value = form.phoneNumber,
             onValueChange = onPhoneNumberChange,
             label = { Text("Phone number") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    onSubmit()
+                },
+            ),
             isError = form.fieldErrors.containsKey(CreateContactField.PhoneNumber),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(phoneNumberFocusRequester)
+                .testTag("create-phone-number"),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Button(
@@ -507,9 +554,6 @@ private fun CreateContactSuccess(
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
             )
-            Button(onClick = onOpenContact) {
-                Text(text = "View contact")
-            }
             TextButton(onClick = onCloseCreateContact) {
                 Text(text = "Back to list")
             }
@@ -629,9 +673,6 @@ private fun EditContactSuccess(
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
             )
-            Button(onClick = onOpenContact) {
-                Text(text = "View contact")
-            }
             TextButton(onClick = onCloseEditContact) {
                 Text(text = "Back to detail")
             }
@@ -953,6 +994,7 @@ private fun ContactDetail(
     onDismissStaleIndicator: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -1015,9 +1057,38 @@ private fun ContactDetail(
                 text = "Contact id: ${contact.id}",
                 style = MaterialTheme.typography.bodySmall,
             )
-            Button(onClick = onDelete) {
+            Button(
+                onClick = { showDeleteConfirmation.value = true },
+                modifier = Modifier.testTag("detail-delete-button"),
+            ) {
                 Text(text = "Delete")
             }
+        }
+        if (showDeleteConfirmation.value) {
+            AlertDialog(
+                onDismissRequest = { showDeleteConfirmation.value = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDeleteConfirmation.value = false
+                            onDelete()
+                        },
+                        modifier = Modifier.testTag("delete-confirm-button"),
+                    ) {
+                        Text(text = "Delete")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showDeleteConfirmation.value = false },
+                        modifier = Modifier.testTag("delete-cancel-button"),
+                    ) {
+                        Text(text = "Cancel")
+                    }
+                },
+                title = { Text(text = "Delete contact?") },
+                text = { Text(text = "This action cannot be undone.") },
+            )
         }
     }
 }

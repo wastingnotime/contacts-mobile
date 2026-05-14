@@ -22,7 +22,7 @@ class ContactsScreenEmptyStateTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun `centers the empty state content horizontally`() {
+    fun centersTheEmptyStateContentHorizontally() {
         composeTestRule.setContent {
             TestSurface {
                 ContactsScreen(
@@ -57,7 +57,7 @@ class ContactsScreenEmptyStateTest {
     }
 
     @Test
-    fun `centers the filtered empty state content horizontally`() {
+    fun centersTheFilteredEmptyStateContentHorizontally() {
         composeTestRule.setContent {
             TestSurface {
                 ContactsScreen(
@@ -93,7 +93,7 @@ class ContactsScreenEmptyStateTest {
     }
 
     @Test
-    fun `centers the error state content horizontally`() {
+    fun centersTheErrorStateContentHorizontally() {
         composeTestRule.setContent {
             TestSurface {
                 ContactsScreen(
