@@ -45,6 +45,16 @@ Before interpreting any Android client result, confirm the backend simulation is
 
 If the backend is not reachable or not seeded, stop the smoke test and record the failure as an exposure setup issue rather than an Android client regression.
 
+## Session Result Classification
+
+Record one of these outcomes before writing any app observation:
+
+- `backend-ready`
+- `backend-not-ready`
+
+Use `backend-ready` only after the preflight succeeds and the Android app can be judged against the seeded backend.
+Use `backend-not-ready` when the backend simulation is unavailable, unseeded, or otherwise unusable for app validation.
+
 ## Android Client Smoke Test
 
 1. Build and install the Android client on the emulator.
@@ -96,4 +106,5 @@ If the backend is not reachable or not seeded, stop the smoke test and record th
 - do not treat the Android client repo as the backend simulation owner
 - use `../runtime-sandbox` for deterministic backend setup and smoke checks
 - confirm backend readiness before judging Android client behavior
+- classify each smoke-test session before recording app observations
 - keep emulator smoke tests separate from release acceptance and expectation-gap review
