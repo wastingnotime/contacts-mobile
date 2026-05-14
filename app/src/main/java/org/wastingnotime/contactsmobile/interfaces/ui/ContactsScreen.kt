@@ -90,7 +90,7 @@ fun ContactsScreen(
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit = {},
-    onListViewportChange: (Int, Int) -> Unit = { _, _ -> },
+    onListViewportChange: (Int, Int, String?) -> Unit = { _, _, _ -> },
     onDismissContactsStaleIndicator: () -> Unit = {},
     onCreateContact: () -> Unit,
     onCloseCreateContact: () -> Unit,
@@ -110,17 +110,6 @@ fun ContactsScreen(
     onDismissContactDetailStaleIndicator: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val contactsListState = rememberLazyListState(
-        initialFirstVisibleItemIndex = listViewportState.firstVisibleItemIndex,
-        initialFirstVisibleItemScrollOffset = listViewportState.firstVisibleItemScrollOffset,
-    )
-    LaunchedEffect(contactsListState) {
-        snapshotFlow {
-            contactsListState.firstVisibleItemIndex to contactsListState.firstVisibleItemScrollOffset
-        }.collectLatest { (index, offset) ->
-            onListViewportChange(index, offset)
-        }
-    }
     Scaffold(
         topBar = {
             ContactsTopBar(
@@ -208,10 +197,11 @@ fun ContactsScreen(
 
             is ContactsUiState.Loaded -> ContactsList(
                 contactsState = uiState,
-                listState = contactsListState,
+                listViewportState = listViewportState,
                 onContactClick = onContactClick,
                 onRetry = onRetry,
                 onSearchQueryChange = onSearchQueryChange,
+                onListViewportChange = onListViewportChange,
                 onDismissStaleIndicator = onDismissContactsStaleIndicator,
                 modifier = Modifier
                     .fillMaxSize()
@@ -741,13 +731,42 @@ private fun TransientErrorBanner(
 @Composable
 private fun ContactsList(
     contactsState: ContactsUiState.Loaded,
-    listState: LazyListState,
+    listViewportState: ContactsListViewportState,
     onContactClick: (Contact) -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
+    onListViewportChange: (Int, Int, String?) -> Unit,
     onDismissStaleIndicator: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val contactsListState = rememberLazyListState(
+        initialFirstVisibleItemIndex = listViewportState.firstVisibleItemIndex,
+        initialFirstVisibleItemScrollOffset = listViewportState.firstVisibleItemScrollOffset,
+    )
+    LaunchedEffect(contactsListState) {
+        snapshotFlow {
+            contactsListState.firstVisibleItemIndex to contactsListState.firstVisibleItemScrollOffset
+        }.collectLatest { (index, offset) ->
+            val anchorContactId = contactsState.contacts.getOrNull(index)?.id
+            onListViewportChange(index, offset, anchorContactId)
+        }
+    }
+    LaunchedEffect(contactsState.contacts) {
+        val targetIndex = listViewportState.anchorContactId?.let { anchorContactId ->
+            contactsState.contacts.indexOfFirst { it.id == anchorContactId }.takeIf { it >= 0 }
+        } ?: listViewportState.firstVisibleItemIndex
+        val clampedIndex = if (contactsState.contacts.isEmpty()) {
+            0
+        } else {
+            targetIndex.coerceIn(0, contactsState.contacts.lastIndex)
+        }
+        if (contactsState.contacts.isNotEmpty()) {
+            contactsListState.scrollToItem(
+                index = clampedIndex,
+                scrollOffset = listViewportState.firstVisibleItemScrollOffset,
+            )
+        }
+    }
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -781,7 +800,7 @@ private fun ContactsList(
             )
         }
         LazyColumn(
-            state = listState,
+            state = contactsListState,
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

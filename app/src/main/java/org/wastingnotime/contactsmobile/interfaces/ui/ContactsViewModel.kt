@@ -89,10 +89,15 @@ class ContactsViewModel(
         publishContactsState()
     }
 
-    fun updateListViewport(firstVisibleItemIndex: Int, firstVisibleItemScrollOffset: Int) {
+    fun updateListViewport(
+        firstVisibleItemIndex: Int,
+        firstVisibleItemScrollOffset: Int,
+        anchorContactId: String? = null,
+    ) {
         _listViewportState.value = ContactsListViewportState(
             firstVisibleItemIndex = firstVisibleItemIndex,
             firstVisibleItemScrollOffset = firstVisibleItemScrollOffset,
+            anchorContactId = anchorContactId,
         )
     }
 

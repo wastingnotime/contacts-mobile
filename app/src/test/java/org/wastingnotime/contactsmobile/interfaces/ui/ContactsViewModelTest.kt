@@ -441,7 +441,7 @@ class ContactsViewModelTest {
 
         advanceUntilIdle()
 
-        viewModel.updateListViewport(firstVisibleItemIndex = 7, firstVisibleItemScrollOffset = 24)
+        viewModel.updateListViewport(firstVisibleItemIndex = 7, firstVisibleItemScrollOffset = 24, anchorContactId = contact.id)
         viewModel.openContact(contact)
         advanceUntilIdle()
 
@@ -449,6 +449,7 @@ class ContactsViewModelTest {
             ContactsListViewportState(
                 firstVisibleItemIndex = 7,
                 firstVisibleItemScrollOffset = 24,
+                anchorContactId = contact.id,
             ),
             viewModel.listViewportState.value,
         )
@@ -459,6 +460,7 @@ class ContactsViewModelTest {
             ContactsListViewportState(
                 firstVisibleItemIndex = 7,
                 firstVisibleItemScrollOffset = 24,
+                anchorContactId = contact.id,
             ),
             viewModel.listViewportState.value,
         )
@@ -481,7 +483,7 @@ class ContactsViewModelTest {
 
         advanceUntilIdle()
 
-        viewModel.updateListViewport(firstVisibleItemIndex = 3, firstVisibleItemScrollOffset = 12)
+        viewModel.updateListViewport(firstVisibleItemIndex = 3, firstVisibleItemScrollOffset = 12, anchorContactId = contact.id)
         viewModel.openCreateContact()
         viewModel.closeCreateContact()
         viewModel.openContact(contact)
@@ -492,6 +494,7 @@ class ContactsViewModelTest {
             ContactsListViewportState(
                 firstVisibleItemIndex = 3,
                 firstVisibleItemScrollOffset = 12,
+                anchorContactId = contact.id,
             ),
             viewModel.listViewportState.value,
         )
@@ -502,6 +505,91 @@ class ContactsViewModelTest {
             ContactsListViewportState(
                 firstVisibleItemIndex = 3,
                 firstVisibleItemScrollOffset = 12,
+                anchorContactId = contact.id,
+            ),
+            viewModel.listViewportState.value,
+        )
+    }
+
+    @Test
+    fun `keeps the viewport state when contacts are created updated or deleted`() = runTest {
+        val original = contact()
+        val created = contact().copy(
+            id = "contact-9",
+            firstName = "Grace",
+            lastName = "Hopper",
+            phoneNumber = "555-0200",
+        )
+        val updated = original.copy(
+            firstName = "Ada",
+            lastName = "Byron",
+            phoneNumber = "555-0199",
+        )
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(original))),
+            loadContactByIdResponses = arrayDequeOf(successContact(original), successContact(updated)),
+            createContactResponses = arrayDequeOf(successCreatedContact(created)),
+            updateContactResponses = arrayDequeOf(successUpdatedContact(updated)),
+            deleteContactResponses = arrayDequeOf(successDeleteContact()),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateListViewport(
+            firstVisibleItemIndex = 2,
+            firstVisibleItemScrollOffset = 10,
+            anchorContactId = original.id,
+        )
+
+        viewModel.openCreateContact()
+        viewModel.updateCreateFirstName(created.firstName)
+        viewModel.updateCreateLastName(created.lastName)
+        viewModel.updateCreatePhoneNumber(created.phoneNumber)
+        viewModel.submitCreateContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 2,
+                firstVisibleItemScrollOffset = 10,
+                anchorContactId = original.id,
+            ),
+            viewModel.listViewportState.value,
+        )
+
+        viewModel.openContact(original)
+        advanceUntilIdle()
+        viewModel.openEditContact()
+        viewModel.updateEditFirstName(updated.firstName)
+        viewModel.updateEditLastName(updated.lastName)
+        viewModel.updateEditPhoneNumber(updated.phoneNumber)
+        viewModel.submitEditContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 2,
+                firstVisibleItemScrollOffset = 10,
+                anchorContactId = original.id,
+            ),
+            viewModel.listViewportState.value,
+        )
+
+        viewModel.deleteContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 2,
+                firstVisibleItemScrollOffset = 10,
+                anchorContactId = original.id,
             ),
             viewModel.listViewportState.value,
         )
