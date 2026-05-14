@@ -55,6 +55,26 @@ Record one of these outcomes before writing any app observation:
 Use `backend-ready` only after the preflight succeeds and the Android app can be judged against the seeded backend.
 Use `backend-not-ready` when the backend simulation is unavailable, unseeded, or otherwise unusable for app validation.
 
+## Session Record Template
+
+Record the smoke-test session in a compact form:
+
+```text
+backend command:
+readiness:
+session classification:
+app observations:
+```
+
+Example:
+
+```text
+backend command: cd ../runtime-sandbox && make backend-smoke BACKEND_SMOKE_SCENARIO=representative-directory
+readiness: backend ready
+session classification: backend-ready
+app observations: contacts loaded, detail opened, refresh preserved stale content
+```
+
 ## Android Client Smoke Test
 
 1. Build and install the Android client on the emulator.
