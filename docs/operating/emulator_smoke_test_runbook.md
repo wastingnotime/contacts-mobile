@@ -14,6 +14,31 @@ The emulator smoke-test backend should come from `../runtime-sandbox`.
 - an Android emulator configured with the app's emulator base URL
 - the adjacent runtime sandbox repo at `../runtime-sandbox`
 
+## Emulator Access Tools
+
+Use `adb` alongside the Android Studio MCP server when you need direct emulator inspection or control.
+
+Preferred commands:
+
+```bash
+adb devices
+adb shell dumpsys meminfo <package>
+adb shell dumpsys gfxinfo <package>
+adb logcat
+adb shell top
+adb shell am start ...
+adb exec-out screencap -p > screen.png
+```
+
+Use these when you need:
+
+- device availability checks
+- memory and graphics diagnostics
+- runtime log capture
+- process inspection
+- explicit activity launches
+- screenshot evidence from the emulator
+
 ## Backend Simulation
 
 Use the runtime sandbox commands below before launching the Android app:
@@ -128,3 +153,4 @@ app observations: contacts loaded, detail opened, refresh preserved stale conten
 - confirm backend readiness before judging Android client behavior
 - classify each smoke-test session before recording app observations
 - keep emulator smoke tests separate from release acceptance and expectation-gap review
+- prefer MCP for structured IDE-level access and `adb` for direct emulator inspection or capture
