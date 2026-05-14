@@ -58,3 +58,4 @@ The repository is a native Android client for the contacts product. Its current 
 ### Unresolved Tensions
 
 - whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
+- whether local search should match only visible contact fields or also hidden/internal identifiers
