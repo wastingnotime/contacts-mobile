@@ -41,3 +41,4 @@ Evaluation should watch for:
 - replacing already-loaded contacts with a blank error screen when a refresh fails, if the user still expects the last known data to stay visible
 - making the app require live network behavior in unit tests
 - mistaking a missing or unreachable emulator backend for an Android client regression during manual smoke tests
+- recording emulator smoke-test observations without first classifying whether backend readiness succeeded
