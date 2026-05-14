@@ -17,4 +17,6 @@ interface ContactsApiClient {
         lastName: String,
         phoneNumber: String,
     ): RemoteContact
+
+    suspend fun deleteContact(id: String)
 }

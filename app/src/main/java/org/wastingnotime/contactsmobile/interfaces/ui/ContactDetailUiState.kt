@@ -12,6 +12,8 @@ sealed interface ContactDetailUiState {
         val transientErrorMessage: String? = null,
     ) : ContactDetailUiState
 
+    data class Deleting(val contact: Contact) : ContactDetailUiState
+
     data class NotFound(val contactId: String) : ContactDetailUiState
 
     data class Error(

@@ -39,4 +39,8 @@ class DefaultContactsRepository(
             phoneNumber = phoneNumber,
         ).toDomain()
     }
+
+    override suspend fun deleteContact(id: String) {
+        apiClient.deleteContact(id)
+    }
 }

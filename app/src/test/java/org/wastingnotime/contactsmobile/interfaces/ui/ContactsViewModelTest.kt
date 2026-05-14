@@ -4,6 +4,7 @@ import org.wastingnotime.contactsmobile.application.ContactsRepository
 import org.wastingnotime.contactsmobile.application.CreateContact
 import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContacts
+import org.wastingnotime.contactsmobile.application.DeleteContact
 import org.wastingnotime.contactsmobile.application.UpdateContact
 import org.wastingnotime.contactsmobile.domain.Contact
 import org.wastingnotime.contactsmobile.test.MainDispatcherRule
@@ -415,6 +416,65 @@ class ContactsViewModelTest {
             viewModel.detailUiState.value,
         )
     }
+
+    @Test
+    fun `deletes a contact and returns to the list`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+            deleteContactResponses = arrayDequeOf(successDeleteContact()),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.deleteContact()
+        advanceUntilIdle()
+
+        assertEquals(ContactsUiState.Empty(), viewModel.uiState.value)
+        assertEquals(ContactDetailUiState.Hidden, viewModel.detailUiState.value)
+    }
+
+    @Test
+    fun `preserves the selected contact when delete fails`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+            deleteContactResponses = arrayDequeOf(failingDeleteContact("backend unavailable")),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.deleteContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactDetailUiState.Loaded(
+                contact = contact,
+                transientErrorMessage = "backend unavailable",
+            ),
+            viewModel.detailUiState.value,
+        )
+    }
 }
 
 private class ScriptedContactsRepository(
@@ -422,6 +482,7 @@ private class ScriptedContactsRepository(
     private val loadContactByIdResponses: ArrayDeque<suspend (String) -> Contact?> = ArrayDeque(),
     private val createContactResponses: ArrayDeque<suspend (String, String, String) -> Contact> = ArrayDeque(),
     private val updateContactResponses: ArrayDeque<suspend (String, String, String, String) -> Contact> = ArrayDeque(),
+    private val deleteContactResponses: ArrayDeque<suspend (String) -> Unit> = ArrayDeque(),
 ) : ContactsRepository {
     override suspend fun loadContacts(): List<Contact> {
         return loadContactsResponses.removeFirst().invoke()
@@ -453,6 +514,18 @@ private class ScriptedContactsRepository(
             ?: error("No scripted update contact response available.")
         return next.invoke(id, firstName, lastName, phoneNumber)
     }
+
+    override suspend fun deleteContact(id: String) {
+        val next = deleteContactResponses.pollFirst()
+            ?: error("No scripted delete contact response available.")
+        next.invoke(id)
+    }
+}
+
+private fun successDeleteContact(): suspend (String) -> Unit = { _ -> }
+
+private fun failingDeleteContact(message: String): suspend (String) -> Unit = {
+    error(message)
 }
 
 private fun successContacts(contacts: List<Contact>): suspend () -> List<Contact> = { contacts }

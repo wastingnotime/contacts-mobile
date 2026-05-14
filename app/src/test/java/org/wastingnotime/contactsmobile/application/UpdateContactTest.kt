@@ -60,4 +60,6 @@ private class FakeUpdateContactsRepository(
         lastName: String,
         phoneNumber: String,
     ): Contact = updatedContact
+
+    override suspend fun deleteContact(id: String) = Unit
 }

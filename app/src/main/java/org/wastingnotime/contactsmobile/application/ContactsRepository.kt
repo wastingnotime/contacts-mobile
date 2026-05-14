@@ -19,4 +19,6 @@ interface ContactsRepository {
         lastName: String,
         phoneNumber: String,
     ): Contact
+
+    suspend fun deleteContact(id: String)
 }

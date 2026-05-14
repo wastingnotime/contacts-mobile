@@ -164,4 +164,6 @@ private class FakeContactsApiClient(
     ): RemoteContact {
         return updatedContact ?: error("No scripted update contact response available.")
     }
+
+    override suspend fun deleteContact(id: String) = Unit
 }

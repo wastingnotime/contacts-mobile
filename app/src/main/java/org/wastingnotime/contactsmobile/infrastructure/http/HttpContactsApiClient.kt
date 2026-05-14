@@ -119,6 +119,25 @@ class HttpContactsApiClient(
         }
     }
 
+    override suspend fun deleteContact(id: String) = withContext(Dispatchers.IO) {
+        val connection = openConnection(
+            path = "contacts/${encodePathSegment(id)}",
+            method = "DELETE",
+        )
+        try {
+            val statusCode = connection.responseCode
+            if (statusCode !in 200..299) {
+                throw ContactsApiException("Contacts API responded with status $statusCode.")
+            }
+        } catch (exception: ContactsApiException) {
+            throw exception
+        } catch (exception: IOException) {
+            throw ContactsApiException("Unable to delete contact.", exception)
+        } finally {
+            connection.disconnect()
+        }
+    }
+
     private fun openConnection(): HttpURLConnection {
         return openConnection("contacts")
     }

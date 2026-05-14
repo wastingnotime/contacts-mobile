@@ -152,6 +152,29 @@ class HttpContactsApiClientTest {
         )
         assertEquals("contact-9", contact.id)
     }
+
+    @Test
+    fun `attaches auth headers to delete requests`() = runTest {
+        val connection = RecordingHttpURLConnection(
+            url = URL("http://example.com/contacts/contact-9"),
+            responseCodeValue = HttpURLConnection.HTTP_NO_CONTENT,
+            responseBody = "",
+        )
+        val client = HttpContactsApiClient(
+            baseUrl = "http://example.com",
+            authHeaders = ContactsApiAuthHeaders(
+                subject = "admin-user",
+                roles = "admin",
+            ),
+            connectionFactory = { connection },
+        )
+
+        client.deleteContact("contact-9")
+
+        assertEquals("DELETE", connection.requestMethodCaptured)
+        assertEquals("admin-user", connection.capturedRequestProperties["x-auth-subject"])
+        assertEquals("admin", connection.capturedRequestProperties["x-auth-roles"])
+    }
 }
 
 private class RecordingHttpURLConnection(

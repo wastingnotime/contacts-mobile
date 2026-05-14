@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import org.wastingnotime.contactsmobile.application.CreateContact
 import org.wastingnotime.contactsmobile.application.CreateContactCommand
 import org.wastingnotime.contactsmobile.application.CreateContactResult
+import org.wastingnotime.contactsmobile.application.DeleteContact
+import org.wastingnotime.contactsmobile.application.DeleteContactResult
 import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContactByIdResult
 import org.wastingnotime.contactsmobile.application.LoadContacts
@@ -24,7 +26,21 @@ class ContactsViewModel(
     private val loadContactById: LoadContactById,
     private val createContact: CreateContact,
     private val updateContact: UpdateContact,
+    private val deleteContact: DeleteContact,
 ) : ViewModel() {
+    constructor(
+        loadContacts: LoadContacts,
+        loadContactById: LoadContactById,
+        createContact: CreateContact,
+        updateContact: UpdateContact,
+    ) : this(
+        loadContacts = loadContacts,
+        loadContactById = loadContactById,
+        createContact = createContact,
+        updateContact = updateContact,
+        deleteContact = DeleteContact(NoOpContactsRepository),
+    )
+
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Loading)
     val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
 
@@ -208,6 +224,26 @@ class ContactsViewModel(
         loadContactDetail(successState.contact.id)
     }
 
+    fun deleteContact() {
+        val currentDetail = _detailUiState.value as? ContactDetailUiState.Loaded ?: return
+        _detailUiState.value = ContactDetailUiState.Deleting(currentDetail.contact)
+        viewModelScope.launch {
+            _detailUiState.value = try {
+                when (deleteContact.execute(currentDetail.contact.id)) {
+                    DeleteContactResult.Deleted -> {
+                        removeDeletedContactFromList(currentDetail.contact.id)
+                        ContactDetailUiState.Hidden
+                    }
+                }
+            } catch (exception: Throwable) {
+                ContactDetailUiState.Loaded(
+                    contact = currentDetail.contact,
+                    transientErrorMessage = exception.message ?: "Unable to delete contact.",
+                )
+            }
+        }
+    }
+
     fun closeContactDetail() {
         _detailUiState.value = ContactDetailUiState.Hidden
     }
@@ -248,6 +284,7 @@ class ContactsViewModel(
         val contactId = when (detailState) {
             is ContactDetailUiState.Loading -> detailState.contactId
             is ContactDetailUiState.Loaded -> detailState.contact.id
+            is ContactDetailUiState.Deleting -> detailState.contact.id
             is ContactDetailUiState.NotFound -> detailState.contactId
             is ContactDetailUiState.Error -> detailState.contactId
             ContactDetailUiState.Hidden -> return
@@ -273,6 +310,10 @@ class ContactsViewModel(
     ): ContactDetailUiState {
         return when (previousState) {
             is ContactDetailUiState.Loaded -> previousState.copy(transientErrorMessage = message)
+            is ContactDetailUiState.Deleting -> ContactDetailUiState.Loaded(
+                contact = previousState.contact,
+                transientErrorMessage = message,
+            )
             else -> ContactDetailUiState.Error(contactId, message)
         }
     }
@@ -340,6 +381,21 @@ class ContactsViewModel(
         }
         _detailUiState.value = ContactDetailUiState.Loaded(contact)
     }
+
+    private fun removeDeletedContactFromList(contactId: String) {
+        _uiState.value = when (val current = _uiState.value) {
+            is ContactsUiState.Loaded -> {
+                val remaining = current.contacts.filterNot { it.id == contactId }
+                if (remaining.isEmpty()) {
+                    ContactsUiState.Empty()
+                } else {
+                    ContactsUiState.Loaded(remaining)
+                }
+            }
+            is ContactsUiState.Empty -> current
+            else -> current
+        }
+    }
 }
 
 class ContactsViewModelFactory(
@@ -347,12 +403,40 @@ class ContactsViewModelFactory(
     private val loadContactById: LoadContactById,
     private val createContact: CreateContact,
     private val updateContact: UpdateContact,
+    private val deleteContact: DeleteContact,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ContactsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ContactsViewModel(loadContacts, loadContactById, createContact, updateContact) as T
+            return ContactsViewModel(loadContacts, loadContactById, createContact, updateContact, deleteContact) as T
         }
         throw IllegalArgumentException("Unsupported view model class: ${modelClass.name}")
+    }
+}
+
+private object NoOpContactsRepository : org.wastingnotime.contactsmobile.application.ContactsRepository {
+    override suspend fun loadContacts(): List<org.wastingnotime.contactsmobile.domain.Contact> = emptyList()
+
+    override suspend fun loadContactById(id: String): org.wastingnotime.contactsmobile.domain.Contact? = null
+
+    override suspend fun createContact(
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): org.wastingnotime.contactsmobile.domain.Contact {
+        error("No-op repository does not support create.")
+    }
+
+    override suspend fun updateContact(
+        id: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): org.wastingnotime.contactsmobile.domain.Contact {
+        error("No-op repository does not support update.")
+    }
+
+    override suspend fun deleteContact(id: String) {
+        error("No-op repository does not support delete.")
     }
 }

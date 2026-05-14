@@ -62,6 +62,7 @@ fun ContactsRoute(
         onEditPhoneNumberChange = viewModel::updateEditPhoneNumber,
         onEditSubmit = viewModel::submitEditContact,
         onEditOpenContact = viewModel::openUpdatedContact,
+        onDeleteContact = viewModel::deleteContact,
         modifier = modifier,
     )
 }
@@ -90,6 +91,7 @@ fun ContactsScreen(
     onEditPhoneNumberChange: (String) -> Unit = {},
     onEditSubmit: () -> Unit = {},
     onEditOpenContact: () -> Unit = {},
+    onDeleteContact: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -145,6 +147,7 @@ fun ContactsScreen(
                 detailUiState = detailUiState,
                 onBack = onBack,
                 onRetry = onRetry,
+                onDelete = onDeleteContact,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
@@ -209,6 +212,7 @@ private fun ContactsTopBar(
         detailUiState != ContactDetailUiState.Hidden -> when (detailUiState) {
             is ContactDetailUiState.Loaded -> detailUiState.contact.displayName.ifBlank { "Contact details" }
             is ContactDetailUiState.Loading -> "Contact details"
+            is ContactDetailUiState.Deleting -> detailUiState.contact.displayName.ifBlank { "Contact details" }
             is ContactDetailUiState.NotFound -> "Contact details"
             is ContactDetailUiState.Error -> "Contact details"
             ContactDetailUiState.Hidden -> "Contacts"
@@ -312,6 +316,7 @@ private fun DetailContent(
     detailUiState: ContactDetailUiState,
     onBack: () -> Unit,
     onRetry: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (detailUiState) {
@@ -321,6 +326,11 @@ private fun DetailContent(
             contact = detailUiState.contact,
             transientErrorMessage = detailUiState.transientErrorMessage,
             onRetry = onRetry,
+            onDelete = onDelete,
+            modifier = modifier,
+        )
+        is ContactDetailUiState.Deleting -> ContactDetailDeleting(
+            contact = detailUiState.contact,
             modifier = modifier,
         )
         is ContactDetailUiState.NotFound -> DetailProblemState(
@@ -735,6 +745,7 @@ private fun ContactDetail(
     contact: Contact,
     transientErrorMessage: String?,
     onRetry: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -791,6 +802,32 @@ private fun ContactDetail(
                 text = "Contact id: ${contact.id}",
                 style = MaterialTheme.typography.bodySmall,
             )
+            Button(onClick = onDelete) {
+                Text(text = "Delete")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContactDetailDeleting(
+    contact: Contact,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Deleting ${contact.displayName.ifBlank { "contact" }}",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+            )
+            CircularProgressIndicator()
         }
     }
 }
