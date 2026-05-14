@@ -181,6 +181,162 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun `keeps list and detail stale acknowledgements independent`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(
+                successContacts(listOf(contact)),
+                failingContacts("list refresh failed"),
+            ),
+            loadContactByIdResponses = arrayDequeOf(
+                successContact(contact),
+                failingContact("detail refresh failed"),
+                successContact(contact),
+            ),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.refresh()
+        advanceUntilIdle()
+        viewModel.dismissContactsStaleIndicator()
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                transientErrorMessage = "list refresh failed",
+                freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = true,
+            ),
+            viewModel.uiState.value,
+        )
+        assertEquals(
+            ContactDetailUiState.Loaded(
+                contact = contact,
+                transientErrorMessage = "detail refresh failed",
+                freshnessState = ContactsFreshnessState.Stale,
+            ),
+            viewModel.detailUiState.value,
+        )
+
+        viewModel.dismissContactDetailStaleIndicator()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                transientErrorMessage = "list refresh failed",
+                freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = true,
+            ),
+            viewModel.uiState.value,
+        )
+        assertEquals(
+            ContactDetailUiState.Loaded(
+                contact = contact,
+                transientErrorMessage = "detail refresh failed",
+                freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = true,
+            ),
+            viewModel.detailUiState.value,
+        )
+
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                transientErrorMessage = "list refresh failed",
+                freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = true,
+            ),
+            viewModel.uiState.value,
+        )
+        assertEquals(
+            ContactDetailUiState.Loaded(contact),
+            viewModel.detailUiState.value,
+        )
+    }
+
+    @Test
+    fun `clears the stale acknowledgment after a successful list reload`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(
+                successContacts(listOf(contact)),
+                failingContacts("backend unavailable"),
+                successContacts(listOf(contact)),
+            ),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.refresh()
+        advanceUntilIdle()
+        viewModel.dismissContactsStaleIndicator()
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsUiState.Loaded(listOf(contact)),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `clears the stale acknowledgment after a successful detail reload`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(
+                successContact(contact),
+                failingContact("backend unavailable"),
+                successContact(contact),
+            ),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.refresh()
+        advanceUntilIdle()
+        viewModel.dismissContactDetailStaleIndicator()
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactDetailUiState.Loaded(contact),
+            viewModel.detailUiState.value,
+        )
+    }
+
+    @Test
     fun `re-enters loading when retrying after a failure`() = runTest {
         val contact = contact()
         val gate = CompletableDeferred<Unit>()
