@@ -48,6 +48,18 @@ This Android repository intentionally does not own the backend simulation setup.
 5. Trigger a refresh and verify transient failures preserve already-loaded content.
 6. Verify retry returns the app to loading and then refreshed content.
 
+## Outcomes Matrix
+
+| Step | Expected outcome |
+| --- | --- |
+| `make backend-smoke BACKEND_SMOKE_SCENARIO=representative-directory` in `../runtime-sandbox` | Backend services start, health becomes reachable, and seeded contacts are available. |
+| `./gradlew installDebug` on the Android client repo | The debug app installs on the emulator without build or install errors. |
+| App launch on the emulator | The contacts client opens and resolves the configured emulator base URL. |
+| Initial contacts load | The list renders seeded contacts from the sandbox-backed backend. |
+| Contact detail open | Tapping a contact shows the detail screen for that contact. |
+| Transient refresh failure | Already-loaded contacts or detail remain visible and a refresh failure banner appears. |
+| Retry after transient failure | The app returns to loading, then to refreshed content once the backend is available again. |
+
 ## What To Look For
 
 - visible loading states
