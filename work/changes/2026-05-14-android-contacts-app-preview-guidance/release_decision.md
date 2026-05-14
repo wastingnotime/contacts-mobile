@@ -6,11 +6,11 @@ Accept.
 
 ## Basis
 
-- The intent bundle is documentation-only and does not change Android runtime behavior.
-- The constituent preview slices are coherent and all target the same `ContactsApp` design-time surface.
-- The guidance makes state, theme, width, font-scale, and text-stress inspection explicit for Android Studio.
+- The intent bundle is coherent and centered on one design-time preview workflow.
+- The constituent slices cover state, theme, width, font-scale, and text-stress exposure.
+- The guidance remains preview-only and runtime-contract preserving.
 - `git diff --check` passes.
 
 ## Outcome
 
-The app preview guidance intent is accepted as the internal released version.
+The Android contacts app preview intent is accepted as the internal released version.

@@ -28,52 +28,51 @@ Android contacts app preview guidance as one intent bundle.
 
 ## Summary
 
-The app preview guidance is internally coherent as one intent bundle. The repository now exposes the Android contacts app shell in design time across the main UI states, themes, widths, font scales, and long-text conditions.
+The preview guidance is coherent as one intent bundle. It expands the design-time exposure of the app shell so Android Studio can inspect the main contacts states across loading, loaded, detail, theme, width, font-scale, and long-text variants.
 
-The bundle is documentation-only from a product-behavior perspective: it improves inspectability without changing runtime behavior.
+The bundle is documentation and preview-surface work only. It does not alter runtime behavior or the backend contract.
 
 ## Findings
 
-### 1. The preview slices are one design-time intent
+### 1. The constituent slices describe one preview-intent bundle
 
 Observed behavior:
 
-- the state matrix, theme matrix, width matrix, font-scale matrix, and text-stress matrix all target the same `ContactsApp` shell entrypoint
-- each slice refines the same design-time inspection surface rather than introducing a separate workflow
+- one slice covers app-shell state exposure
+- one slice covers theme variants
+- one slice covers width variants
+- one slice covers font-scale variants
+- one slice covers text-stress variants
 
 Assessment:
 
 - these are not separate product intents
-- they are variants of one preview intent that helps developers inspect the shell under different presentation pressures
+- they are one design-time preview intent around the app shell
 
-### 2. The preview surface is complete enough for release
-
-Observed behavior:
-
-- the shell previews cover loading, empty, loaded, detail, and transient-warning states
-- theme, width, font-scale, and text-stress variants are all represented
-- the previews remain deterministic and detached from repository or network state
-
-Assessment:
-
-- no blocking gap remains for the current preview intent
-- the preview bundle supports Android Studio inspection of the contacts shell in the dimensions the repo already cares about
-
-### 3. No runtime risk is introduced
+### 2. The intent is operationally complete enough for release
 
 Observed behavior:
 
-- the preview work is design-time only
-- app runtime code is unchanged by the intent bundle
+- the app shell can be inspected across the core contacts states
+- the preview coverage spans the main design-time pressures that matter for the app shell
+- the preview inputs remain deterministic and isolated from runtime side effects
 
 Assessment:
 
-- there is no product-behavior regression risk in accepting the bundle
+- no blocking expectation gap remains for the preview intent
+- the preview surface is sufficiently complete for design-time inspection
 
-## Review Questions
+### 3. No backend or runtime risk is introduced
 
-1. Do we want a single preview index or landing doc, or are the existing targeted matrices enough?
-2. Should future preview work keep following the matrix pattern, or collapse into fewer broader preview docs?
+Observed behavior:
+
+- the bundle is preview-only
+- runtime `ContactsApp(viewModel)` behavior remains unchanged
+- no repository or network dependency is added to previews
+
+Assessment:
+
+- the bundle preserves runtime behavior and backend contract
 
 ## Recommendation
 
@@ -81,6 +80,6 @@ Continue to release.
 
 Reasoning:
 
-- the constituent preview slices are aligned around one design-time intent
-- the guidance is internally consistent and documentation-only
-- the runtime app behavior remains unchanged
+- the constituent slices are one coherent preview guidance intent
+- the implementation evidence supports the intended preview coverage
+- the bundle remains within design-time boundaries
