@@ -16,6 +16,7 @@ Refine the contacts list interaction so search and list position work together p
 - avoid any backend endpoint or transport change
 
 This slice makes the viewport rule explicit for query changes that alter the filtered result set.
+The intended behavior is to preserve the active visible neighborhood when possible, not to reset the list to the top on every search edit.
 
 ## Use-Case Contract
 
@@ -35,6 +36,7 @@ The UI should preserve the user’s place inside the filtered result set when th
 - clearing the query should still restore the full sorted list
 - search filtering and list sorting should continue to determine which rows are visible
 - the backend contract should remain unchanged
+- the viewport rule should remain consistent with the list-scroll continuity rules so search edits do not introduce a separate reset policy
 
 ## Required Ports
 

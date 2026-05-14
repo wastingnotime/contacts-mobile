@@ -47,6 +47,7 @@ The repository is a native Android client for the contacts product. Its current 
 - sorting the loaded contacts into a predictable local order
 - filtering the loaded contacts locally by a user-entered query
 - preserving the active search query while navigating between list, detail, and form surfaces
+- preserving the active visible neighborhood when the search query changes, as long as a surviving anchor remains available
 - preserving the visible list viewport while navigating between list, detail, and form surfaces
 - making stale preserved data explicit after a transient refresh or reload failure
 - dismissing a stale-data indicator after the user has acknowledged the warning
@@ -70,7 +71,3 @@ The repository is a native Android client for the contacts product. Its current 
 - `CreateContact`
 - `UpdateContact`
 - `DeleteContact`
-
-### Unresolved Tensions
-
-- whether the app should preserve the current list viewport inside the active search result set when the query changes, or intentionally reset it when filtering changes the visible rows
