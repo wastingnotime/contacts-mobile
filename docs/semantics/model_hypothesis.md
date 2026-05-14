@@ -19,6 +19,7 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactDetail`: the selected-contact state shown after tapping a contact
 - `ContactsSearchQuery`: the local query used to narrow the loaded contacts list
 - `ContactsSortOrder`: the local ordering applied to loaded contacts
+- `ContactsListViewportState`: the local scroll position used to resume the visible part of the contacts list
 - `ContactsLoadingState`: the view state while the API request is in flight
 - `ContactsErrorState`: the view state when loading fails
 - `ContactsFreshnessState`: the visible indicator for whether loaded data is fresh or stale
@@ -43,6 +44,7 @@ The repository is a native Android client for the contacts product. Its current 
 - sorting the loaded contacts into a predictable local order
 - filtering the loaded contacts locally by a user-entered query
 - preserving the active search query while navigating between list, detail, and form surfaces
+- preserving the visible list viewport while navigating between list, detail, and form surfaces
 - making stale preserved data explicit after a transient refresh or reload failure
 - dismissing a stale-data indicator after the user has acknowledged the warning
 - moving from error to retry and back to loading
@@ -63,3 +65,4 @@ The repository is a native Android client for the contacts product. Its current 
 ### Unresolved Tensions
 
 - whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
+- whether the app should preserve the list scroll position when returning from detail or forms, or always reset to the top
