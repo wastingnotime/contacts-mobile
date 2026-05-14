@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.2"
+agp = "8.13.2"
 kotlin = "1.9.24"
 compose-bom = "2024.06.00"
 compose-compiler = "1.5.14"
@@ -9,8 +9,8 @@ coroutines = "1.8.1"
 junit = "4.13.2"
 
 [plugins]
-android-application = { id = "com.android.application", version = "8.13.2" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.9.24" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }

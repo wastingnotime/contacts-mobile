@@ -35,6 +35,8 @@ This repository currently adopts the `android_compose_client` pack. Other reposi
 - `event_sourced_domain`
 - `polyglot_client_server`
 
+The current Android client target is Android 16 (API level 36).
+
 If a repository changes pack, record the decision in `decisions.md` and update this document so it describes the selected shape rather than pretending to be a universal MRL rule.
 
 ---
@@ -71,7 +73,7 @@ A more explicit view:
 
 ```text
 app/
-  src/main/java/com/wastingnotime/contactsmobile/
+  src/main/java/org/wastingnotime/contactsmobile/
     domain/
     application/
     infrastructure/
@@ -79,7 +81,7 @@ app/
 
   src/main/res/
 
-  src/test/java/com/wastingnotime/contactsmobile/
+  src/test/java/org/wastingnotime/contactsmobile/
     application/
     infrastructure/
     interfaces/

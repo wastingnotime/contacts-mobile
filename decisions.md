@@ -195,7 +195,7 @@ The local-device default uses the host-style loopback URL convention already use
 ## DEC-0008 - Target Android 15 For Play Policy Compatibility
 
 - Date: 2026-05-13
-- Status: accepted
+- Status: superseded
 - Owners: both
 
 ### Context
@@ -212,6 +212,27 @@ Leaving `targetSdk` at 34 would preserve the current behavior, but it would lag 
 
 ### Notes
 This is a policy compatibility update, not a feature change.
+
+## DEC-0010 - Target Android 16 For The Mobile Client
+
+- Date: 2026-05-14
+- Status: accepted
+- Owners: both
+
+### Context
+Android 16 is the desired platform target for the mobile client, and the current Android Gradle plugin line already supports API level 36.
+
+### Decision
+The app module now compiles and targets API level 36. The Gradle wrapper stays on 8.13, the Android Gradle plugin stays on 8.13.2, the Java toolchain remains 17, and the Kotlin/Compose stack stays on Kotlin 1.9.24 with Compose compiler 1.5.14 because that combination is already compatible.
+
+### Consequences
+The client can adopt Android 16 behavior changes without forcing a Kotlin migration or a Compose compiler restructuring. Build tooling stays on the supported 17/8.13/8.13.2 line.
+
+### Alternatives considered
+Upgrading Kotlin to 2.x and moving to the Compose Compiler Gradle plugin was considered, but it is not required for the Android 16 target and would introduce avoidable migration work for the current slice.
+
+### Notes
+If future work needs Kotlin 2.x features, revisit the Compose compiler setup and re-evaluate the library stack separately from the platform target update.
 
 ## DEC-0009 - Use The `org.wastingnotime` Android Namespace
 
