@@ -723,6 +723,14 @@ private fun ContactsList(
             onQueryChange = onSearchQueryChange,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )
+        if (contactsState.searchQuery.isNotBlank()) {
+            SearchSummary(
+                matchedCount = contactsState.contacts.size,
+                query = contactsState.searchQuery,
+                onClearSearch = { onSearchQueryChange("") },
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
         contactsState.transientErrorMessage?.let { message ->
             TransientErrorBanner(
                 message = message,
@@ -773,6 +781,12 @@ private fun FilteredEmptyState(
             onQueryChange = onSearchQueryChange,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )
+        SearchSummary(
+            matchedCount = 0,
+            query = filteredState.query,
+            onClearSearch = { onSearchQueryChange("") },
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
         filteredState.transientErrorMessage?.let { message ->
             TransientErrorBanner(
                 message = message,
@@ -786,6 +800,28 @@ private fun FilteredEmptyState(
             actionLabel = "Clear search",
             onAction = { onSearchQueryChange("") },
         )
+    }
+}
+
+@Composable
+private fun SearchSummary(
+    matchedCount: Int,
+    query: String,
+    onClearSearch: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "$matchedCount matches for \"$query\"",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        TextButton(onClick = onClearSearch) {
+            Text(text = "Clear")
+        }
     }
 }
 

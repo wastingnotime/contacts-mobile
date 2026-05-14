@@ -598,6 +598,39 @@ class ContactsViewModelTest {
             viewModel.uiState.value,
         )
     }
+
+    @Test
+    fun `keeps the filtered match count visible in loaded search results`() = runTest {
+        val matching = contact()
+        val other = contact().copy(
+            id = "contact-2",
+            firstName = "Grace",
+            lastName = "Hopper",
+            phoneNumber = "555-0200",
+        )
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(matching, other))),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateSearchQuery("ada")
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(matching),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+    }
 }
 
 private class ScriptedContactsRepository(
