@@ -65,4 +65,4 @@ The repository is a native Android client for the contacts product. Its current 
 ### Unresolved Tensions
 
 - whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
-- whether the app should preserve the current list viewport by following the nearest surviving row when the anchored contact disappears after create, update, delete, or refresh, or intentionally reset it after list content changes
+- whether the app should preserve the current list viewport inside the active search result set when the query changes, or intentionally reset it when filtering changes the visible rows
