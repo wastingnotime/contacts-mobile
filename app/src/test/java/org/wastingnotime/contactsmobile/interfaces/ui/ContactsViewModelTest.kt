@@ -58,6 +58,34 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun `publishes loaded contacts in alphabetical order after refresh`() = runTest {
+        val grace = contact().copy(
+            id = "contact-2",
+            firstName = "Grace",
+            lastName = "Hopper",
+            phoneNumber = "555-0200",
+        )
+        val ada = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(grace, ada))),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsUiState.Loaded(listOf(ada, grace)),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
     fun `preserves loaded contacts when refresh fails`() = runTest {
         val contact = contact()
         val viewModel = ContactsViewModel(

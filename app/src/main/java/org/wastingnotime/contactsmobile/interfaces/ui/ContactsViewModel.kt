@@ -13,6 +13,7 @@ import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContactByIdResult
 import org.wastingnotime.contactsmobile.application.LoadContacts
 import org.wastingnotime.contactsmobile.application.LoadContactsResult
+import org.wastingnotime.contactsmobile.application.SortContacts
 import org.wastingnotime.contactsmobile.application.UpdateContact
 import org.wastingnotime.contactsmobile.application.UpdateContactCommand
 import org.wastingnotime.contactsmobile.application.UpdateContactResult
@@ -30,6 +31,7 @@ class ContactsViewModel(
     private val deleteContact: DeleteContact,
 ) : ViewModel() {
     private val filterContacts = FilterContacts()
+    private val sortContacts = SortContacts()
 
     constructor(
         loadContacts: LoadContacts,
@@ -365,7 +367,7 @@ class ContactsViewModel(
     }
 
     private fun insertCreatedContactIntoList(contact: Contact) {
-        allContacts = listOf(contact) + allContacts.filterNot { it.id == contact.id }
+        allContacts = sortContacts.execute(listOf(contact) + allContacts.filterNot { it.id == contact.id })
         publishContactsState()
     }
 
@@ -384,15 +386,15 @@ class ContactsViewModel(
     }
 
     private fun applyUpdatedContact(contact: Contact) {
-        allContacts = allContacts.map { existing ->
+        allContacts = sortContacts.execute(allContacts.map { existing ->
             if (existing.id == contact.id) contact else existing
-        }
+        })
         publishContactsState()
         _detailUiState.value = ContactDetailUiState.Loaded(contact)
     }
 
     private fun removeDeletedContactFromList(contactId: String) {
-        allContacts = allContacts.filterNot { it.id == contactId }
+        allContacts = sortContacts.execute(allContacts.filterNot { it.id == contactId })
         publishContactsState()
     }
 
@@ -401,7 +403,7 @@ class ContactsViewModel(
         val nextState = when {
             allContacts.isEmpty() -> ContactsUiState.Empty(transientErrorMessage)
             searchQuery.isBlank() -> ContactsUiState.Loaded(
-                contacts = allContacts,
+                contacts = sortContacts.execute(allContacts),
                 transientErrorMessage = transientErrorMessage,
             )
             filteredContacts.isEmpty() -> ContactsUiState.FilteredEmpty(
@@ -409,7 +411,7 @@ class ContactsViewModel(
                 transientErrorMessage = transientErrorMessage,
             )
             else -> ContactsUiState.Loaded(
-                contacts = filteredContacts,
+                contacts = sortContacts.execute(filteredContacts),
                 transientErrorMessage = transientErrorMessage,
                 searchQuery = searchQuery,
             )
