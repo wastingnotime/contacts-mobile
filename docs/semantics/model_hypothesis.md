@@ -17,6 +17,8 @@ The repository is a native Android client for the contacts product. Its current 
 - `Contact`: a read-only contact record loaded from the backend
 - `ContactsList`: the collection state shown on the first screen
 - `ContactDetail`: the selected-contact state shown after tapping a contact
+- `ContactsSearchQuery`: the local query used to narrow the loaded contacts list
+- `ContactsSortOrder`: the local ordering applied to loaded contacts
 - `ContactsLoadingState`: the view state while the API request is in flight
 - `ContactsErrorState`: the view state when loading fails
 - `ContactsRepository`: the app port for retrieving contacts
@@ -36,6 +38,8 @@ The repository is a native Android client for the contacts product. Its current 
 - loading contacts from the backend
 - rendering an empty list when the backend returns no contacts
 - rendering a populated list when the backend returns contacts
+- sorting the loaded contacts into a predictable local order
+- filtering the loaded contacts locally by a user-entered query
 - moving from error to retry and back to loading
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
@@ -48,7 +52,10 @@ The repository is a native Android client for the contacts product. Its current 
 - `RefreshContacts`
 - `RetryLoadContacts`
 - `LoadContactById`
+- `FilterContacts`
+- `SortContacts`
 
 ### Unresolved Tensions
 
 - whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
+- whether the list should stay in backend order or always normalize to an alphabetical local order
