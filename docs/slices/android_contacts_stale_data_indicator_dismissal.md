@@ -14,6 +14,7 @@ Refine the transient failure experience for the Android contacts client:
 - keep preserving the last known contacts or contact detail when a refresh or reload fails
 - allow the user to dismiss the visible stale-data indicator after acknowledging it
 - keep the preserved content visible after dismissal
+- treat list and detail stale indicators as separate surface-local acknowledgements
 - preserve the current retry affordance and error messaging
 
 This slice does not change backend behavior. It makes the stale indicator less sticky without hiding the preserved data or changing the retry path.
@@ -28,6 +29,7 @@ The UI should allow the user to acknowledge and dismiss the stale-data indicator
 
 - dismissal only affects the stale indicator, not the preserved content
 - a dismissed stale indicator should stay dismissed until the next transient failure or successful reload cycle resets it
+- list dismissal must not clear detail acknowledgement, and detail dismissal must not clear list acknowledgement
 - the retry action should remain available even after dismissal
 - initial load failures should still remain hard errors rather than stale data
 
@@ -48,7 +50,7 @@ The UI should allow the user to acknowledge and dismiss the stale-data indicator
 
 Given preserved list or detail content that is marked stale, when the user dismisses the stale indicator, the Android app should keep the content visible and remove only the warning surface.
 
-The warning should reappear on the next transient failure.
+The warning should reappear on the next transient failure, and a successful reload for that surface should also clear the acknowledgement.
 
 ## Done Criteria
 
