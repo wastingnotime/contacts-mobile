@@ -40,3 +40,4 @@ Evaluation should watch for:
 - treating list selection as if it were the same thing as a backend-backed detail fetch
 - replacing already-loaded contacts with a blank error screen when a refresh fails, if the user still expects the last known data to stay visible
 - making the app require live network behavior in unit tests
+- mistaking a missing or unreachable emulator backend for an Android client regression during manual smoke tests
