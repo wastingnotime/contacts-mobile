@@ -93,11 +93,13 @@ class ContactsViewModel(
         firstVisibleItemIndex: Int,
         firstVisibleItemScrollOffset: Int,
         anchorContactId: String? = null,
+        secondaryAnchorContactId: String? = null,
     ) {
         _listViewportState.value = ContactsListViewportState(
             firstVisibleItemIndex = firstVisibleItemIndex,
             firstVisibleItemScrollOffset = firstVisibleItemScrollOffset,
             anchorContactId = anchorContactId,
+            secondaryAnchorContactId = secondaryAnchorContactId,
         )
     }
 

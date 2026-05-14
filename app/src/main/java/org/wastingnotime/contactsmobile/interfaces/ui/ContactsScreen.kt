@@ -56,7 +56,14 @@ fun ContactsRoute(
         onRefresh = viewModel::refresh,
         onRetry = viewModel::refresh,
         onSearchQueryChange = viewModel::updateSearchQuery,
-        onListViewportChange = viewModel::updateListViewport,
+        onListViewportChange = { index, offset, anchorContactId, secondaryAnchorContactId ->
+            viewModel.updateListViewport(
+                firstVisibleItemIndex = index,
+                firstVisibleItemScrollOffset = offset,
+                anchorContactId = anchorContactId,
+                secondaryAnchorContactId = secondaryAnchorContactId,
+            )
+        },
         onDismissContactsStaleIndicator = viewModel::dismissContactsStaleIndicator,
         onCreateContact = viewModel::openCreateContact,
         onCloseCreateContact = viewModel::closeCreateContact,
@@ -90,7 +97,7 @@ fun ContactsScreen(
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit = {},
-    onListViewportChange: (Int, Int, String?) -> Unit = { _, _, _ -> },
+    onListViewportChange: (Int, Int, String?, String?) -> Unit = { _, _, _, _ -> },
     onDismissContactsStaleIndicator: () -> Unit = {},
     onCreateContact: () -> Unit,
     onCloseCreateContact: () -> Unit,
@@ -735,7 +742,7 @@ private fun ContactsList(
     onContactClick: (Contact) -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
-    onListViewportChange: (Int, Int, String?) -> Unit,
+    onListViewportChange: (Int, Int, String?, String?) -> Unit,
     onDismissStaleIndicator: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -745,21 +752,22 @@ private fun ContactsList(
     )
     LaunchedEffect(contactsListState) {
         snapshotFlow {
-            contactsListState.firstVisibleItemIndex to contactsListState.firstVisibleItemScrollOffset
-        }.collectLatest { (index, offset) ->
-            val anchorContactId = contactsState.contacts.getOrNull(index)?.id
-            onListViewportChange(index, offset, anchorContactId)
+            val visibleItems = contactsListState.layoutInfo.visibleItemsInfo
+            val visibleContactIds = visibleItems
+                .take(2)
+                .mapNotNull { item -> contactsState.contacts.getOrNull(item.index)?.id }
+            ViewportSnapshot(
+                contactsListState.firstVisibleItemIndex,
+                contactsListState.firstVisibleItemScrollOffset,
+                visibleContactIds.getOrNull(0),
+                visibleContactIds.getOrNull(1),
+            )
+        }.collectLatest { (index, offset, anchorContactId, secondaryAnchorContactId) ->
+            onListViewportChange(index, offset, anchorContactId, secondaryAnchorContactId)
         }
     }
     LaunchedEffect(contactsState.contacts) {
-        val targetIndex = listViewportState.anchorContactId?.let { anchorContactId ->
-            contactsState.contacts.indexOfFirst { it.id == anchorContactId }.takeIf { it >= 0 }
-        } ?: listViewportState.firstVisibleItemIndex
-        val clampedIndex = if (contactsState.contacts.isEmpty()) {
-            0
-        } else {
-            targetIndex.coerceIn(0, contactsState.contacts.lastIndex)
-        }
+        val clampedIndex = listViewportState.resolveVisibleIndex(contactsState.contacts)
         if (contactsState.contacts.isNotEmpty()) {
             contactsListState.scrollToItem(
                 index = clampedIndex,
@@ -826,6 +834,13 @@ private fun ContactsList(
         }
     }
 }
+
+private data class ViewportSnapshot(
+    val index: Int,
+    val offset: Int,
+    val anchorContactId: String?,
+    val secondaryAnchorContactId: String?,
+)
 
 @Composable
 private fun FilteredEmptyState(

@@ -546,6 +546,7 @@ class ContactsViewModelTest {
             firstVisibleItemIndex = 2,
             firstVisibleItemScrollOffset = 10,
             anchorContactId = original.id,
+            secondaryAnchorContactId = created.id,
         )
 
         viewModel.openCreateContact()
@@ -560,6 +561,7 @@ class ContactsViewModelTest {
                 firstVisibleItemIndex = 2,
                 firstVisibleItemScrollOffset = 10,
                 anchorContactId = original.id,
+                secondaryAnchorContactId = created.id,
             ),
             viewModel.listViewportState.value,
         )
@@ -578,6 +580,7 @@ class ContactsViewModelTest {
                 firstVisibleItemIndex = 2,
                 firstVisibleItemScrollOffset = 10,
                 anchorContactId = original.id,
+                secondaryAnchorContactId = created.id,
             ),
             viewModel.listViewportState.value,
         )
@@ -590,6 +593,7 @@ class ContactsViewModelTest {
                 firstVisibleItemIndex = 2,
                 firstVisibleItemScrollOffset = 10,
                 anchorContactId = original.id,
+                secondaryAnchorContactId = created.id,
             ),
             viewModel.listViewportState.value,
         )
