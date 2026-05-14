@@ -475,6 +475,101 @@ class ContactsViewModelTest {
             viewModel.detailUiState.value,
         )
     }
+
+    @Test
+    fun `filters loaded contacts when the search query matches`() = runTest {
+        val matching = contact()
+        val other = contact().copy(
+            id = "contact-2",
+            firstName = "Grace",
+            lastName = "Hopper",
+            phoneNumber = "555-0200",
+        )
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(matching, other))),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateSearchQuery("ada")
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(matching),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `shows a filtered empty state when the search query matches nothing`() = runTest {
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact()))),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateSearchQuery("zebra")
+
+        assertEquals(
+            ContactsUiState.FilteredEmpty("zebra"),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `clears the search query and restores the full list`() = runTest {
+        val matching = contact()
+        val other = contact().copy(
+            id = "contact-2",
+            firstName = "Grace",
+            lastName = "Hopper",
+            phoneNumber = "555-0200",
+        )
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(matching, other))),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateSearchQuery("ada")
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(matching),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+
+        viewModel.updateSearchQuery("")
+
+        assertEquals(
+            ContactsUiState.Loaded(listOf(matching, other)),
+            viewModel.uiState.value,
+        )
+    }
 }
 
 private class ScriptedContactsRepository(

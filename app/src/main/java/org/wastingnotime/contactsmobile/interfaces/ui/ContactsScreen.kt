@@ -48,6 +48,7 @@ fun ContactsRoute(
         onBack = viewModel::closeContactDetail,
         onRefresh = viewModel::refresh,
         onRetry = viewModel::refresh,
+        onSearchQueryChange = viewModel::updateSearchQuery,
         onCreateContact = viewModel::openCreateContact,
         onCloseCreateContact = viewModel::closeCreateContact,
         onCreateFirstNameChange = viewModel::updateCreateFirstName,
@@ -77,6 +78,7 @@ fun ContactsScreen(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
+    onSearchQueryChange: (String) -> Unit = {},
     onCreateContact: () -> Unit,
     onCloseCreateContact: () -> Unit,
     onCreateFirstNameChange: (String) -> Unit,
@@ -182,6 +184,15 @@ fun ContactsScreen(
                 contactsState = uiState,
                 onContactClick = onContactClick,
                 onRetry = onRetry,
+                onSearchQueryChange = onSearchQueryChange,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            )
+            is ContactsUiState.FilteredEmpty -> FilteredEmptyState(
+                filteredState = uiState,
+                onRetry = onRetry,
+                onSearchQueryChange = onSearchQueryChange,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
@@ -700,12 +711,18 @@ private fun ContactsList(
     contactsState: ContactsUiState.Loaded,
     onContactClick: (Contact) -> Unit,
     onRetry: () -> Unit,
+    onSearchQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        SearchField(
+            query = contactsState.searchQuery,
+            onQueryChange = onSearchQueryChange,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
         contactsState.transientErrorMessage?.let { message ->
             TransientErrorBanner(
                 message = message,
@@ -738,6 +755,53 @@ private fun ContactsList(
             }
         }
     }
+}
+
+@Composable
+private fun FilteredEmptyState(
+    filteredState: ContactsUiState.FilteredEmpty,
+    onRetry: () -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        SearchField(
+            query = filteredState.query,
+            onQueryChange = onSearchQueryChange,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        filteredState.transientErrorMessage?.let { message ->
+            TransientErrorBanner(
+                message = message,
+                onRetry = onRetry,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+        }
+        StateMessage(
+            title = "No matching contacts",
+            body = "No loaded contacts match \"${filteredState.query}\".",
+            actionLabel = "Clear search",
+            onAction = { onSearchQueryChange("") },
+        )
+    }
+}
+
+@Composable
+private fun SearchField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        label = { Text("Search contacts") },
+        modifier = modifier.fillMaxWidth(),
+        singleLine = true,
+    )
 }
 
 @Composable
@@ -885,12 +949,36 @@ private fun ContactsScreenTransientFailurePreview() {
 
 @Preview(showBackground = true)
 @Composable
+private fun ContactsScreenFilteredEmptyPreview() {
+    MaterialTheme {
+        ContactsScreen(
+            uiState = ContactsUiState.FilteredEmpty(query = "zebra"),
+            detailUiState = ContactDetailUiState.Hidden,
+            createUiState = CreateContactUiState.Hidden,
+            onContactClick = {},
+            onBack = {},
+            onRefresh = {},
+            onRetry = {},
+            onCreateContact = {},
+            onCloseCreateContact = {},
+            onCreateFirstNameChange = {},
+            onCreateLastNameChange = {},
+            onCreatePhoneNumberChange = {},
+            onCreateSubmit = {},
+            onCreateOpenContact = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 private fun ContactsDetailPreview() {
     val contacts = previewContacts()
     MaterialTheme {
         ContactsScreen(
             uiState = ContactsUiState.Loaded(
                 contacts = contacts,
+                searchQuery = "ada",
             ),
             detailUiState = ContactDetailUiState.Loaded(
                 contact = contacts.first(),

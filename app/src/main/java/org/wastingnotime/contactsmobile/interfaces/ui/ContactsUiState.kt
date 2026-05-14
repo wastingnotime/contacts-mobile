@@ -12,6 +12,12 @@ sealed interface ContactsUiState {
     data class Loaded(
         val contacts: List<Contact>,
         val transientErrorMessage: String? = null,
+        val searchQuery: String = "",
+    ) : ContactsUiState
+
+    data class FilteredEmpty(
+        val query: String,
+        val transientErrorMessage: String? = null,
     ) : ContactsUiState
 
     data class Error(val message: String) : ContactsUiState

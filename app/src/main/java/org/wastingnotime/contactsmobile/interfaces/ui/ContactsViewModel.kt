@@ -8,6 +8,7 @@ import org.wastingnotime.contactsmobile.application.CreateContactCommand
 import org.wastingnotime.contactsmobile.application.CreateContactResult
 import org.wastingnotime.contactsmobile.application.DeleteContact
 import org.wastingnotime.contactsmobile.application.DeleteContactResult
+import org.wastingnotime.contactsmobile.application.FilterContacts
 import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContactByIdResult
 import org.wastingnotime.contactsmobile.application.LoadContacts
@@ -28,6 +29,8 @@ class ContactsViewModel(
     private val updateContact: UpdateContact,
     private val deleteContact: DeleteContact,
 ) : ViewModel() {
+    private val filterContacts = FilterContacts()
+
     constructor(
         loadContacts: LoadContacts,
         loadContactById: LoadContactById,
@@ -53,6 +56,9 @@ class ContactsViewModel(
     private val _editUiState = MutableStateFlow<EditContactUiState>(EditContactUiState.Hidden)
     val editUiState: StateFlow<EditContactUiState> = _editUiState.asStateFlow()
 
+    private var allContacts: List<Contact> = emptyList()
+    private var searchQuery: String = ""
+
     init {
         refresh()
     }
@@ -71,6 +77,11 @@ class ContactsViewModel(
 
     fun openContact(contact: Contact) {
         loadContactDetail(contact.id)
+    }
+
+    fun updateSearchQuery(query: String) {
+        searchQuery = query
+        publishContactsState()
     }
 
     fun openCreateContact() {
@@ -253,8 +264,14 @@ class ContactsViewModel(
         _uiState.value = ContactsUiState.Loading
         _uiState.value = try {
             when (val result = loadContacts.execute()) {
-                LoadContactsResult.Empty -> ContactsUiState.Empty()
-                is LoadContactsResult.Loaded -> ContactsUiState.Loaded(result.contacts)
+                LoadContactsResult.Empty -> {
+                    allContacts = emptyList()
+                    publishContactsState()
+                }
+                is LoadContactsResult.Loaded -> {
+                    allContacts = result.contacts
+                    publishContactsState()
+                }
             }
         } catch (exception: Throwable) {
             preserveContactsOnFailure(previousState, exception.message ?: "Unable to load contacts.")
@@ -299,6 +316,7 @@ class ContactsViewModel(
         return when (previousState) {
             is ContactsUiState.Loaded -> previousState.copy(transientErrorMessage = message)
             is ContactsUiState.Empty -> previousState.copy(transientErrorMessage = message)
+            is ContactsUiState.FilteredEmpty -> previousState.copy(transientErrorMessage = message)
             else -> ContactsUiState.Error(message)
         }
     }
@@ -347,13 +365,8 @@ class ContactsViewModel(
     }
 
     private fun insertCreatedContactIntoList(contact: Contact) {
-        _uiState.value = when (val current = _uiState.value) {
-            is ContactsUiState.Loaded -> current.copy(
-                contacts = listOf(contact) + current.contacts.filterNot { it.id == contact.id },
-            )
-            is ContactsUiState.Empty -> ContactsUiState.Loaded(listOf(contact))
-            else -> current
-        }
+        allContacts = listOf(contact) + allContacts.filterNot { it.id == contact.id }
+        publishContactsState()
     }
 
     private fun validateEditForm(form: EditContactFormState): Map<EditContactField, String> {
@@ -371,30 +384,38 @@ class ContactsViewModel(
     }
 
     private fun applyUpdatedContact(contact: Contact) {
-        _uiState.value = when (val current = _uiState.value) {
-            is ContactsUiState.Loaded -> current.copy(
-                contacts = current.contacts.map { existing ->
-                    if (existing.id == contact.id) contact else existing
-                },
-            )
-            else -> current
+        allContacts = allContacts.map { existing ->
+            if (existing.id == contact.id) contact else existing
         }
+        publishContactsState()
         _detailUiState.value = ContactDetailUiState.Loaded(contact)
     }
 
     private fun removeDeletedContactFromList(contactId: String) {
-        _uiState.value = when (val current = _uiState.value) {
-            is ContactsUiState.Loaded -> {
-                val remaining = current.contacts.filterNot { it.id == contactId }
-                if (remaining.isEmpty()) {
-                    ContactsUiState.Empty()
-                } else {
-                    ContactsUiState.Loaded(remaining)
-                }
-            }
-            is ContactsUiState.Empty -> current
-            else -> current
+        allContacts = allContacts.filterNot { it.id == contactId }
+        publishContactsState()
+    }
+
+    private fun publishContactsState(transientErrorMessage: String? = null): ContactsUiState {
+        val filteredContacts = filterContacts.execute(allContacts, searchQuery)
+        val nextState = when {
+            allContacts.isEmpty() -> ContactsUiState.Empty(transientErrorMessage)
+            searchQuery.isBlank() -> ContactsUiState.Loaded(
+                contacts = allContacts,
+                transientErrorMessage = transientErrorMessage,
+            )
+            filteredContacts.isEmpty() -> ContactsUiState.FilteredEmpty(
+                query = searchQuery,
+                transientErrorMessage = transientErrorMessage,
+            )
+            else -> ContactsUiState.Loaded(
+                contacts = filteredContacts,
+                transientErrorMessage = transientErrorMessage,
+                searchQuery = searchQuery,
+            )
         }
+        _uiState.value = nextState
+        return nextState
     }
 }
 
