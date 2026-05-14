@@ -2,7 +2,7 @@
 
 ## Summary
 
-The local search slice already filters contacts deterministically. The next bounded product increment is to make that search state easier to understand by surfacing the match count and an explicit clear action.
+The local search slice already filters contacts deterministically. The next bounded product increment is to make that search state easier to understand by surfacing the match count and an explicit clear action on both loaded and filtered-empty search surfaces.
 
 ## Affected Boundaries
 
@@ -15,6 +15,7 @@ The local search slice already filters contacts deterministically. The next boun
 
 - users can see how many contacts match a query
 - users can recover from an over-specific query without manually deleting characters
+- zero-match search still gives the user a visible recovery path
 - the current search, sort, and CRUD flows stay deterministic and local
 
 ## Risks
@@ -27,4 +28,5 @@ The local search slice already filters contacts deterministically. The next boun
 
 - add deterministic tests for summary visibility and query clearing
 - confirm the clear action only resets search state
+- confirm the summary remains visible for the filtered-empty state
 - confirm detail, create, edit, delete, sorting, and filtering continue to work

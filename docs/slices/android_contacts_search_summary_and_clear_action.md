@@ -12,8 +12,8 @@ Implement a bounded usability slice for the Android contacts search experience:
 
 - keep the current list, detail, create, edit, delete, sorting, and filtering flows intact
 - make the active search state easier to read on the list surface
-- show a visible summary of how many loaded contacts match the current query
-- provide an explicit clear-search action when a filtered result set is shown
+- show a visible summary of how many loaded contacts match the current query on both loaded and filtered-empty search surfaces
+- provide an explicit clear-search action whenever a non-blank query is active
 - keep the search interaction deterministic and local
 - avoid any backend search endpoint or transport change
 
@@ -30,8 +30,8 @@ The UI should use the filtered result set to surface the match count and a clear
 ## Main Business Rules
 
 - search remains a local interaction over the loaded contacts
-- the summary should reflect the number of visible contacts that match the current query
-- the clear action should reset the query and restore the full sorted list
+- the summary should reflect the number of visible contacts that match the current query, including zero matches
+- the clear action should reset only the query and restore the full sorted list
 - the filtered-empty state should remain distinct from the backend-empty state
 - the summary and clear action should not interfere with detail, create, edit, or delete flows
 
@@ -51,6 +51,8 @@ The UI should use the filtered result set to surface the match count and a clear
 ## Scenario Definition
 
 Given a loaded contacts list, when the user enters a query that matches some contacts, the Android app should show how many loaded contacts match and provide a clear-search action.
+
+Given a loaded contacts list, when the query matches no contacts, the app should still show the search summary together with the filtered-empty state and the clear-search action.
 
 When the user clears the query, the app should restore the full sorted list without contacting the backend.
 

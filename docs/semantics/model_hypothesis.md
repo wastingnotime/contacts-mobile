@@ -46,6 +46,7 @@ The repository is a native Android client for the contacts product. Its current 
 - rendering a populated list when the backend returns contacts
 - sorting the loaded contacts into a predictable local order
 - filtering the loaded contacts locally by a user-entered query
+- surfacing a local search summary and clear action whenever the query is active
 - preserving the active search query while navigating between list, detail, and form surfaces
 - preserving the active visible neighborhood when the search query changes, as long as a surviving anchor remains available
 - preserving the visible list viewport while navigating between list, detail, and form surfaces
