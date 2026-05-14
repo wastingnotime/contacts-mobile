@@ -42,3 +42,4 @@ Evaluation should watch for:
 - making the app require live network behavior in unit tests
 - mistaking a missing or unreachable emulator backend for an Android client regression during manual smoke tests
 - recording emulator smoke-test observations without first classifying whether backend readiness succeeded
+- recording emulator smoke-test observations without also noting the backend command and seed source used for the session
