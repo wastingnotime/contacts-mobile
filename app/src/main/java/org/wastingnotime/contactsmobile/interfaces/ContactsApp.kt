@@ -4,13 +4,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalDensity
 import org.wastingnotime.contactsmobile.domain.Contact
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactDetailUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsScreen
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsRoute
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModel
+import androidx.compose.ui.unit.Density
 
 @Composable
 fun ContactsApp(viewModel: ContactsViewModel) {
@@ -379,6 +382,144 @@ private fun ContactsAppDetailExpandedDarkPreview() {
         ),
         darkTheme = true,
     )
+}
+
+@Preview(showBackground = true, name = "Loaded Font Light", group = "Font Loaded")
+@Composable
+private fun ContactsAppLoadedFontLightPreview() {
+    ContactsAppFontScalePreview(
+        fontScale = 1.0f,
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
+    )
+}
+
+@Preview(showBackground = true, name = "Loaded Font Large Light", group = "Font Loaded")
+@Composable
+private fun ContactsAppLoadedFontLargeLightPreview() {
+    ContactsAppFontScalePreview(
+        fontScale = 1.3f,
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
+    )
+}
+
+@Preview(showBackground = true, name = "Loaded Font Dark", group = "Font Loaded")
+@Composable
+private fun ContactsAppLoadedFontDarkPreview() {
+    ContactsAppFontScalePreview(
+        fontScale = 1.0f,
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Loaded Font Large Dark", group = "Font Loaded")
+@Composable
+private fun ContactsAppLoadedFontLargeDarkPreview() {
+    ContactsAppFontScalePreview(
+        fontScale = 1.3f,
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Detail Font Light", group = "Font Detail")
+@Composable
+private fun ContactsAppDetailFontLightPreview() {
+    val contacts = previewContacts()
+    ContactsAppFontScalePreview(
+        fontScale = 1.0f,
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = false,
+    )
+}
+
+@Preview(showBackground = true, name = "Detail Font Large Light", group = "Font Detail")
+@Composable
+private fun ContactsAppDetailFontLargeLightPreview() {
+    val contacts = previewContacts()
+    ContactsAppFontScalePreview(
+        fontScale = 1.3f,
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = false,
+    )
+}
+
+@Preview(showBackground = true, name = "Detail Font Dark", group = "Font Detail")
+@Composable
+private fun ContactsAppDetailFontDarkPreview() {
+    val contacts = previewContacts()
+    ContactsAppFontScalePreview(
+        fontScale = 1.0f,
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Detail Font Large Dark", group = "Font Detail")
+@Composable
+private fun ContactsAppDetailFontLargeDarkPreview() {
+    val contacts = previewContacts()
+    ContactsAppFontScalePreview(
+        fontScale = 1.3f,
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = true,
+    )
+}
+
+@Composable
+private fun ContactsAppFontScalePreview(
+    fontScale: Float,
+    uiState: ContactsUiState,
+    detailUiState: ContactDetailUiState,
+    darkTheme: Boolean,
+) {
+    val density = LocalDensity.current
+    CompositionLocalProvider(
+        LocalDensity provides Density(
+            density = density.density,
+            fontScale = fontScale,
+        ),
+    ) {
+        ContactsAppPreview(
+            uiState = uiState,
+            detailUiState = detailUiState,
+            darkTheme = darkTheme,
+        )
+    }
 }
 
 private fun previewContacts(): List<Contact> = listOf(
