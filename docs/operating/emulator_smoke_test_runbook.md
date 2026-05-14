@@ -60,6 +60,17 @@ This Android repository intentionally does not own the backend simulation setup.
 | Transient refresh failure | Already-loaded contacts or detail remain visible and a refresh failure banner appears. |
 | Retry after transient failure | The app returns to loading, then to refreshed content once the backend is available again. |
 
+## Failure Interpretation Matrix
+
+| Symptom | Likely meaning |
+| --- | --- |
+| Backend smoke command does not complete or health never becomes reachable | The runtime sandbox backend is not running, not seeded, or not healthy. |
+| `./gradlew installDebug` fails | The Android build or install path is broken before smoke validation begins. |
+| The app launches but cannot reach the contacts API | The emulator base URL is misconfigured or the backend is unavailable. |
+| The app shows `Unable to load contacts` on first load | The backend is unavailable or the app cannot reach the configured API. |
+| A refresh banner appears while content stays visible | This is an expected transient failure state, not a regression. |
+| Detail shows `Contact not found` | This is an expected not-found state, not a refresh failure. |
+
 ## What To Look For
 
 - visible loading states
