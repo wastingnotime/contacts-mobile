@@ -34,6 +34,17 @@ make backend-seeded SEED_SCENARIO=representative-directory
 
 This Android repository intentionally does not own the backend simulation setup.
 
+## Backend Readiness Preflight
+
+Before interpreting any Android client result, confirm the backend simulation is ready:
+
+1. Run the sandbox smoke command.
+2. Confirm the backend health endpoint becomes reachable.
+3. Confirm the seeded contacts are available in the sandbox-backed backend.
+4. Only then install and launch the Android app.
+
+If the backend is not reachable or not seeded, stop the smoke test and record the failure as an exposure setup issue rather than an Android client regression.
+
 ## Android Client Smoke Test
 
 1. Build and install the Android client on the emulator.
@@ -65,6 +76,7 @@ This Android repository intentionally does not own the backend simulation setup.
 | Symptom | Likely meaning |
 | --- | --- |
 | Backend smoke command does not complete or health never becomes reachable | The runtime sandbox backend is not running, not seeded, or not healthy. |
+| Backend readiness preflight fails before app install | Stop the smoke session and treat the problem as sandbox setup, not an Android client defect. |
 | `./gradlew installDebug` fails | The Android build or install path is broken before smoke validation begins. |
 | The app launches but cannot reach the contacts API | The emulator base URL is misconfigured or the backend is unavailable. |
 | The app shows `Unable to load contacts` on first load | The backend is unavailable or the app cannot reach the configured API. |
@@ -83,4 +95,5 @@ This Android repository intentionally does not own the backend simulation setup.
 
 - do not treat the Android client repo as the backend simulation owner
 - use `../runtime-sandbox` for deterministic backend setup and smoke checks
+- confirm backend readiness before judging Android client behavior
 - keep emulator smoke tests separate from release acceptance and expectation-gap review
