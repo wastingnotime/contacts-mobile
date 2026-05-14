@@ -2,7 +2,7 @@
 
 ## Summary
 
-The app already marks preserved data as stale after transient failures. The next bounded refinement is to let the user dismiss that warning once acknowledged, while keeping the preserved contacts or detail visible.
+The app already marks preserved data as stale after transient failures. The next bounded refinement is to let the user dismiss that warning once acknowledged, while keeping the preserved contacts or detail visible and keeping list/detail acknowledgements independent.
 
 ## Affected Boundaries
 

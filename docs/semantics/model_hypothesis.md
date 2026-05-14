@@ -50,7 +50,7 @@ The repository is a native Android client for the contacts product. Its current 
 - preserving the active visible neighborhood when the search query changes, as long as a surviving anchor remains available
 - preserving the visible list viewport while navigating between list, detail, and form surfaces
 - making stale preserved data explicit after a transient refresh or reload failure
-- dismissing a stale-data indicator after the user has acknowledged the warning
+- dismissing a stale-data indicator after the user has acknowledged the warning, independently for list and detail surfaces
 - moving from error to retry and back to loading
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
