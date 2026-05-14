@@ -16,20 +16,32 @@ The emulator smoke-test backend should come from `../runtime-sandbox`.
 
 ## Backend Simulation
 
-In `../runtime-sandbox`, start a seeded backend smoke path before you launch the Android app.
+Use the runtime sandbox commands below before launching the Android app:
 
-Recommended sequence:
+```bash
+cd ../runtime-sandbox
+make backend-smoke BACKEND_SMOKE_SCENARIO=representative-directory
+```
 
-1. Open `../runtime-sandbox`
-2. Seed the backend with the representative contacts scenario
-3. Start the backend smoke stack and leave the backend services running
-4. Confirm the backend health endpoint is reachable before launching the emulator app
+That command seeds the backend, starts the backend services, and leaves them running for follow-on smoke work.
 
-If you need the exact command sequence, use the runtime sandbox documentation and scripts for the backend smoke path. This Android repository intentionally does not own that backend simulation setup.
+If you need only the seed step, the sandbox also exposes:
+
+```bash
+cd ../runtime-sandbox
+make backend-seeded SEED_SCENARIO=representative-directory
+```
+
+This Android repository intentionally does not own the backend simulation setup.
 
 ## Android Client Smoke Test
 
 1. Build and install the Android client on the emulator.
+
+```bash
+./gradlew installDebug
+```
+
 2. Verify the app resolves the emulator base URL configured for contacts API access.
 3. Confirm the contacts list loads from the backend sandbox data.
 4. Tap a contact and confirm the detail screen opens.
