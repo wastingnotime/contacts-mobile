@@ -54,6 +54,31 @@ class ContactsListViewportStateTest {
         assertEquals(1, viewportState.resolveVisibleIndex(contacts))
     }
 
+    @Test
+    fun `aligns the remembered viewport to the surviving search results`() {
+        val contacts = listOf(
+            contact(id = "contact-2"),
+            contact(id = "contact-3"),
+            contact(id = "contact-4"),
+        )
+        val viewportState = ContactsListViewportState(
+            firstVisibleItemIndex = 2,
+            firstVisibleItemScrollOffset = 18,
+            anchorContactId = "contact-3",
+            secondaryAnchorContactId = "contact-4",
+        )
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 1,
+                firstVisibleItemScrollOffset = 18,
+                anchorContactId = "contact-3",
+                secondaryAnchorContactId = "contact-4",
+            ),
+            viewportState.alignTo(contacts),
+        )
+    }
+
     private fun contact(id: String) = org.wastingnotime.contactsmobile.domain.Contact(
         id = id,
         firstName = "Ada",

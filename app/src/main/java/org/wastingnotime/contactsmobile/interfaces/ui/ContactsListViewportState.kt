@@ -22,3 +22,13 @@ fun ContactsListViewportState.resolveVisibleIndex(contacts: List<org.wastingnoti
 
     return firstVisibleItemIndex.coerceIn(0, contacts.lastIndex)
 }
+
+fun ContactsListViewportState.alignTo(
+    contacts: List<org.wastingnotime.contactsmobile.domain.Contact>,
+): ContactsListViewportState {
+    if (contacts.isEmpty()) {
+        return copy(firstVisibleItemIndex = 0)
+    }
+
+    return copy(firstVisibleItemIndex = resolveVisibleIndex(contacts))
+}

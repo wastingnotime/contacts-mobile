@@ -768,11 +768,11 @@ private fun ContactsList(
         }
     }
     LaunchedEffect(contactsState.contacts) {
-        val clampedIndex = listViewportState.resolveVisibleIndex(contactsState.contacts)
+        val alignedViewportState = listViewportState.alignTo(contactsState.contacts)
         if (contactsState.contacts.isNotEmpty()) {
             contactsListState.scrollToItem(
-                index = clampedIndex,
-                scrollOffset = listViewportState.firstVisibleItemScrollOffset,
+                index = alignedViewportState.firstVisibleItemIndex,
+                scrollOffset = alignedViewportState.firstVisibleItemScrollOffset,
             )
         }
     }
