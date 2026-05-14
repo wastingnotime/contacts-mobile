@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,13 +23,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import org.wastingnotime.contactsmobile.domain.Contact
 
 @Composable
@@ -39,16 +44,19 @@ fun ContactsRoute(
     val detailUiState = viewModel.detailUiState.collectAsStateWithLifecycle().value
     val createUiState = viewModel.createUiState.collectAsStateWithLifecycle().value
     val editUiState = viewModel.editUiState.collectAsStateWithLifecycle().value
+    val listViewportState = viewModel.listViewportState.collectAsStateWithLifecycle().value
     ContactsScreen(
         uiState = uiState,
         detailUiState = detailUiState,
         createUiState = createUiState,
         editUiState = editUiState,
+        listViewportState = listViewportState,
         onContactClick = viewModel::openContact,
         onBack = viewModel::closeContactDetail,
         onRefresh = viewModel::refresh,
         onRetry = viewModel::refresh,
         onSearchQueryChange = viewModel::updateSearchQuery,
+        onListViewportChange = viewModel::updateListViewport,
         onDismissContactsStaleIndicator = viewModel::dismissContactsStaleIndicator,
         onCreateContact = viewModel::openCreateContact,
         onCloseCreateContact = viewModel::closeCreateContact,
@@ -76,11 +84,13 @@ fun ContactsScreen(
     detailUiState: ContactDetailUiState,
     createUiState: CreateContactUiState,
     editUiState: EditContactUiState = EditContactUiState.Hidden,
+    listViewportState: ContactsListViewportState = ContactsListViewportState(),
     onContactClick: (Contact) -> Unit,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit = {},
+    onListViewportChange: (Int, Int) -> Unit = { _, _ -> },
     onDismissContactsStaleIndicator: () -> Unit = {},
     onCreateContact: () -> Unit,
     onCloseCreateContact: () -> Unit,
@@ -100,6 +110,17 @@ fun ContactsScreen(
     onDismissContactDetailStaleIndicator: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val contactsListState = rememberLazyListState(
+        initialFirstVisibleItemIndex = listViewportState.firstVisibleItemIndex,
+        initialFirstVisibleItemScrollOffset = listViewportState.firstVisibleItemScrollOffset,
+    )
+    LaunchedEffect(contactsListState) {
+        snapshotFlow {
+            contactsListState.firstVisibleItemIndex to contactsListState.firstVisibleItemScrollOffset
+        }.collectLatest { (index, offset) ->
+            onListViewportChange(index, offset)
+        }
+    }
     Scaffold(
         topBar = {
             ContactsTopBar(
@@ -187,6 +208,7 @@ fun ContactsScreen(
 
             is ContactsUiState.Loaded -> ContactsList(
                 contactsState = uiState,
+                listState = contactsListState,
                 onContactClick = onContactClick,
                 onRetry = onRetry,
                 onSearchQueryChange = onSearchQueryChange,
@@ -719,6 +741,7 @@ private fun TransientErrorBanner(
 @Composable
 private fun ContactsList(
     contactsState: ContactsUiState.Loaded,
+    listState: LazyListState,
     onContactClick: (Contact) -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
@@ -758,6 +781,7 @@ private fun ContactsList(
             )
         }
         LazyColumn(
+            state = listState,
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

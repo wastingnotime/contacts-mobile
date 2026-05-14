@@ -58,6 +58,9 @@ class ContactsViewModel(
     private val _editUiState = MutableStateFlow<EditContactUiState>(EditContactUiState.Hidden)
     val editUiState: StateFlow<EditContactUiState> = _editUiState.asStateFlow()
 
+    private val _listViewportState = MutableStateFlow(ContactsListViewportState())
+    val listViewportState: StateFlow<ContactsListViewportState> = _listViewportState.asStateFlow()
+
     private var allContacts: List<Contact> = emptyList()
     private var searchQuery: String = ""
 
@@ -84,6 +87,13 @@ class ContactsViewModel(
     fun updateSearchQuery(query: String) {
         searchQuery = query
         publishContactsState()
+    }
+
+    fun updateListViewport(firstVisibleItemIndex: Int, firstVisibleItemScrollOffset: Int) {
+        _listViewportState.value = ContactsListViewportState(
+            firstVisibleItemIndex = firstVisibleItemIndex,
+            firstVisibleItemScrollOffset = firstVisibleItemScrollOffset,
+        )
     }
 
     fun dismissContactsStaleIndicator() {

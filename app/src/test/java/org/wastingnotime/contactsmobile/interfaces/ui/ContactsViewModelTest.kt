@@ -425,6 +425,89 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun `preserves the list viewport when navigating to detail and back`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateListViewport(firstVisibleItemIndex = 7, firstVisibleItemScrollOffset = 24)
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 7,
+                firstVisibleItemScrollOffset = 24,
+            ),
+            viewModel.listViewportState.value,
+        )
+
+        viewModel.closeContactDetail()
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 7,
+                firstVisibleItemScrollOffset = 24,
+            ),
+            viewModel.listViewportState.value,
+        )
+    }
+
+    @Test
+    fun `preserves the list viewport when opening and closing forms`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateListViewport(firstVisibleItemIndex = 3, firstVisibleItemScrollOffset = 12)
+        viewModel.openCreateContact()
+        viewModel.closeCreateContact()
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.openEditContact()
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 3,
+                firstVisibleItemScrollOffset = 12,
+            ),
+            viewModel.listViewportState.value,
+        )
+
+        viewModel.closeEditContact()
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 3,
+                firstVisibleItemScrollOffset = 12,
+            ),
+            viewModel.listViewportState.value,
+        )
+    }
+
+    @Test
     fun `requires create form fields before submission`() = runTest {
         val viewModel = ContactsViewModel(
             LoadContacts(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
