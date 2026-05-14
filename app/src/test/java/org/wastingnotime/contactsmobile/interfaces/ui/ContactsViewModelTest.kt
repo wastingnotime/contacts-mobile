@@ -631,6 +631,125 @@ class ContactsViewModelTest {
             viewModel.uiState.value,
         )
     }
+
+    @Test
+    fun `preserves the search query when navigating to detail and back`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateSearchQuery("ada")
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+        assertEquals(
+            ContactDetailUiState.Loaded(contact),
+            viewModel.detailUiState.value,
+        )
+
+        viewModel.closeContactDetail()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `preserves the search query when opening and closing forms`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateSearchQuery("ada")
+        viewModel.openCreateContact()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+        assertEquals(
+            CreateContactUiState.Form(CreateContactFormState()),
+            viewModel.createUiState.value,
+        )
+
+        viewModel.closeCreateContact()
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.openEditContact()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+        assertEquals(
+            EditContactUiState.Form(
+                EditContactFormState(
+                    contactId = contact.id,
+                    firstName = contact.firstName,
+                    lastName = contact.lastName,
+                    phoneNumber = contact.phoneNumber,
+                ),
+            ),
+            viewModel.editUiState.value,
+        )
+
+        viewModel.closeEditContact()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+    }
 }
 
 private class ScriptedContactsRepository(
