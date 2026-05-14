@@ -2,7 +2,7 @@
 
 ## Summary
 
-The emulator smoke-test workflow already has a backend-readiness preflight. The next bounded refinement is to make the session outcome explicit so backend readiness and Android client observations never get conflated.
+The emulator smoke-test workflow already has a backend-readiness preflight. The next bounded refinement is to make the session outcome explicit so backend readiness, local API reachability, and Android client observations never get conflated.
 
 ## Affected Boundaries
 
@@ -14,6 +14,7 @@ The emulator smoke-test workflow already has a backend-readiness preflight. The 
 ## Expected Effect
 
 - manual sessions have a clear backend-ready or backend-not-ready classification
+- backend-ready means the emulator can reach the local contacts API served from `../runtime-sandbox`
 - smoke-test notes are easier to interpret later
 - backend setup problems remain separate from Android client observations
 

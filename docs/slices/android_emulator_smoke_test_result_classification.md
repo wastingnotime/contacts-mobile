@@ -14,6 +14,7 @@ Refine the emulator smoke-test workflow so every manual session records a simple
 - keep the Android client behavior unchanged
 - keep the emulator smoke-test runbook and backend-readiness preflight intact
 - classify the session as backend-ready or backend-not-ready before judging app observations
+- treat the classification as the operator record that the emulator can reach the local contacts API in `../runtime-sandbox`
 - avoid adding backend ownership to this repository
 
 This slice does not change product code. It makes the smoke-test record itself more explicit so backend setup problems and Android client behavior are not mixed together.
@@ -31,6 +32,7 @@ The exposure workflow should continue to support the existing Android client and
 ## Main Business Rules
 
 - every emulator smoke-test session should have an explicit backend-ready or backend-not-ready classification
+- backend-ready means the emulator can reach the local contacts API through the sandbox-backed setup
 - app behavior should only be judged after backend-ready is recorded
 - backend-not-ready should be recorded as a setup issue rather than a client regression
 - navigation, viewport, and refresh observations are only meaningful once the session is backend-ready
@@ -50,7 +52,7 @@ The exposure workflow should continue to support the existing Android client and
 
 ## Scenario Definition
 
-Given an Android emulator smoke-test session, the operator should record whether backend readiness succeeded before interpreting the Android client’s behavior. If backend readiness fails, the session should be marked as setup failure instead of an app regression.
+Given an Android emulator smoke-test session, the operator should record whether backend readiness succeeded and whether the emulator can reach the local contacts API before interpreting the Android client’s behavior. If backend readiness fails, the session should be marked as setup failure instead of an app regression.
 
 ## Done Criteria
 
