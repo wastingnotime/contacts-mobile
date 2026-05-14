@@ -14,6 +14,7 @@ Refine the transient failure experience for the Android contacts client:
 - keep preserving the last known contacts or contact detail when a refresh or reload fails
 - make stale preserved data explicitly visible to the user
 - distinguish fresh loaded data from preserved stale data in the UI
+- show stale freshness after transient refresh, reload, or delete failures that leave preserved content on screen
 - preserve the current retry affordance and error messaging
 
 This slice does not change backend behavior. It makes the existing stale-data preservation rule easier to understand by adding an explicit freshness indicator to the preserved content.
@@ -27,6 +28,7 @@ The UI should show a freshness indicator when already-loaded contacts or contact
 ## Main Business Rules
 
 - a transient failure should keep already-loaded data visible
+- if a delete attempt fails while the selected detail remains visible, that preserved detail should also be marked stale
 - preserved content should be marked as stale, not merely shown with an error banner
 - stale indication should be visible on both the list and detail surfaces
 - the retry action should remain available
@@ -50,6 +52,8 @@ The UI should show a freshness indicator when already-loaded contacts or contact
 Given already-loaded contacts, when a refresh fails, the Android app should keep the content visible and show that the content is stale.
 
 Given already-loaded contact detail, when a reload fails, the app should keep the detail visible and show that the detail is stale.
+
+Given a selected contact detail and a delete attempt fails, the app should keep the detail visible and show that the detail is stale.
 
 ## Done Criteria
 

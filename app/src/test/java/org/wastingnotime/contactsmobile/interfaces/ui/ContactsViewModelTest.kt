@@ -496,6 +496,39 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun `marks preserved detail as stale when delete fails`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+            deleteContactResponses = arrayDequeOf(failingDeleteContact("backend unavailable")),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.deleteContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactDetailUiState.Loaded(
+                contact = contact,
+                transientErrorMessage = "backend unavailable",
+                freshnessState = ContactsFreshnessState.Stale,
+            ),
+            viewModel.detailUiState.value,
+        )
+    }
+
+    @Test
     fun `restores the stale indicator after a later transient failure`() = runTest {
         val contact = contact()
         val repository = ScriptedContactsRepository(

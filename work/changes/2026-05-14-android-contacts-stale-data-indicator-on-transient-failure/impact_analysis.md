@@ -2,7 +2,7 @@
 
 ## Summary
 
-The app already preserves last known data during transient failures. The next bounded refinement is to make that preserved state explicit so users can tell when they are seeing stale information rather than fresh data.
+The app already preserves last known data during transient failures. The next bounded refinement is to make that preserved state explicit so users can tell when they are seeing stale information rather than fresh data, including the delete-failure path that leaves preserved detail on screen.
 
 ## Affected Boundaries
 
@@ -16,6 +16,7 @@ The app already preserves last known data during transient failures. The next bo
 - users can see that the content is preserved and stale after a refresh failure
 - list and detail surfaces remain honest about freshness without hiding the data
 - retry remains available from the stale state
+- a delete failure that preserves the current detail should show the same stale freshness treatment
 
 ## Risks
 
@@ -26,5 +27,6 @@ The app already preserves last known data during transient failures. The next bo
 ## Validation
 
 - add deterministic tests for stale indicators on list and detail surfaces
+- add deterministic tests for stale indicators on delete-related preserved detail
 - confirm initial load failures still render as hard errors
 - confirm retry, search, sort, and CRUD flows remain reachable
