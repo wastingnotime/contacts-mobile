@@ -1,6 +1,8 @@
 package org.wastingnotime.contactsmobile.interfaces
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import org.wastingnotime.contactsmobile.domain.Contact
@@ -19,6 +21,7 @@ fun ContactsApp(viewModel: ContactsViewModel) {
         onBack = {},
         onRefresh = {},
         onRetry = {},
+        darkTheme = false,
         viewModel = viewModel,
     )
 }
@@ -31,9 +34,10 @@ internal fun ContactsAppContent(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
+    darkTheme: Boolean = false,
     viewModel: ContactsViewModel? = null,
 ) {
-    MaterialTheme {
+    ContactsAppTheme(darkTheme = darkTheme) {
         if (viewModel != null) {
             ContactsRoute(viewModel = viewModel)
         } else {
@@ -49,50 +53,127 @@ internal fun ContactsAppContent(
     }
 }
 
-@Preview(showBackground = true, name = "ContactsApp - Loading")
 @Composable
-private fun ContactsAppLoadingPreview() {
+private fun ContactsAppPreview(
+    uiState: ContactsUiState,
+    detailUiState: ContactDetailUiState,
+    darkTheme: Boolean,
+) {
+    ContactsAppContent(
+        uiState = uiState,
+        detailUiState = detailUiState,
+        onContactClick = {},
+        onBack = {},
+        onRefresh = {},
+        onRetry = {},
+        darkTheme = darkTheme,
+    )
+}
+
+@Composable
+private fun ContactsAppTheme(
+    darkTheme: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    MaterialTheme(
+        colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme(),
+        content = content,
+    )
+}
+
+@Preview(showBackground = true, name = "Loading Light", group = "Loading")
+@Composable
+private fun ContactsAppLoadingLightPreview() {
     ContactsAppPreview(
         uiState = ContactsUiState.Loading,
         detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
     )
 }
 
-@Preview(showBackground = true, name = "ContactsApp - Empty")
+@Preview(showBackground = true, name = "Loading Dark", group = "Loading")
 @Composable
-private fun ContactsAppEmptyPreview() {
+private fun ContactsAppLoadingDarkPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loading,
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Empty Light", group = "Empty")
+@Composable
+private fun ContactsAppEmptyLightPreview() {
     ContactsAppPreview(
         uiState = ContactsUiState.Empty(),
         detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
     )
 }
 
-@Preview(showBackground = true, name = "ContactsApp - Loaded")
+@Preview(showBackground = true, name = "Empty Dark", group = "Empty")
 @Composable
-private fun ContactsAppLoadedPreview() {
+private fun ContactsAppEmptyDarkPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Empty(),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Loaded Light", group = "Loaded")
+@Composable
+private fun ContactsAppLoadedLightPreview() {
     ContactsAppPreview(
         uiState = ContactsUiState.Loaded(
             contacts = previewContacts(),
         ),
         detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
     )
 }
 
-@Preview(showBackground = true, name = "ContactsApp - Loaded With Refresh Banner")
+@Preview(showBackground = true, name = "Loaded Dark", group = "Loaded")
 @Composable
-private fun ContactsAppLoadedWithTransientErrorPreview() {
+private fun ContactsAppLoadedDarkPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Loaded Banner Light", group = "Loaded Banner")
+@Composable
+private fun ContactsAppLoadedWithTransientErrorLightPreview() {
     ContactsAppPreview(
         uiState = ContactsUiState.Loaded(
             contacts = previewContacts(),
             transientErrorMessage = "Unable to refresh contacts right now.",
         ),
         detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
     )
 }
 
-@Preview(showBackground = true, name = "ContactsApp - Detail")
+@Preview(showBackground = true, name = "Loaded Banner Dark", group = "Loaded Banner")
 @Composable
-private fun ContactsAppDetailPreview() {
+private fun ContactsAppLoadedWithTransientErrorDarkPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+            transientErrorMessage = "Unable to refresh contacts right now.",
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Detail Light", group = "Detail")
+@Composable
+private fun ContactsAppDetailLightPreview() {
     val contacts = previewContacts()
     ContactsAppPreview(
         uiState = ContactsUiState.Loaded(
@@ -101,12 +182,28 @@ private fun ContactsAppDetailPreview() {
         detailUiState = ContactDetailUiState.Loaded(
             contact = contacts.first(),
         ),
+        darkTheme = false,
     )
 }
 
-@Preview(showBackground = true, name = "ContactsApp - Detail With Refresh Banner")
+@Preview(showBackground = true, name = "Detail Dark", group = "Detail")
 @Composable
-private fun ContactsAppDetailWithTransientErrorPreview() {
+private fun ContactsAppDetailDarkPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Detail Banner Light", group = "Detail Banner")
+@Composable
+private fun ContactsAppDetailWithTransientErrorLightPreview() {
     val contacts = previewContacts()
     ContactsAppPreview(
         uiState = ContactsUiState.Loaded(
@@ -116,21 +213,23 @@ private fun ContactsAppDetailWithTransientErrorPreview() {
             contact = contacts.first(),
             transientErrorMessage = "Detail refreshed with a warning.",
         ),
+        darkTheme = false,
     )
 }
 
+@Preview(showBackground = true, name = "Detail Banner Dark", group = "Detail Banner")
 @Composable
-private fun ContactsAppPreview(
-    uiState: ContactsUiState,
-    detailUiState: ContactDetailUiState,
-) {
-    ContactsAppContent(
-        uiState = uiState,
-        detailUiState = detailUiState,
-        onContactClick = {},
-        onBack = {},
-        onRefresh = {},
-        onRetry = {},
+private fun ContactsAppDetailWithTransientErrorDarkPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+            transientErrorMessage = "Detail refreshed with a warning.",
+        ),
+        darkTheme = true,
     )
 }
 
