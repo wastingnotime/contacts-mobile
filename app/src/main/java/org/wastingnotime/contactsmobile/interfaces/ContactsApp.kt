@@ -12,9 +12,59 @@ import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModel
 
 @Composable
 fun ContactsApp(viewModel: ContactsViewModel) {
+    ContactsAppContent(
+        uiState = null,
+        detailUiState = null,
+        onContactClick = {},
+        onBack = {},
+        onRefresh = {},
+        onRetry = {},
+        viewModel = viewModel,
+    )
+}
+
+@Composable
+internal fun ContactsAppContent(
+    uiState: ContactsUiState?,
+    detailUiState: ContactDetailUiState?,
+    onContactClick: (Contact) -> Unit,
+    onBack: () -> Unit,
+    onRefresh: () -> Unit,
+    onRetry: () -> Unit,
+    viewModel: ContactsViewModel? = null,
+) {
     MaterialTheme {
-        ContactsRoute(viewModel = viewModel)
+        if (viewModel != null) {
+            ContactsRoute(viewModel = viewModel)
+        } else {
+            ContactsScreen(
+                uiState = uiState ?: ContactsUiState.Loading,
+                detailUiState = detailUiState ?: ContactDetailUiState.Hidden,
+                onContactClick = onContactClick,
+                onBack = onBack,
+                onRefresh = onRefresh,
+                onRetry = onRetry,
+            )
+        }
     }
+}
+
+@Preview(showBackground = true, name = "ContactsApp - Loading")
+@Composable
+private fun ContactsAppLoadingPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loading,
+        detailUiState = ContactDetailUiState.Hidden,
+    )
+}
+
+@Preview(showBackground = true, name = "ContactsApp - Empty")
+@Composable
+private fun ContactsAppEmptyPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Empty(),
+        detailUiState = ContactDetailUiState.Hidden,
+    )
 }
 
 @Preview(showBackground = true, name = "ContactsApp - Loaded")
@@ -28,15 +78,42 @@ private fun ContactsAppLoadedPreview() {
     )
 }
 
-@Preview(showBackground = true, name = "ContactsApp - Detail")
+@Preview(showBackground = true, name = "ContactsApp - Loaded With Refresh Banner")
 @Composable
-private fun ContactsAppDetailPreview() {
+private fun ContactsAppLoadedWithTransientErrorPreview() {
     ContactsAppPreview(
         uiState = ContactsUiState.Loaded(
             contacts = previewContacts(),
+            transientErrorMessage = "Unable to refresh contacts right now.",
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+    )
+}
+
+@Preview(showBackground = true, name = "ContactsApp - Detail")
+@Composable
+private fun ContactsAppDetailPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
         ),
         detailUiState = ContactDetailUiState.Loaded(
-            contact = previewContacts().first(),
+            contact = contacts.first(),
+        ),
+    )
+}
+
+@Preview(showBackground = true, name = "ContactsApp - Detail With Refresh Banner")
+@Composable
+private fun ContactsAppDetailWithTransientErrorPreview() {
+    val contacts = previewContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
             transientErrorMessage = "Detail refreshed with a warning.",
         ),
     )
@@ -47,16 +124,14 @@ private fun ContactsAppPreview(
     uiState: ContactsUiState,
     detailUiState: ContactDetailUiState,
 ) {
-    MaterialTheme {
-        ContactsScreen(
-            uiState = uiState,
-            detailUiState = detailUiState,
-            onContactClick = {},
-            onBack = {},
-            onRefresh = {},
-            onRetry = {},
-        )
-    }
+    ContactsAppContent(
+        uiState = uiState,
+        detailUiState = detailUiState,
+        onContactClick = {},
+        onBack = {},
+        onRefresh = {},
+        onRetry = {},
+    )
 }
 
 private fun previewContacts(): List<Contact> = listOf(
