@@ -40,6 +40,7 @@ The repository is a native Android client for the contacts product. Its current 
 - rendering a populated list when the backend returns contacts
 - sorting the loaded contacts into a predictable local order
 - filtering the loaded contacts locally by a user-entered query
+- preserving the active search query while navigating between list, detail, and form surfaces
 - moving from error to retry and back to loading
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
@@ -58,4 +59,3 @@ The repository is a native Android client for the contacts product. Its current 
 ### Unresolved Tensions
 
 - whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
-- whether local search should match only visible contact fields or also hidden/internal identifiers
