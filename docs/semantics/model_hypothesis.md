@@ -21,6 +21,7 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsSortOrder`: the local ordering applied to loaded contacts
 - `ContactsLoadingState`: the view state while the API request is in flight
 - `ContactsErrorState`: the view state when loading fails
+- `ContactsFreshnessState`: the visible indicator for whether loaded data is fresh or stale
 - `ContactsRepository`: the app port for retrieving contacts
 - `ContactsApiClient`: the infrastructure client that performs HTTP requests
 - `LoadContactById`: the use case for loading one contact from the backend
@@ -41,6 +42,7 @@ The repository is a native Android client for the contacts product. Its current 
 - sorting the loaded contacts into a predictable local order
 - filtering the loaded contacts locally by a user-entered query
 - preserving the active search query while navigating between list, detail, and form surfaces
+- making stale preserved data explicit after a transient refresh or reload failure
 - moving from error to retry and back to loading
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
