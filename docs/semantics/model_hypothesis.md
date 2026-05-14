@@ -65,4 +65,4 @@ The repository is a native Android client for the contacts product. Its current 
 ### Unresolved Tensions
 
 - whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
-- whether the app should preserve the list scroll position when returning from detail or forms, or always reset to the top
+- whether the app should preserve the current list viewport when contacts are created, updated, deleted, or refreshed, or intentionally reset it after list content changes
