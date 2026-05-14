@@ -1,8 +1,5 @@
 package org.wastingnotime.contactsmobile.interfaces
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -10,6 +7,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import org.wastingnotime.contactsmobile.domain.Contact
+import org.wastingnotime.contactsmobile.interfaces.theme.ContactsTheme
 import org.wastingnotime.contactsmobile.interfaces.ui.CreateContactFormState
 import org.wastingnotime.contactsmobile.interfaces.ui.CreateContactUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactDetailUiState
@@ -46,6 +44,7 @@ fun ContactsApp(viewModel: ContactsViewModel) {
         onEditSubmit = {},
         onEditOpenContact = {},
         darkTheme = darkTheme,
+        dynamicColor = true,
         viewModel = viewModel,
     )
 }
@@ -75,9 +74,10 @@ internal fun ContactsAppContent(
     onEditSubmit: () -> Unit,
     onEditOpenContact: () -> Unit,
     darkTheme: Boolean = false,
+    dynamicColor: Boolean = true,
     viewModel: ContactsViewModel? = null,
 ) {
-    ContactsAppTheme(darkTheme = darkTheme) {
+    ContactsTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
         if (viewModel != null) {
             ContactsRoute(viewModel = viewModel)
         } else {
@@ -141,17 +141,7 @@ private fun ContactsAppPreview(
         onEditSubmit = {},
         onEditOpenContact = {},
         darkTheme = darkTheme,
-    )
-}
-
-@Composable
-private fun ContactsAppTheme(
-    darkTheme: Boolean = false,
-    content: @Composable () -> Unit,
-) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme(),
-        content = content,
+        dynamicColor = false,
     )
 }
 

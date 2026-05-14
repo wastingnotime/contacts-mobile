@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import org.wastingnotime.contactsmobile.domain.Contact
+import org.wastingnotime.contactsmobile.interfaces.theme.ContactsTheme
 
 @Composable
 fun ContactsRoute(
@@ -1156,7 +1157,7 @@ private fun ContactDetailDeleting(
 @Preview(showBackground = true)
 @Composable
 private fun ContactsScreenLoadedPreview() {
-    MaterialTheme {
+    ContactsTheme(dynamicColor = false) {
         ContactsScreen(
             uiState = ContactsUiState.Loaded(
                 contacts = previewContacts(),
@@ -1181,7 +1182,7 @@ private fun ContactsScreenLoadedPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun ContactsScreenTransientFailurePreview() {
-    MaterialTheme {
+    ContactsTheme(dynamicColor = false) {
         ContactsScreen(
             uiState = ContactsUiState.Loaded(
                 contacts = previewContacts(),
@@ -1207,7 +1208,7 @@ private fun ContactsScreenTransientFailurePreview() {
 @Preview(showBackground = true)
 @Composable
 private fun ContactsScreenFilteredEmptyPreview() {
-    MaterialTheme {
+    ContactsTheme(dynamicColor = false) {
         ContactsScreen(
             uiState = ContactsUiState.FilteredEmpty(query = "zebra"),
             detailUiState = ContactDetailUiState.Hidden,
@@ -1231,7 +1232,7 @@ private fun ContactsScreenFilteredEmptyPreview() {
 @Composable
 private fun ContactsDetailPreview() {
     val contacts = previewContacts()
-    MaterialTheme {
+    ContactsTheme(dynamicColor = false) {
         ContactsScreen(
             uiState = ContactsUiState.Loaded(
                 contacts = contacts,
@@ -1260,7 +1261,7 @@ private fun ContactsDetailPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun ContactsCreatePreview() {
-    MaterialTheme {
+    ContactsTheme(dynamicColor = false) {
         ContactsScreen(
             uiState = ContactsUiState.Loaded(
                 contacts = previewContacts(),
