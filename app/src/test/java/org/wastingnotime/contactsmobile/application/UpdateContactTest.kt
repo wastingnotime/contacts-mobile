@@ -5,33 +5,34 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class CreateContactTest {
+class UpdateContactTest {
     @Test
-    fun `returns the created contact from the repository`() = runTest {
-        val repository = FakeCreateContactsRepository(
-            createdContact = Contact(
+    fun `returns the updated contact from the repository`() = runTest {
+        val repository = FakeUpdateContactsRepository(
+            updatedContact = Contact(
                 id = "contact-9",
-                firstName = "Katherine",
-                lastName = "Johnson",
+                firstName = "Ada",
+                lastName = "Byron",
                 phoneNumber = "555-0199",
             ),
         )
-        val useCase = CreateContact(repository)
+        val useCase = UpdateContact(repository)
 
         val result = useCase.execute(
-            CreateContactCommand(
-                firstName = "Katherine",
-                lastName = "Johnson",
+            UpdateContactCommand(
+                id = "contact-9",
+                firstName = "Ada",
+                lastName = "Byron",
                 phoneNumber = "555-0199",
             ),
         )
 
         assertEquals(
-            CreateContactResult.Created(
+            UpdateContactResult.Updated(
                 Contact(
                     id = "contact-9",
-                    firstName = "Katherine",
-                    lastName = "Johnson",
+                    firstName = "Ada",
+                    lastName = "Byron",
                     phoneNumber = "555-0199",
                 ),
             ),
@@ -40,8 +41,8 @@ class CreateContactTest {
     }
 }
 
-private class FakeCreateContactsRepository(
-    private val createdContact: Contact,
+private class FakeUpdateContactsRepository(
+    private val updatedContact: Contact,
 ) : ContactsRepository {
     override suspend fun loadContacts(): List<Contact> = emptyList()
 
@@ -51,12 +52,12 @@ private class FakeCreateContactsRepository(
         firstName: String,
         lastName: String,
         phoneNumber: String,
-    ): Contact = createdContact
+    ): Contact = error("Create is not used in this test.")
 
     override suspend fun updateContact(
         id: String,
         firstName: String,
         lastName: String,
         phoneNumber: String,
-    ): Contact = error("Update is not used in this test.")
+    ): Contact = updatedContact
 }

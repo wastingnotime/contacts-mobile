@@ -12,4 +12,11 @@ interface ContactsRepository {
         lastName: String,
         phoneNumber: String,
     ): Contact
+
+    suspend fun updateContact(
+        id: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact
 }

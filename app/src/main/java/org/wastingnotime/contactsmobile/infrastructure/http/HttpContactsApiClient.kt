@@ -85,6 +85,40 @@ class HttpContactsApiClient(
         }
     }
 
+    override suspend fun updateContact(
+        id: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): RemoteContact = withContext(Dispatchers.IO) {
+        val connection = openConnection(
+            path = "contacts/${encodePathSegment(id)}",
+            method = "PUT",
+        )
+        try {
+            val request = RemoteContactRequest(
+                first_name = firstName,
+                last_name = lastName,
+                phone_number = phoneNumber,
+            )
+            connection.outputStream.bufferedWriter().use { writer ->
+                writer.write(request.toJson())
+            }
+            val statusCode = connection.responseCode
+            if (statusCode !in 200..299) {
+                throw ContactsApiException("Contacts API responded with status $statusCode.")
+            }
+            val body = connection.inputStream.bufferedReader().use { it.readText() }
+            ContactsJsonParser.parseContact(body)
+        } catch (exception: ContactsApiException) {
+            throw exception
+        } catch (exception: IOException) {
+            throw ContactsApiException("Unable to update contact.", exception)
+        } finally {
+            connection.disconnect()
+        }
+    }
+
     private fun openConnection(): HttpURLConnection {
         return openConnection("contacts")
     }

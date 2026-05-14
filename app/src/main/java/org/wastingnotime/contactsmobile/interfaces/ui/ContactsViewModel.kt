@@ -10,6 +10,9 @@ import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContactByIdResult
 import org.wastingnotime.contactsmobile.application.LoadContacts
 import org.wastingnotime.contactsmobile.application.LoadContactsResult
+import org.wastingnotime.contactsmobile.application.UpdateContact
+import org.wastingnotime.contactsmobile.application.UpdateContactCommand
+import org.wastingnotime.contactsmobile.application.UpdateContactResult
 import org.wastingnotime.contactsmobile.domain.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +23,7 @@ class ContactsViewModel(
     private val loadContacts: LoadContacts,
     private val loadContactById: LoadContactById,
     private val createContact: CreateContact,
+    private val updateContact: UpdateContact,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Loading)
     val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
@@ -29,6 +33,9 @@ class ContactsViewModel(
 
     private val _createUiState = MutableStateFlow<CreateContactUiState>(CreateContactUiState.Hidden)
     val createUiState: StateFlow<CreateContactUiState> = _createUiState.asStateFlow()
+
+    private val _editUiState = MutableStateFlow<EditContactUiState>(EditContactUiState.Hidden)
+    val editUiState: StateFlow<EditContactUiState> = _editUiState.asStateFlow()
 
     init {
         refresh()
@@ -121,6 +128,86 @@ class ContactsViewModel(
         loadContactDetail(successState.contact.id)
     }
 
+    fun openEditContact() {
+        val currentDetail = _detailUiState.value as? ContactDetailUiState.Loaded ?: return
+        _editUiState.value = EditContactUiState.Form(
+            EditContactFormState(
+                contactId = currentDetail.contact.id,
+                firstName = currentDetail.contact.firstName,
+                lastName = currentDetail.contact.lastName,
+                phoneNumber = currentDetail.contact.phoneNumber,
+            ),
+        )
+    }
+
+    fun closeEditContact() {
+        _editUiState.value = EditContactUiState.Hidden
+    }
+
+    fun updateEditFirstName(firstName: String) {
+        updateEditForm { it.copy(firstName = firstName) }
+    }
+
+    fun updateEditLastName(lastName: String) {
+        updateEditForm { it.copy(lastName = lastName) }
+    }
+
+    fun updateEditPhoneNumber(phoneNumber: String) {
+        updateEditForm { it.copy(phoneNumber = phoneNumber) }
+    }
+
+    fun submitEditContact() {
+        val current = _editUiState.value as? EditContactUiState.Form ?: return
+        val validationErrors = validateEditForm(current.form)
+        if (validationErrors.isNotEmpty()) {
+            _editUiState.value = current.copy(
+                form = current.form.copy(
+                    fieldErrors = validationErrors,
+                    errorMessage = "Please complete the required fields.",
+                ),
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            _editUiState.value = current.copy(
+                form = current.form.copy(
+                    isSubmitting = true,
+                    errorMessage = null,
+                    fieldErrors = emptyMap(),
+                ),
+            )
+            _editUiState.value = try {
+                when (val result = updateContact.execute(
+                    UpdateContactCommand(
+                        id = current.form.contactId,
+                        firstName = current.form.firstName.trim(),
+                        lastName = current.form.lastName.trim(),
+                        phoneNumber = current.form.phoneNumber.trim(),
+                    ),
+                )) {
+                    is UpdateContactResult.Updated -> {
+                        applyUpdatedContact(result.contact)
+                        EditContactUiState.Success(result.contact)
+                    }
+                }
+            } catch (exception: Throwable) {
+                current.copy(
+                    form = current.form.copy(
+                        isSubmitting = false,
+                        errorMessage = exception.message ?: "Unable to update contact.",
+                    ),
+                )
+            }
+        }
+    }
+
+    fun openUpdatedContact() {
+        val successState = _editUiState.value as? EditContactUiState.Success ?: return
+        _editUiState.value = EditContactUiState.Hidden
+        loadContactDetail(successState.contact.id)
+    }
+
     fun closeContactDetail() {
         _detailUiState.value = ContactDetailUiState.Hidden
     }
@@ -197,6 +284,13 @@ class ContactsViewModel(
         }
     }
 
+    private fun updateEditForm(transform: (EditContactFormState) -> EditContactFormState) {
+        val current = _editUiState.value
+        if (current is EditContactUiState.Form) {
+            _editUiState.value = current.copy(form = transform(current.form))
+        }
+    }
+
     private fun validateCreateForm(form: CreateContactFormState): Map<CreateContactField, String> {
         val errors = mutableMapOf<CreateContactField, String>()
         if (form.firstName.isBlank()) {
@@ -220,17 +314,44 @@ class ContactsViewModel(
             else -> current
         }
     }
+
+    private fun validateEditForm(form: EditContactFormState): Map<EditContactField, String> {
+        val errors = mutableMapOf<EditContactField, String>()
+        if (form.firstName.isBlank()) {
+            errors[EditContactField.FirstName] = "First name is required."
+        }
+        if (form.lastName.isBlank()) {
+            errors[EditContactField.LastName] = "Last name is required."
+        }
+        if (form.phoneNumber.isBlank()) {
+            errors[EditContactField.PhoneNumber] = "Phone number is required."
+        }
+        return errors
+    }
+
+    private fun applyUpdatedContact(contact: Contact) {
+        _uiState.value = when (val current = _uiState.value) {
+            is ContactsUiState.Loaded -> current.copy(
+                contacts = current.contacts.map { existing ->
+                    if (existing.id == contact.id) contact else existing
+                },
+            )
+            else -> current
+        }
+        _detailUiState.value = ContactDetailUiState.Loaded(contact)
+    }
 }
 
 class ContactsViewModelFactory(
     private val loadContacts: LoadContacts,
     private val loadContactById: LoadContactById,
     private val createContact: CreateContact,
+    private val updateContact: UpdateContact,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ContactsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ContactsViewModel(loadContacts, loadContactById, createContact) as T
+            return ContactsViewModel(loadContacts, loadContactById, createContact, updateContact) as T
         }
         throw IllegalArgumentException("Unsupported view model class: ${modelClass.name}")
     }

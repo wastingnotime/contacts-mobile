@@ -25,4 +25,18 @@ class DefaultContactsRepository(
             phoneNumber = phoneNumber,
         ).toDomain()
     }
+
+    override suspend fun updateContact(
+        id: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact {
+        return apiClient.updateContact(
+            id = id,
+            firstName = firstName,
+            lastName = lastName,
+            phoneNumber = phoneNumber,
+        ).toDomain()
+    }
 }

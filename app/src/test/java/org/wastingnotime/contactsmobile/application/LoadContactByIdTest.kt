@@ -44,4 +44,11 @@ private class ContactByIdRepositoryFake(
         lastName: String,
         phoneNumber: String,
     ): Contact = error("Create is not used in this test.")
+
+    override suspend fun updateContact(
+        id: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact = error("Update is not used in this test.")
 }

@@ -38,10 +38,12 @@ fun ContactsRoute(
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val detailUiState = viewModel.detailUiState.collectAsStateWithLifecycle().value
     val createUiState = viewModel.createUiState.collectAsStateWithLifecycle().value
+    val editUiState = viewModel.editUiState.collectAsStateWithLifecycle().value
     ContactsScreen(
         uiState = uiState,
         detailUiState = detailUiState,
         createUiState = createUiState,
+        editUiState = editUiState,
         onContactClick = viewModel::openContact,
         onBack = viewModel::closeContactDetail,
         onRefresh = viewModel::refresh,
@@ -53,6 +55,13 @@ fun ContactsRoute(
         onCreatePhoneNumberChange = viewModel::updateCreatePhoneNumber,
         onCreateSubmit = viewModel::submitCreateContact,
         onCreateOpenContact = viewModel::openCreatedContact,
+        onEditContact = viewModel::openEditContact,
+        onCloseEditContact = viewModel::closeEditContact,
+        onEditFirstNameChange = viewModel::updateEditFirstName,
+        onEditLastNameChange = viewModel::updateEditLastName,
+        onEditPhoneNumberChange = viewModel::updateEditPhoneNumber,
+        onEditSubmit = viewModel::submitEditContact,
+        onEditOpenContact = viewModel::openUpdatedContact,
         modifier = modifier,
     )
 }
@@ -62,6 +71,7 @@ fun ContactsScreen(
     uiState: ContactsUiState,
     detailUiState: ContactDetailUiState,
     createUiState: CreateContactUiState,
+    editUiState: EditContactUiState = EditContactUiState.Hidden,
     onContactClick: (Contact) -> Unit,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
@@ -73,6 +83,13 @@ fun ContactsScreen(
     onCreatePhoneNumberChange: (String) -> Unit,
     onCreateSubmit: () -> Unit,
     onCreateOpenContact: () -> Unit,
+    onEditContact: () -> Unit = {},
+    onCloseEditContact: () -> Unit = {},
+    onEditFirstNameChange: (String) -> Unit = {},
+    onEditLastNameChange: (String) -> Unit = {},
+    onEditPhoneNumberChange: (String) -> Unit = {},
+    onEditSubmit: () -> Unit = {},
+    onEditOpenContact: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -80,10 +97,13 @@ fun ContactsScreen(
             ContactsTopBar(
                 detailUiState = detailUiState,
                 createUiState = createUiState,
+                editUiState = editUiState,
                 onBack = onBack,
                 onRefresh = onRefresh,
                 onCreateContact = onCreateContact,
                 onCloseCreateContact = onCloseCreateContact,
+                onEditContact = onEditContact,
+                onCloseEditContact = onCloseEditContact,
             )
         },
         modifier = modifier,
@@ -97,6 +117,22 @@ fun ContactsScreen(
                 onPhoneNumberChange = onCreatePhoneNumberChange,
                 onSubmit = onCreateSubmit,
                 onOpenContact = onCreateOpenContact,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            )
+            return@Scaffold
+        }
+
+        if (editUiState != EditContactUiState.Hidden) {
+            EditContactContent(
+                editUiState = editUiState,
+                onCloseEditContact = onCloseEditContact,
+                onFirstNameChange = onEditFirstNameChange,
+                onLastNameChange = onEditLastNameChange,
+                onPhoneNumberChange = onEditPhoneNumberChange,
+                onSubmit = onEditSubmit,
+                onOpenContact = onEditOpenContact,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
@@ -156,27 +192,43 @@ fun ContactsScreen(
 private fun ContactsTopBar(
     detailUiState: ContactDetailUiState,
     createUiState: CreateContactUiState,
+    editUiState: EditContactUiState,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onCreateContact: () -> Unit,
     onCloseCreateContact: () -> Unit,
+    onEditContact: () -> Unit,
+    onCloseEditContact: () -> Unit,
 ) {
-    val title = when (detailUiState) {
-        is ContactDetailUiState.Hidden -> when (createUiState) {
+    val title = when {
+        editUiState != EditContactUiState.Hidden -> when (editUiState) {
+            EditContactUiState.Hidden -> "Contacts"
+            is EditContactUiState.Form -> "Edit contact"
+            is EditContactUiState.Success -> "Contact updated"
+        }
+        detailUiState != ContactDetailUiState.Hidden -> when (detailUiState) {
+            is ContactDetailUiState.Loaded -> detailUiState.contact.displayName.ifBlank { "Contact details" }
+            is ContactDetailUiState.Loading -> "Contact details"
+            is ContactDetailUiState.NotFound -> "Contact details"
+            is ContactDetailUiState.Error -> "Contact details"
+            ContactDetailUiState.Hidden -> "Contacts"
+        }
+        createUiState != CreateContactUiState.Hidden -> when (createUiState) {
             CreateContactUiState.Hidden -> "Contacts"
             is CreateContactUiState.Form -> "New contact"
             is CreateContactUiState.Success -> "Contact created"
         }
-        is ContactDetailUiState.Loaded -> detailUiState.contact.displayName.ifBlank { "Contact details" }
-        is ContactDetailUiState.Loading -> "Contact details"
-        is ContactDetailUiState.NotFound -> "Contact details"
-        is ContactDetailUiState.Error -> "Contact details"
+        else -> "Contacts"
     }
 
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            if (createUiState != CreateContactUiState.Hidden) {
+            if (editUiState != EditContactUiState.Hidden) {
+                TextButton(onClick = onCloseEditContact) {
+                    Text(text = "Back")
+                }
+            } else if (createUiState != CreateContactUiState.Hidden) {
                 TextButton(onClick = onCloseCreateContact) {
                     Text(text = "Back")
                 }
@@ -187,12 +239,17 @@ private fun ContactsTopBar(
             }
         },
         actions = {
-            if (createUiState == CreateContactUiState.Hidden) {
+            if (editUiState == EditContactUiState.Hidden && createUiState == CreateContactUiState.Hidden) {
                 TextButton(onClick = onRefresh) {
                     Text(text = "Refresh")
                 }
                 TextButton(onClick = onCreateContact) {
                     Text(text = "Add")
+                }
+                if (detailUiState is ContactDetailUiState.Loaded) {
+                    TextButton(onClick = onEditContact) {
+                        Text(text = "Edit")
+                    }
                 }
             }
         },
@@ -404,6 +461,128 @@ private fun CreateContactSuccess(
             }
             TextButton(onClick = onCloseCreateContact) {
                 Text(text = "Back to list")
+            }
+        }
+    }
+}
+
+@Composable
+private fun EditContactContent(
+    editUiState: EditContactUiState,
+    onCloseEditContact: () -> Unit,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onPhoneNumberChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onOpenContact: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (editUiState) {
+        EditContactUiState.Hidden -> Unit
+        is EditContactUiState.Form -> EditContactForm(
+            form = editUiState.form,
+            onFirstNameChange = onFirstNameChange,
+            onLastNameChange = onLastNameChange,
+            onPhoneNumberChange = onPhoneNumberChange,
+            onSubmit = onSubmit,
+            onCancel = onCloseEditContact,
+            modifier = modifier,
+        )
+        is EditContactUiState.Success -> EditContactSuccess(
+            contact = editUiState.contact,
+            onOpenContact = onOpenContact,
+            onCloseEditContact = onCloseEditContact,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun EditContactForm(
+    form: EditContactFormState,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onPhoneNumberChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        form.errorMessage?.let { message ->
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+        OutlinedTextField(
+            value = form.firstName,
+            onValueChange = onFirstNameChange,
+            label = { Text("First name") },
+            isError = form.fieldErrors.containsKey(EditContactField.FirstName),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = form.lastName,
+            onValueChange = onLastNameChange,
+            label = { Text("Last name") },
+            isError = form.fieldErrors.containsKey(EditContactField.LastName),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = form.phoneNumber,
+            onValueChange = onPhoneNumberChange,
+            label = { Text("Phone number") },
+            isError = form.fieldErrors.containsKey(EditContactField.PhoneNumber),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(
+                onClick = onSubmit,
+                enabled = !form.isSubmitting,
+            ) {
+                Text(text = if (form.isSubmitting) "Saving" else "Save")
+            }
+            TextButton(onClick = onCancel) {
+                Text(text = "Cancel")
+            }
+        }
+    }
+}
+
+@Composable
+private fun EditContactSuccess(
+    contact: Contact,
+    onOpenContact: () -> Unit,
+    onCloseEditContact: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.padding(24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Contact updated",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = contact.displayName.ifBlank { "Unnamed contact" },
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+            )
+            Button(onClick = onOpenContact) {
+                Text(text = "View contact")
+            }
+            TextButton(onClick = onCloseEditContact) {
+                Text(text = "Back to detail")
             }
         }
     }

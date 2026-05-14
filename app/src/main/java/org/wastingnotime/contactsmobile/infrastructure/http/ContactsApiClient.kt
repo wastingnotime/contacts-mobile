@@ -10,4 +10,11 @@ interface ContactsApiClient {
         lastName: String,
         phoneNumber: String,
     ): RemoteContact
+
+    suspend fun updateContact(
+        id: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): RemoteContact
 }

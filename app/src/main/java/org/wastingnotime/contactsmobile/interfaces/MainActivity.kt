@@ -8,6 +8,7 @@ import org.wastingnotime.contactsmobile.BuildConfig
 import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContacts
 import org.wastingnotime.contactsmobile.application.CreateContact
+import org.wastingnotime.contactsmobile.application.UpdateContact
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthConfiguration
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeadersResolver
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlConfiguration
@@ -43,7 +44,8 @@ class MainActivity : ComponentActivity() {
         val loadContacts = LoadContacts(repository)
         val loadContactById = LoadContactById(repository)
         val createContact = CreateContact(repository)
-        val factory = ContactsViewModelFactory(loadContacts, loadContactById, createContact)
+        val updateContact = UpdateContact(repository)
+        val factory = ContactsViewModelFactory(loadContacts, loadContactById, createContact, updateContact)
 
         setContent {
             val viewModel: ContactsViewModel = viewModel(factory = factory)

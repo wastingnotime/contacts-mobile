@@ -4,6 +4,7 @@ import org.wastingnotime.contactsmobile.application.ContactsRepository
 import org.wastingnotime.contactsmobile.application.CreateContact
 import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContacts
+import org.wastingnotime.contactsmobile.application.UpdateContact
 import org.wastingnotime.contactsmobile.domain.Contact
 import org.wastingnotime.contactsmobile.test.MainDispatcherRule
 import kotlinx.coroutines.CompletableDeferred
@@ -40,6 +41,11 @@ class ContactsViewModelTest {
                     loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
                 ),
             ),
+            UpdateContact(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
         )
 
         advanceUntilIdle()
@@ -68,6 +74,11 @@ class ContactsViewModelTest {
                 ),
             ),
             CreateContact(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
+            UpdateContact(
                 ScriptedContactsRepository(
                     loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
                 ),
@@ -103,6 +114,7 @@ class ContactsViewModelTest {
             LoadContacts(repository),
             LoadContactById(repository),
             CreateContact(repository),
+            UpdateContact(repository),
         )
 
         advanceUntilIdle()
@@ -138,6 +150,7 @@ class ContactsViewModelTest {
             LoadContacts(repository),
             LoadContactById(repository),
             CreateContact(repository),
+            UpdateContact(repository),
         )
 
         advanceUntilIdle()
@@ -159,6 +172,7 @@ class ContactsViewModelTest {
             LoadContacts(repository),
             LoadContactById(repository),
             CreateContact(repository),
+            UpdateContact(repository),
         )
 
         advanceUntilIdle()
@@ -186,6 +200,7 @@ class ContactsViewModelTest {
             LoadContacts(repository),
             LoadContactById(repository),
             CreateContact(repository),
+            UpdateContact(repository),
         )
 
         advanceUntilIdle()
@@ -215,6 +230,7 @@ class ContactsViewModelTest {
             LoadContacts(repository),
             LoadContactById(repository),
             CreateContact(repository),
+            UpdateContact(repository),
         )
 
         advanceUntilIdle()
@@ -239,6 +255,7 @@ class ContactsViewModelTest {
             LoadContacts(repository),
             LoadContactById(repository),
             CreateContact(repository),
+            UpdateContact(repository),
         )
 
         advanceUntilIdle()
@@ -256,6 +273,7 @@ class ContactsViewModelTest {
             LoadContacts(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
             LoadContactById(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
             CreateContact(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
+            UpdateContact(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
         )
 
         advanceUntilIdle()
@@ -290,6 +308,7 @@ class ContactsViewModelTest {
             LoadContacts(repository),
             LoadContactById(repository),
             CreateContact(repository),
+            UpdateContact(repository),
         )
 
         advanceUntilIdle()
@@ -314,12 +333,95 @@ class ContactsViewModelTest {
             viewModel.detailUiState.value,
         )
     }
+
+    @Test
+    fun `prefills edit form from the loaded detail`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.openEditContact()
+
+        assertEquals(
+            EditContactUiState.Form(
+                EditContactFormState(
+                    contactId = contact.id,
+                    firstName = contact.firstName,
+                    lastName = contact.lastName,
+                    phoneNumber = contact.phoneNumber,
+                ),
+            ),
+            viewModel.editUiState.value,
+        )
+    }
+
+    @Test
+    fun `updates a contact and reflects the saved values back into detail`() = runTest {
+        val original = contact()
+        val updated = original.copy(
+            firstName = "Ada",
+            lastName = "Byron",
+            phoneNumber = "555-0199",
+        )
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(original))),
+            loadContactByIdResponses = arrayDequeOf(successContact(original), successContact(updated)),
+            updateContactResponses = arrayDequeOf(successUpdatedContact(updated)),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openContact(original)
+        advanceUntilIdle()
+        viewModel.openEditContact()
+        viewModel.updateEditFirstName(updated.firstName)
+        viewModel.updateEditLastName(updated.lastName)
+        viewModel.updateEditPhoneNumber(updated.phoneNumber)
+        viewModel.submitEditContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            EditContactUiState.Success(updated),
+            viewModel.editUiState.value,
+        )
+        assertEquals(
+            ContactsUiState.Loaded(listOf(updated)),
+            viewModel.uiState.value,
+        )
+
+        viewModel.openUpdatedContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactDetailUiState.Loaded(updated),
+            viewModel.detailUiState.value,
+        )
+    }
 }
 
 private class ScriptedContactsRepository(
     private val loadContactsResponses: ArrayDeque<suspend () -> List<Contact>>,
     private val loadContactByIdResponses: ArrayDeque<suspend (String) -> Contact?> = ArrayDeque(),
     private val createContactResponses: ArrayDeque<suspend (String, String, String) -> Contact> = ArrayDeque(),
+    private val updateContactResponses: ArrayDeque<suspend (String, String, String, String) -> Contact> = ArrayDeque(),
 ) : ContactsRepository {
     override suspend fun loadContacts(): List<Contact> {
         return loadContactsResponses.removeFirst().invoke()
@@ -339,6 +441,17 @@ private class ScriptedContactsRepository(
         val next = createContactResponses.pollFirst()
             ?: error("No scripted create contact response available.")
         return next.invoke(firstName, lastName, phoneNumber)
+    }
+
+    override suspend fun updateContact(
+        id: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact {
+        val next = updateContactResponses.pollFirst()
+            ?: error("No scripted update contact response available.")
+        return next.invoke(id, firstName, lastName, phoneNumber)
     }
 }
 
@@ -369,6 +482,10 @@ private fun missingContact(): suspend (String) -> Contact? = {
 }
 
 private fun successCreatedContact(contact: Contact): suspend (String, String, String) -> Contact = { _, _, _ ->
+    contact
+}
+
+private fun successUpdatedContact(contact: Contact): suspend (String, String, String, String) -> Contact = { _, _, _, _ ->
     contact
 }
 

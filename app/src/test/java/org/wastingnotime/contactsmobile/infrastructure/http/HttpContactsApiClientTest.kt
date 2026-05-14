@@ -112,6 +112,46 @@ class HttpContactsApiClientTest {
         )
         assertEquals("contact-9", contact.id)
     }
+
+    @Test
+    fun `attaches auth headers and body to update requests`() = runTest {
+        val connection = RecordingHttpURLConnection(
+            url = URL("http://example.com/contacts/contact-9"),
+            responseCodeValue = HttpURLConnection.HTTP_OK,
+            responseBody = """
+                {
+                  "id": "contact-9",
+                  "first_name": "Katherine",
+                  "last_name": "Johnson",
+                  "phone_number": "555-0110"
+                }
+            """.trimIndent(),
+        )
+        val client = HttpContactsApiClient(
+            baseUrl = "http://example.com",
+            authHeaders = ContactsApiAuthHeaders(
+                subject = "admin-user",
+                roles = "admin",
+            ),
+            connectionFactory = { connection },
+        )
+
+        val contact = client.updateContact(
+            id = "contact-9",
+            firstName = "Katherine",
+            lastName = "Johnson",
+            phoneNumber = "555-0110",
+        )
+
+        assertEquals("PUT", connection.requestMethodCaptured)
+        assertEquals("admin-user", connection.capturedRequestProperties["x-auth-subject"])
+        assertEquals("admin", connection.capturedRequestProperties["x-auth-roles"])
+        assertEquals(
+            """{"first_name":"Katherine","last_name":"Johnson","phone_number":"555-0110"}""",
+            connection.capturedRequestBody,
+        )
+        assertEquals("contact-9", contact.id)
+    }
 }
 
 private class RecordingHttpURLConnection(

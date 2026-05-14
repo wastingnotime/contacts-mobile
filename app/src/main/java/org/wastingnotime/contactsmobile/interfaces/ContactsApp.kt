@@ -12,6 +12,7 @@ import org.wastingnotime.contactsmobile.domain.Contact
 import org.wastingnotime.contactsmobile.interfaces.ui.CreateContactFormState
 import org.wastingnotime.contactsmobile.interfaces.ui.CreateContactUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactDetailUiState
+import org.wastingnotime.contactsmobile.interfaces.ui.EditContactUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsScreen
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsRoute
@@ -23,6 +24,7 @@ fun ContactsApp(viewModel: ContactsViewModel) {
         uiState = null,
         detailUiState = null,
         createUiState = null,
+        editUiState = null,
         onContactClick = {},
         onBack = {},
         onRefresh = {},
@@ -34,6 +36,13 @@ fun ContactsApp(viewModel: ContactsViewModel) {
         onCreatePhoneNumberChange = {},
         onCreateSubmit = {},
         onCreateOpenContact = {},
+        onEditContact = {},
+        onCloseEditContact = {},
+        onEditFirstNameChange = {},
+        onEditLastNameChange = {},
+        onEditPhoneNumberChange = {},
+        onEditSubmit = {},
+        onEditOpenContact = {},
         darkTheme = false,
         viewModel = viewModel,
     )
@@ -44,6 +53,7 @@ internal fun ContactsAppContent(
     uiState: ContactsUiState?,
     detailUiState: ContactDetailUiState?,
     createUiState: CreateContactUiState?,
+    editUiState: EditContactUiState? = null,
     onContactClick: (Contact) -> Unit,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
@@ -55,6 +65,13 @@ internal fun ContactsAppContent(
     onCreatePhoneNumberChange: (String) -> Unit,
     onCreateSubmit: () -> Unit,
     onCreateOpenContact: () -> Unit,
+    onEditContact: () -> Unit,
+    onCloseEditContact: () -> Unit,
+    onEditFirstNameChange: (String) -> Unit,
+    onEditLastNameChange: (String) -> Unit,
+    onEditPhoneNumberChange: (String) -> Unit,
+    onEditSubmit: () -> Unit,
+    onEditOpenContact: () -> Unit,
     darkTheme: Boolean = false,
     viewModel: ContactsViewModel? = null,
 ) {
@@ -66,6 +83,7 @@ internal fun ContactsAppContent(
                 uiState = uiState ?: ContactsUiState.Loading,
                 detailUiState = detailUiState ?: ContactDetailUiState.Hidden,
                 createUiState = createUiState ?: CreateContactUiState.Hidden,
+                editUiState = editUiState ?: EditContactUiState.Hidden,
                 onContactClick = onContactClick,
                 onBack = onBack,
                 onRefresh = onRefresh,
@@ -77,6 +95,13 @@ internal fun ContactsAppContent(
                 onCreatePhoneNumberChange = onCreatePhoneNumberChange,
                 onCreateSubmit = onCreateSubmit,
                 onCreateOpenContact = onCreateOpenContact,
+                onEditContact = onEditContact,
+                onCloseEditContact = onCloseEditContact,
+                onEditFirstNameChange = onEditFirstNameChange,
+                onEditLastNameChange = onEditLastNameChange,
+                onEditPhoneNumberChange = onEditPhoneNumberChange,
+                onEditSubmit = onEditSubmit,
+                onEditOpenContact = onEditOpenContact,
             )
         }
     }
@@ -87,12 +112,14 @@ private fun ContactsAppPreview(
     uiState: ContactsUiState,
     detailUiState: ContactDetailUiState,
     createUiState: CreateContactUiState = CreateContactUiState.Hidden,
+    editUiState: EditContactUiState = EditContactUiState.Hidden,
     darkTheme: Boolean,
 ) {
     ContactsAppContent(
         uiState = uiState,
         detailUiState = detailUiState,
         createUiState = createUiState,
+        editUiState = editUiState,
         onContactClick = {},
         onBack = {},
         onRefresh = {},
@@ -104,6 +131,13 @@ private fun ContactsAppPreview(
         onCreatePhoneNumberChange = {},
         onCreateSubmit = {},
         onCreateOpenContact = {},
+        onEditContact = {},
+        onCloseEditContact = {},
+        onEditFirstNameChange = {},
+        onEditLastNameChange = {},
+        onEditPhoneNumberChange = {},
+        onEditSubmit = {},
+        onEditOpenContact = {},
         darkTheme = darkTheme,
     )
 }
