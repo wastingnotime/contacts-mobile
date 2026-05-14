@@ -42,6 +42,7 @@ Then read these files first:
 - `docs/operating/skills_workflow.md`
 - `docs/operating/packs.md`
 - `docs/operating/best_practices.md`
+- `docs/operating/emulator_smoke_test_runbook.md` for emulator validation with backend simulation from `../runtime-sandbox`
 - `architecture.md`
 - `groundrules.md`
 - `docs/building/project_structure.md`
