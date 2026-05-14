@@ -74,12 +74,52 @@ class DefaultContactsRepositoryTest {
 
         assertEquals(null, contact)
     }
+
+    @Test
+    fun `maps a created remote contact into a domain contact`() = runTest {
+        val repository = DefaultContactsRepository(
+            apiClient = FakeContactsApiClient(
+                contacts = emptyList(),
+                createdContact = RemoteContact(
+                    id = "contact-3",
+                    first_name = "Katherine",
+                    last_name = "Johnson",
+                    phone_number = "555-0199",
+                ),
+            ),
+        )
+
+        val contact = repository.createContact(
+            firstName = "Katherine",
+            lastName = "Johnson",
+            phoneNumber = "555-0199",
+        )
+
+        assertEquals(
+            Contact(
+                id = "contact-3",
+                firstName = "Katherine",
+                lastName = "Johnson",
+                phoneNumber = "555-0199",
+            ),
+            contact,
+        )
+    }
 }
 
 private class FakeContactsApiClient(
     private val contacts: List<RemoteContact>,
+    private val createdContact: RemoteContact? = null,
 ) : ContactsApiClient {
     override suspend fun fetchContacts(): List<RemoteContact> = contacts
 
     override suspend fun fetchContactById(id: String): RemoteContact? = contacts.firstOrNull { it.id == id }
+
+    override suspend fun createContact(
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): RemoteContact {
+        return createdContact ?: error("No scripted create contact response available.")
+    }
 }

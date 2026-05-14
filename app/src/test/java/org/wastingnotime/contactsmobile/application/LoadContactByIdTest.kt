@@ -38,4 +38,10 @@ private class ContactByIdRepositoryFake(
     override suspend fun loadContacts(): List<Contact> = contact?.let { listOf(it) } ?: emptyList()
 
     override suspend fun loadContactById(id: String): Contact? = contact?.takeIf { it.id == id }
+
+    override suspend fun createContact(
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact = error("Create is not used in this test.")
 }

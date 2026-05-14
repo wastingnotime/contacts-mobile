@@ -5,25 +5,35 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import org.wastingnotime.contactsmobile.domain.Contact
+import org.wastingnotime.contactsmobile.interfaces.ui.CreateContactFormState
+import org.wastingnotime.contactsmobile.interfaces.ui.CreateContactUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactDetailUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsScreen
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsUiState
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsRoute
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModel
-import androidx.compose.ui.unit.Density
 
 @Composable
 fun ContactsApp(viewModel: ContactsViewModel) {
     ContactsAppContent(
         uiState = null,
         detailUiState = null,
+        createUiState = null,
         onContactClick = {},
         onBack = {},
         onRefresh = {},
         onRetry = {},
+        onCreateContact = {},
+        onCloseCreateContact = {},
+        onCreateFirstNameChange = {},
+        onCreateLastNameChange = {},
+        onCreatePhoneNumberChange = {},
+        onCreateSubmit = {},
+        onCreateOpenContact = {},
         darkTheme = false,
         viewModel = viewModel,
     )
@@ -33,10 +43,18 @@ fun ContactsApp(viewModel: ContactsViewModel) {
 internal fun ContactsAppContent(
     uiState: ContactsUiState?,
     detailUiState: ContactDetailUiState?,
+    createUiState: CreateContactUiState?,
     onContactClick: (Contact) -> Unit,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
+    onCreateContact: () -> Unit,
+    onCloseCreateContact: () -> Unit,
+    onCreateFirstNameChange: (String) -> Unit,
+    onCreateLastNameChange: (String) -> Unit,
+    onCreatePhoneNumberChange: (String) -> Unit,
+    onCreateSubmit: () -> Unit,
+    onCreateOpenContact: () -> Unit,
     darkTheme: Boolean = false,
     viewModel: ContactsViewModel? = null,
 ) {
@@ -47,10 +65,18 @@ internal fun ContactsAppContent(
             ContactsScreen(
                 uiState = uiState ?: ContactsUiState.Loading,
                 detailUiState = detailUiState ?: ContactDetailUiState.Hidden,
+                createUiState = createUiState ?: CreateContactUiState.Hidden,
                 onContactClick = onContactClick,
                 onBack = onBack,
                 onRefresh = onRefresh,
                 onRetry = onRetry,
+                onCreateContact = onCreateContact,
+                onCloseCreateContact = onCloseCreateContact,
+                onCreateFirstNameChange = onCreateFirstNameChange,
+                onCreateLastNameChange = onCreateLastNameChange,
+                onCreatePhoneNumberChange = onCreatePhoneNumberChange,
+                onCreateSubmit = onCreateSubmit,
+                onCreateOpenContact = onCreateOpenContact,
             )
         }
     }
@@ -60,15 +86,24 @@ internal fun ContactsAppContent(
 private fun ContactsAppPreview(
     uiState: ContactsUiState,
     detailUiState: ContactDetailUiState,
+    createUiState: CreateContactUiState = CreateContactUiState.Hidden,
     darkTheme: Boolean,
 ) {
     ContactsAppContent(
         uiState = uiState,
         detailUiState = detailUiState,
+        createUiState = createUiState,
         onContactClick = {},
         onBack = {},
         onRefresh = {},
         onRetry = {},
+        onCreateContact = {},
+        onCloseCreateContact = {},
+        onCreateFirstNameChange = {},
+        onCreateLastNameChange = {},
+        onCreatePhoneNumberChange = {},
+        onCreateSubmit = {},
+        onCreateOpenContact = {},
         darkTheme = darkTheme,
     )
 }
@@ -132,6 +167,7 @@ private fun ContactsAppLoadedLightPreview() {
             contacts = previewContacts(),
         ),
         detailUiState = ContactDetailUiState.Hidden,
+        createUiState = CreateContactUiState.Hidden,
         darkTheme = false,
     )
 }
@@ -233,6 +269,25 @@ private fun ContactsAppDetailWithTransientErrorDarkPreview() {
             transientErrorMessage = "Detail refreshed with a warning.",
         ),
         darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Create Light", group = "Create")
+@Composable
+private fun ContactsAppCreateLightPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        createUiState = CreateContactUiState.Form(
+            CreateContactFormState(
+                firstName = "Ada",
+                lastName = "Lovelace",
+                phoneNumber = "555-0100",
+            ),
+        ),
+        darkTheme = false,
     )
 }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.wastingnotime.contactsmobile.BuildConfig
 import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContacts
+import org.wastingnotime.contactsmobile.application.CreateContact
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthConfiguration
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeadersResolver
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlConfiguration
@@ -41,7 +42,8 @@ class MainActivity : ComponentActivity() {
         val repository = DefaultContactsRepository(apiClient)
         val loadContacts = LoadContacts(repository)
         val loadContactById = LoadContactById(repository)
-        val factory = ContactsViewModelFactory(loadContacts, loadContactById)
+        val createContact = CreateContact(repository)
+        val factory = ContactsViewModelFactory(loadContacts, loadContactById, createContact)
 
         setContent {
             val viewModel: ContactsViewModel = viewModel(factory = factory)

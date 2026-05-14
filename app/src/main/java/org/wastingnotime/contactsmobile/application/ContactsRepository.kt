@@ -6,4 +6,10 @@ interface ContactsRepository {
     suspend fun loadContacts(): List<Contact>
 
     suspend fun loadContactById(id: String): Contact?
+
+    suspend fun createContact(
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact
 }

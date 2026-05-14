@@ -1,6 +1,7 @@
 package org.wastingnotime.contactsmobile.interfaces.ui
 
 import org.wastingnotime.contactsmobile.application.ContactsRepository
+import org.wastingnotime.contactsmobile.application.CreateContact
 import org.wastingnotime.contactsmobile.application.LoadContactById
 import org.wastingnotime.contactsmobile.application.LoadContacts
 import org.wastingnotime.contactsmobile.domain.Contact
@@ -34,6 +35,11 @@ class ContactsViewModelTest {
                     loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
                 ),
             ),
+            CreateContact(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
         )
 
         advanceUntilIdle()
@@ -57,6 +63,11 @@ class ContactsViewModelTest {
                 ),
             ),
             LoadContactById(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
+            CreateContact(
                 ScriptedContactsRepository(
                     loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
                 ),
@@ -91,6 +102,7 @@ class ContactsViewModelTest {
         val viewModel = ContactsViewModel(
             LoadContacts(repository),
             LoadContactById(repository),
+            CreateContact(repository),
         )
 
         advanceUntilIdle()
@@ -125,6 +137,7 @@ class ContactsViewModelTest {
         val viewModel = ContactsViewModel(
             LoadContacts(repository),
             LoadContactById(repository),
+            CreateContact(repository),
         )
 
         advanceUntilIdle()
@@ -145,6 +158,7 @@ class ContactsViewModelTest {
         val viewModel = ContactsViewModel(
             LoadContacts(repository),
             LoadContactById(repository),
+            CreateContact(repository),
         )
 
         advanceUntilIdle()
@@ -171,6 +185,7 @@ class ContactsViewModelTest {
         val viewModel = ContactsViewModel(
             LoadContacts(repository),
             LoadContactById(repository),
+            CreateContact(repository),
         )
 
         advanceUntilIdle()
@@ -199,6 +214,7 @@ class ContactsViewModelTest {
         val viewModel = ContactsViewModel(
             LoadContacts(repository),
             LoadContactById(repository),
+            CreateContact(repository),
         )
 
         advanceUntilIdle()
@@ -222,6 +238,7 @@ class ContactsViewModelTest {
         val viewModel = ContactsViewModel(
             LoadContacts(repository),
             LoadContactById(repository),
+            CreateContact(repository),
         )
 
         advanceUntilIdle()
@@ -232,11 +249,77 @@ class ContactsViewModelTest {
 
         assertEquals(ContactDetailUiState.Hidden, viewModel.detailUiState.value)
     }
+
+    @Test
+    fun `requires create form fields before submission`() = runTest {
+        val viewModel = ContactsViewModel(
+            LoadContacts(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
+            LoadContactById(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
+            CreateContact(ScriptedContactsRepository(arrayDequeOf(successContacts(emptyList())))),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openCreateContact()
+        viewModel.submitCreateContact()
+
+        assertEquals(
+            CreateContactUiState.Form(
+                CreateContactFormState(
+                    errorMessage = "Please complete the required fields.",
+                    fieldErrors = mapOf(
+                        CreateContactField.FirstName to "First name is required.",
+                        CreateContactField.LastName to "Last name is required.",
+                        CreateContactField.PhoneNumber to "Phone number is required.",
+                    ),
+                ),
+            ),
+            viewModel.createUiState.value,
+        )
+    }
+
+    @Test
+    fun `creates a contact and exposes it for detail navigation`() = runTest {
+        val contact = contact().copy(id = "contact-9")
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact()))),
+            loadContactByIdResponses = arrayDequeOf(successContact(contact)),
+            createContactResponses = arrayDequeOf(successCreatedContact(contact)),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openCreateContact()
+        viewModel.updateCreateFirstName(contact.firstName)
+        viewModel.updateCreateLastName(contact.lastName)
+        viewModel.updateCreatePhoneNumber(contact.phoneNumber)
+        viewModel.submitCreateContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            CreateContactUiState.Success(contact),
+            viewModel.createUiState.value,
+        )
+
+        viewModel.openCreatedContact()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactDetailUiState.Loaded(contact),
+            viewModel.detailUiState.value,
+        )
+    }
 }
 
 private class ScriptedContactsRepository(
     private val loadContactsResponses: ArrayDeque<suspend () -> List<Contact>>,
     private val loadContactByIdResponses: ArrayDeque<suspend (String) -> Contact?> = ArrayDeque(),
+    private val createContactResponses: ArrayDeque<suspend (String, String, String) -> Contact> = ArrayDeque(),
 ) : ContactsRepository {
     override suspend fun loadContacts(): List<Contact> {
         return loadContactsResponses.removeFirst().invoke()
@@ -246,6 +329,16 @@ private class ScriptedContactsRepository(
         val next = loadContactByIdResponses.pollFirst()
             ?: error("No scripted contact detail response available.")
         return next.invoke(id)
+    }
+
+    override suspend fun createContact(
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact {
+        val next = createContactResponses.pollFirst()
+            ?: error("No scripted create contact response available.")
+        return next.invoke(firstName, lastName, phoneNumber)
     }
 }
 
@@ -273,6 +366,10 @@ private fun failingContact(message: String): suspend (String) -> Contact? = {
 
 private fun missingContact(): suspend (String) -> Contact? = {
     null
+}
+
+private fun successCreatedContact(contact: Contact): suspend (String, String, String) -> Contact = { _, _, _ ->
+    contact
 }
 
 private fun <T> arrayDequeOf(vararg items: T): ArrayDeque<T> = ArrayDeque(items.asList())

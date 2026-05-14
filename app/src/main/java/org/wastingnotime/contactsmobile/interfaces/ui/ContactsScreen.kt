@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -35,13 +37,22 @@ fun ContactsRoute(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val detailUiState = viewModel.detailUiState.collectAsStateWithLifecycle().value
+    val createUiState = viewModel.createUiState.collectAsStateWithLifecycle().value
     ContactsScreen(
         uiState = uiState,
         detailUiState = detailUiState,
+        createUiState = createUiState,
         onContactClick = viewModel::openContact,
         onBack = viewModel::closeContactDetail,
         onRefresh = viewModel::refresh,
         onRetry = viewModel::refresh,
+        onCreateContact = viewModel::openCreateContact,
+        onCloseCreateContact = viewModel::closeCreateContact,
+        onCreateFirstNameChange = viewModel::updateCreateFirstName,
+        onCreateLastNameChange = viewModel::updateCreateLastName,
+        onCreatePhoneNumberChange = viewModel::updateCreatePhoneNumber,
+        onCreateSubmit = viewModel::submitCreateContact,
+        onCreateOpenContact = viewModel::openCreatedContact,
         modifier = modifier,
     )
 }
@@ -50,22 +61,49 @@ fun ContactsRoute(
 fun ContactsScreen(
     uiState: ContactsUiState,
     detailUiState: ContactDetailUiState,
+    createUiState: CreateContactUiState,
     onContactClick: (Contact) -> Unit,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
+    onCreateContact: () -> Unit,
+    onCloseCreateContact: () -> Unit,
+    onCreateFirstNameChange: (String) -> Unit,
+    onCreateLastNameChange: (String) -> Unit,
+    onCreatePhoneNumberChange: (String) -> Unit,
+    onCreateSubmit: () -> Unit,
+    onCreateOpenContact: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = {
             ContactsTopBar(
                 detailUiState = detailUiState,
+                createUiState = createUiState,
                 onBack = onBack,
                 onRefresh = onRefresh,
+                onCreateContact = onCreateContact,
+                onCloseCreateContact = onCloseCreateContact,
             )
         },
         modifier = modifier,
     ) { paddingValues ->
+        if (createUiState != CreateContactUiState.Hidden) {
+            CreateContactContent(
+                createUiState = createUiState,
+                onCloseCreateContact = onCloseCreateContact,
+                onFirstNameChange = onCreateFirstNameChange,
+                onLastNameChange = onCreateLastNameChange,
+                onPhoneNumberChange = onCreatePhoneNumberChange,
+                onSubmit = onCreateSubmit,
+                onOpenContact = onCreateOpenContact,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            )
+            return@Scaffold
+        }
+
         if (detailUiState != ContactDetailUiState.Hidden) {
             DetailContent(
                 detailUiState = detailUiState,
@@ -117,11 +155,18 @@ fun ContactsScreen(
 @Composable
 private fun ContactsTopBar(
     detailUiState: ContactDetailUiState,
+    createUiState: CreateContactUiState,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
+    onCreateContact: () -> Unit,
+    onCloseCreateContact: () -> Unit,
 ) {
     val title = when (detailUiState) {
-        ContactDetailUiState.Hidden -> "Contacts"
+        is ContactDetailUiState.Hidden -> when (createUiState) {
+            CreateContactUiState.Hidden -> "Contacts"
+            is CreateContactUiState.Form -> "New contact"
+            is CreateContactUiState.Success -> "Contact created"
+        }
         is ContactDetailUiState.Loaded -> detailUiState.contact.displayName.ifBlank { "Contact details" }
         is ContactDetailUiState.Loading -> "Contact details"
         is ContactDetailUiState.NotFound -> "Contact details"
@@ -131,15 +176,24 @@ private fun ContactsTopBar(
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            if (detailUiState != ContactDetailUiState.Hidden) {
+            if (createUiState != CreateContactUiState.Hidden) {
+                TextButton(onClick = onCloseCreateContact) {
+                    Text(text = "Back")
+                }
+            } else if (detailUiState != ContactDetailUiState.Hidden) {
                 TextButton(onClick = onBack) {
                     Text(text = "Back")
                 }
             }
         },
         actions = {
-            TextButton(onClick = onRefresh) {
-                Text(text = "Refresh")
+            if (createUiState == CreateContactUiState.Hidden) {
+                TextButton(onClick = onRefresh) {
+                    Text(text = "Refresh")
+                }
+                TextButton(onClick = onCreateContact) {
+                    Text(text = "Add")
+                }
             }
         },
     )
@@ -230,6 +284,128 @@ private fun DetailContent(
             onSecondaryAction = onBack,
             modifier = modifier,
         )
+    }
+}
+
+@Composable
+private fun CreateContactContent(
+    createUiState: CreateContactUiState,
+    onCloseCreateContact: () -> Unit,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onPhoneNumberChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onOpenContact: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (createUiState) {
+        CreateContactUiState.Hidden -> Unit
+        is CreateContactUiState.Form -> CreateContactForm(
+            form = createUiState.form,
+            onFirstNameChange = onFirstNameChange,
+            onLastNameChange = onLastNameChange,
+            onPhoneNumberChange = onPhoneNumberChange,
+            onSubmit = onSubmit,
+            onCancel = onCloseCreateContact,
+            modifier = modifier,
+        )
+        is CreateContactUiState.Success -> CreateContactSuccess(
+            contact = createUiState.contact,
+            onOpenContact = onOpenContact,
+            onCloseCreateContact = onCloseCreateContact,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun CreateContactForm(
+    form: CreateContactFormState,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onPhoneNumberChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        form.errorMessage?.let { message ->
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+        OutlinedTextField(
+            value = form.firstName,
+            onValueChange = onFirstNameChange,
+            label = { Text("First name") },
+            isError = form.fieldErrors.containsKey(CreateContactField.FirstName),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = form.lastName,
+            onValueChange = onLastNameChange,
+            label = { Text("Last name") },
+            isError = form.fieldErrors.containsKey(CreateContactField.LastName),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = form.phoneNumber,
+            onValueChange = onPhoneNumberChange,
+            label = { Text("Phone number") },
+            isError = form.fieldErrors.containsKey(CreateContactField.PhoneNumber),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(
+                onClick = onSubmit,
+                enabled = !form.isSubmitting,
+            ) {
+                Text(text = if (form.isSubmitting) "Submitting" else "Create")
+            }
+            TextButton(onClick = onCancel) {
+                Text(text = "Cancel")
+            }
+        }
+    }
+}
+
+@Composable
+private fun CreateContactSuccess(
+    contact: Contact,
+    onOpenContact: () -> Unit,
+    onCloseCreateContact: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.padding(24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Contact created",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = contact.displayName.ifBlank { "Unnamed contact" },
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+            )
+            Button(onClick = onOpenContact) {
+                Text(text = "View contact")
+            }
+            TextButton(onClick = onCloseCreateContact) {
+                Text(text = "Back to list")
+            }
+        }
     }
 }
 
@@ -449,10 +625,18 @@ private fun ContactsScreenLoadedPreview() {
                 contacts = previewContacts(),
             ),
             detailUiState = ContactDetailUiState.Hidden,
+            createUiState = CreateContactUiState.Hidden,
             onContactClick = {},
             onBack = {},
             onRefresh = {},
             onRetry = {},
+            onCreateContact = {},
+            onCloseCreateContact = {},
+            onCreateFirstNameChange = {},
+            onCreateLastNameChange = {},
+            onCreatePhoneNumberChange = {},
+            onCreateSubmit = {},
+            onCreateOpenContact = {},
         )
     }
 }
@@ -467,10 +651,18 @@ private fun ContactsScreenTransientFailurePreview() {
                 transientErrorMessage = "Unable to refresh contacts right now.",
             ),
             detailUiState = ContactDetailUiState.Hidden,
+            createUiState = CreateContactUiState.Hidden,
             onContactClick = {},
             onBack = {},
             onRefresh = {},
             onRetry = {},
+            onCreateContact = {},
+            onCloseCreateContact = {},
+            onCreateFirstNameChange = {},
+            onCreateLastNameChange = {},
+            onCreatePhoneNumberChange = {},
+            onCreateSubmit = {},
+            onCreateOpenContact = {},
         )
     }
 }
@@ -488,10 +680,49 @@ private fun ContactsDetailPreview() {
                 contact = contacts.first(),
                 transientErrorMessage = "Detail refreshed with a warning.",
             ),
+            createUiState = CreateContactUiState.Hidden,
             onContactClick = {},
             onBack = {},
             onRefresh = {},
             onRetry = {},
+            onCreateContact = {},
+            onCloseCreateContact = {},
+            onCreateFirstNameChange = {},
+            onCreateLastNameChange = {},
+            onCreatePhoneNumberChange = {},
+            onCreateSubmit = {},
+            onCreateOpenContact = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ContactsCreatePreview() {
+    MaterialTheme {
+        ContactsScreen(
+            uiState = ContactsUiState.Loaded(
+                contacts = previewContacts(),
+            ),
+            detailUiState = ContactDetailUiState.Hidden,
+            createUiState = CreateContactUiState.Form(
+                CreateContactFormState(
+                    firstName = "Ada",
+                    lastName = "Lovelace",
+                    phoneNumber = "555-0100",
+                ),
+            ),
+            onContactClick = {},
+            onBack = {},
+            onRefresh = {},
+            onRetry = {},
+            onCreateContact = {},
+            onCloseCreateContact = {},
+            onCreateFirstNameChange = {},
+            onCreateLastNameChange = {},
+            onCreatePhoneNumberChange = {},
+            onCreateSubmit = {},
+            onCreateOpenContact = {},
         )
     }
 }

@@ -52,18 +52,55 @@ class HttpContactsApiClient(
         }
     }
 
+    override suspend fun createContact(
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): RemoteContact = withContext(Dispatchers.IO) {
+        val connection = openConnection(
+            path = "contacts",
+            method = "POST",
+        )
+        try {
+            val request = RemoteContactRequest(
+                first_name = firstName,
+                last_name = lastName,
+                phone_number = phoneNumber,
+            )
+            connection.outputStream.bufferedWriter().use { writer ->
+                writer.write(request.toJson())
+            }
+            val statusCode = connection.responseCode
+            if (statusCode !in 200..299) {
+                throw ContactsApiException("Contacts API responded with status $statusCode.")
+            }
+            val body = connection.inputStream.bufferedReader().use { it.readText() }
+            ContactsJsonParser.parseContact(body)
+        } catch (exception: ContactsApiException) {
+            throw exception
+        } catch (exception: IOException) {
+            throw ContactsApiException("Unable to create contact.", exception)
+        } finally {
+            connection.disconnect()
+        }
+    }
+
     private fun openConnection(): HttpURLConnection {
         return openConnection("contacts")
     }
 
-    private fun openConnection(path: String): HttpURLConnection {
+    private fun openConnection(path: String, method: String = "GET"): HttpURLConnection {
         val normalizedBaseUrl = baseUrl.trimEnd('/')
         val endpoint = URL("$normalizedBaseUrl/$path")
         return connectionFactory(endpoint).apply {
-            requestMethod = "GET"
+            requestMethod = method
             connectTimeout = 5_000
             readTimeout = 5_000
             setRequestProperty("Accept", "application/json")
+            if (method == "POST") {
+                doOutput = true
+                setRequestProperty("Content-Type", "application/json")
+            }
             authHeaders.applyTo(this)
         }
     }

@@ -13,4 +13,16 @@ class DefaultContactsRepository(
     override suspend fun loadContactById(id: String): Contact? {
         return apiClient.fetchContactById(id)?.toDomain()
     }
+
+    override suspend fun createContact(
+        firstName: String,
+        lastName: String,
+        phoneNumber: String,
+    ): Contact {
+        return apiClient.createContact(
+            firstName = firstName,
+            lastName = lastName,
+            phoneNumber = phoneNumber,
+        ).toDomain()
+    }
 }
