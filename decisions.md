@@ -212,3 +212,24 @@ Leaving `targetSdk` at 34 would preserve the current behavior, but it would lag 
 
 ### Notes
 This is a policy compatibility update, not a feature change.
+
+## DEC-0009 - Use The `org.wastingnotime` Android Namespace
+
+- Date: 2026-05-13
+- Status: accepted
+- Owners: both
+
+### Context
+The app package had been using `com.wastingnotime.contactsmobile`, but the project identity should follow the `wastingnotime.org` domain convention instead of the `.com` variant.
+
+### Decision
+The Android app module now uses `org.wastingnotime.contactsmobile` for its Gradle namespace, application ID, Kotlin packages, and manifest activity reference.
+
+### Consequences
+The codebase matches the org-owned domain naming convention consistently. Android Studio, BuildConfig, and generated resources now align with the new namespace.
+
+### Alternatives considered
+Keep the existing `com.wastingnotime.contactsmobile` package to avoid a repo-wide rename. That was rejected because it preserved the wrong domain identity.
+
+### Notes
+This is a naming and identity correction only. The runtime behavior and API contract are unchanged.

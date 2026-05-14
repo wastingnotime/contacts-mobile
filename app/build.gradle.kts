@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.wastingnotime.contactsmobile"
+    namespace = "org.wastingnotime.contactsmobile"
     compileSdk = 35
 
     val contactsApiEnvironment = providers.gradleProperty("contactsApiEnvironment")
@@ -36,7 +36,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.wastingnotime.contactsmobile"
+        applicationId = "org.wastingnotime.contactsmobile"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

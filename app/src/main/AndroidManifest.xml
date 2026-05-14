@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ContactsMobile">
         <activity
-            android:name=".interfaces.MainActivity"
+            android:name="org.wastingnotime.contactsmobile.interfaces.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
