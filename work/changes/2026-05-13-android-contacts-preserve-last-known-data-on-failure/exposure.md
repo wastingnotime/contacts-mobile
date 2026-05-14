@@ -15,6 +15,7 @@ Expose the released slice in two concrete ways:
 
 - use the `ContactsApp` preview to review the main list and detail states during UI iteration
 - install the app on an emulator using the configured emulator base URL
+- use `../runtime-sandbox` as the backend simulation source for emulator smoke tests
 - verify that a transient refresh failure preserves visible contacts or detail content while surfacing the error banner
 - verify that retry still returns the screen to loading and then to refreshed content
 
@@ -28,3 +29,4 @@ Expose the released slice in two concrete ways:
 
 - this exposure step does not add new persistence, telemetry, or operations ownership
 - the slice remains exposed through the existing build-time environment selection and API client configuration
+- backend simulation setup belongs to the adjacent runtime sandbox repo rather than this client repo

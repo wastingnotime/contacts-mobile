@@ -17,3 +17,4 @@ The app was executed on an Android emulator and showed `Unable to load contacts`
 
 - the runtime still depends on the contacts API being reachable for successful initial load
 - if this becomes a recurring operator concern, extract may need to capture clearer guidance on emulator/backend availability for manual smoke tests
+- backend simulations for emulator smoke tests should come from `../runtime-sandbox`
