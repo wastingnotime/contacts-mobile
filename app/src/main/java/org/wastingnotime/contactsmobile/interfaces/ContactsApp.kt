@@ -522,6 +522,60 @@ private fun ContactsAppFontScalePreview(
     }
 }
 
+@Preview(showBackground = true, name = "Text Loaded Light", group = "Text Loaded")
+@Composable
+private fun ContactsAppTextLoadedLightPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewStressContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = false,
+    )
+}
+
+@Preview(showBackground = true, name = "Text Loaded Dark", group = "Text Loaded")
+@Composable
+private fun ContactsAppTextLoadedDarkPreview() {
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = previewStressContacts(),
+        ),
+        detailUiState = ContactDetailUiState.Hidden,
+        darkTheme = true,
+    )
+}
+
+@Preview(showBackground = true, name = "Text Detail Light", group = "Text Detail")
+@Composable
+private fun ContactsAppTextDetailLightPreview() {
+    val contacts = previewStressContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = false,
+    )
+}
+
+@Preview(showBackground = true, name = "Text Detail Dark", group = "Text Detail")
+@Composable
+private fun ContactsAppTextDetailDarkPreview() {
+    val contacts = previewStressContacts()
+    ContactsAppPreview(
+        uiState = ContactsUiState.Loaded(
+            contacts = contacts,
+        ),
+        detailUiState = ContactDetailUiState.Loaded(
+            contact = contacts.first(),
+        ),
+        darkTheme = true,
+    )
+}
+
 private fun previewContacts(): List<Contact> = listOf(
     Contact(
         id = "contact-1",
@@ -534,5 +588,20 @@ private fun previewContacts(): List<Contact> = listOf(
         firstName = "Grace",
         lastName = "Hopper",
         phoneNumber = "555-0101",
+    ),
+)
+
+private fun previewStressContacts(): List<Contact> = listOf(
+    Contact(
+        id = "contact-101",
+        firstName = "Maximilian-Josephine",
+        lastName = "Montgomery-Wellington-Smythe",
+        phoneNumber = "+1 (555) 010-2024 extension 12345",
+    ),
+    Contact(
+        id = "contact-102",
+        firstName = "Alexandria-Catherine",
+        lastName = "Fitzgerald-Vanderbilt",
+        phoneNumber = "+1 (555) 010-2025 extension 67890",
     ),
 )
