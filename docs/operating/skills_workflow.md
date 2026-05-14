@@ -268,6 +268,12 @@ Notes:
 - imply external exposure automatically
 - substitute for EGD or refinement decisions
 
+**Scope rule**
+
+- release is usually evaluated per slice
+- when multiple slices belong to one explicit upstream intent, they may be released as an intent bundle only after the required slices have each been accepted
+- do not treat an intent bundle as released if one of its required slices is still only built or only reviewed
+
 ### 6. Expose
 
 **Goal**

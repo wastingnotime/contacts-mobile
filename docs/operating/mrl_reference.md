@@ -52,6 +52,8 @@ Run expectation-gap detection against realistic execution evidence. Default to l
 ### `release`
 Accept the current state as the intended internal version.
 
+Release is usually decided at the slice level. When several slices are explicitly part of one upstream intent, the repository may also treat the intent as an umbrella acceptance target, but only after the required slices have each been built, reviewed, and accepted.
+
 ### `expose`
 Put the released state into contact with a real context.
 
