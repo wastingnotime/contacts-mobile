@@ -17,7 +17,6 @@ class FilterContacts {
 
     private fun Contact.matchesQuery(loweredQuery: String): Boolean {
         return listOf(
-            id,
             firstName,
             lastName,
             displayName,

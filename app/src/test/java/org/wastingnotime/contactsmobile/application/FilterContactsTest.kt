@@ -31,6 +31,18 @@ class FilterContactsTest {
         assertEquals(contacts, results)
     }
 
+    @Test
+    fun `does not match on internal id alone`() {
+        val contacts = listOf(
+            contact(id = "contact-1", firstName = "Ada", lastName = "Lovelace", phoneNumber = "555-0100"),
+        )
+        val filterContacts = FilterContacts()
+
+        val results = filterContacts.execute(contacts, "contact-1")
+
+        assertEquals(emptyList<Contact>(), results)
+    }
+
     private fun contact(
         id: String,
         firstName: String,
