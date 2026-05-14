@@ -11,6 +11,7 @@ sealed interface ContactDetailUiState {
         val contact: Contact,
         val transientErrorMessage: String? = null,
         val freshnessState: ContactsFreshnessState = ContactsFreshnessState.Fresh,
+        val staleAcknowledged: Boolean = false,
     ) : ContactDetailUiState
 
     data class Deleting(val contact: Contact) : ContactDetailUiState

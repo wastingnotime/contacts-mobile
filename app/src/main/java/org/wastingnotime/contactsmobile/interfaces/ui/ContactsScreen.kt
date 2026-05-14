@@ -49,6 +49,7 @@ fun ContactsRoute(
         onRefresh = viewModel::refresh,
         onRetry = viewModel::refresh,
         onSearchQueryChange = viewModel::updateSearchQuery,
+        onDismissContactsStaleIndicator = viewModel::dismissContactsStaleIndicator,
         onCreateContact = viewModel::openCreateContact,
         onCloseCreateContact = viewModel::closeCreateContact,
         onCreateFirstNameChange = viewModel::updateCreateFirstName,
@@ -64,6 +65,7 @@ fun ContactsRoute(
         onEditSubmit = viewModel::submitEditContact,
         onEditOpenContact = viewModel::openUpdatedContact,
         onDeleteContact = viewModel::deleteContact,
+        onDismissContactDetailStaleIndicator = viewModel::dismissContactDetailStaleIndicator,
         modifier = modifier,
     )
 }
@@ -79,6 +81,7 @@ fun ContactsScreen(
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit = {},
+    onDismissContactsStaleIndicator: () -> Unit = {},
     onCreateContact: () -> Unit,
     onCloseCreateContact: () -> Unit,
     onCreateFirstNameChange: (String) -> Unit,
@@ -94,6 +97,7 @@ fun ContactsScreen(
     onEditSubmit: () -> Unit = {},
     onEditOpenContact: () -> Unit = {},
     onDeleteContact: () -> Unit = {},
+    onDismissContactDetailStaleIndicator: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -150,6 +154,7 @@ fun ContactsScreen(
                 onBack = onBack,
                 onRetry = onRetry,
                 onDelete = onDeleteContact,
+                onDismissStaleIndicator = onDismissContactDetailStaleIndicator,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
@@ -185,6 +190,7 @@ fun ContactsScreen(
                 onContactClick = onContactClick,
                 onRetry = onRetry,
                 onSearchQueryChange = onSearchQueryChange,
+                onDismissStaleIndicator = onDismissContactsStaleIndicator,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
@@ -328,6 +334,7 @@ private fun DetailContent(
     onBack: () -> Unit,
     onRetry: () -> Unit,
     onDelete: () -> Unit,
+    onDismissStaleIndicator: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (detailUiState) {
@@ -337,8 +344,10 @@ private fun DetailContent(
             contact = detailUiState.contact,
             transientErrorMessage = detailUiState.transientErrorMessage,
             freshnessState = detailUiState.freshnessState,
+            staleAcknowledged = detailUiState.staleAcknowledged,
             onRetry = onRetry,
             onDelete = onDelete,
+            onDismissStaleIndicator = onDismissStaleIndicator,
             modifier = modifier,
         )
         is ContactDetailUiState.Deleting -> ContactDetailDeleting(
@@ -713,6 +722,7 @@ private fun ContactsList(
     onContactClick: (Contact) -> Unit,
     onRetry: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
+    onDismissStaleIndicator: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -724,9 +734,11 @@ private fun ContactsList(
             onQueryChange = onSearchQueryChange,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )
-        if (contactsState.freshnessState == ContactsFreshnessState.Stale) {
+        if (contactsState.freshnessState == ContactsFreshnessState.Stale && !contactsState.staleAcknowledged) {
             FreshnessBanner(
                 text = "Showing stale contacts",
+                actionLabel = "Dismiss",
+                onAction = onDismissStaleIndicator,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
@@ -813,14 +825,23 @@ private fun FilteredEmptyState(
 @Composable
 private fun FreshnessBanner(
     text: String,
+    actionLabel: String,
+    onAction: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(modifier = modifier) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
+        Column(
             modifier = Modifier.padding(16.dp),
-        )
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            TextButton(onClick = onAction) {
+                Text(text = actionLabel)
+            }
+        }
     }
 }
 
@@ -866,8 +887,10 @@ private fun ContactDetail(
     contact: Contact,
     transientErrorMessage: String?,
     freshnessState: ContactsFreshnessState,
+    staleAcknowledged: Boolean,
     onRetry: () -> Unit,
     onDelete: () -> Unit,
+    onDismissStaleIndicator: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -881,9 +904,11 @@ private fun ContactDetail(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
         }
-        if (freshnessState == ContactsFreshnessState.Stale) {
+        if (freshnessState == ContactsFreshnessState.Stale && !staleAcknowledged) {
             FreshnessBanner(
                 text = "Showing stale contact details",
+                actionLabel = "Dismiss",
+                onAction = onDismissStaleIndicator,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
         }

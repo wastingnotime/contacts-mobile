@@ -130,6 +130,57 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun `dismisses the stale contacts indicator without hiding preserved content`() = runTest {
+        val contact = contact()
+        val viewModel = ContactsViewModel(
+            LoadContacts(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(
+                        successContacts(listOf(contact)),
+                        failingContacts("backend unavailable"),
+                    ),
+                ),
+            ),
+            LoadContactById(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
+            CreateContact(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
+            UpdateContact(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
+            DeleteContact(
+                ScriptedContactsRepository(
+                    loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+                ),
+            ),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.refresh()
+        advanceUntilIdle()
+        viewModel.dismissContactsStaleIndicator()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                transientErrorMessage = "backend unavailable",
+                freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = true,
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
     fun `re-enters loading when retrying after a failure`() = runTest {
         val contact = contact()
         val gate = CompletableDeferred<Unit>()
@@ -248,6 +299,80 @@ class ContactsViewModelTest {
                 freshnessState = ContactsFreshnessState.Stale,
             ),
             viewModel.detailUiState.value,
+        )
+    }
+
+    @Test
+    fun `dismisses the stale contact detail indicator without hiding preserved content`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(contact))),
+            loadContactByIdResponses = arrayDequeOf(
+                successContact(contact),
+                failingContact("backend unavailable"),
+            ),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.openContact(contact)
+        advanceUntilIdle()
+        viewModel.refresh()
+        advanceUntilIdle()
+        viewModel.dismissContactDetailStaleIndicator()
+
+        assertEquals(
+            ContactDetailUiState.Loaded(
+                contact = contact,
+                transientErrorMessage = "backend unavailable",
+                freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = true,
+            ),
+            viewModel.detailUiState.value,
+        )
+    }
+
+    @Test
+    fun `restores the stale indicator after a later transient failure`() = runTest {
+        val contact = contact()
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(
+                successContacts(listOf(contact)),
+                failingContacts("backend unavailable"),
+                failingContacts("backend unavailable again"),
+            ),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.refresh()
+        advanceUntilIdle()
+        viewModel.dismissContactsStaleIndicator()
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(contact),
+                transientErrorMessage = "backend unavailable again",
+                freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = false,
+            ),
+            viewModel.uiState.value,
         )
     }
 

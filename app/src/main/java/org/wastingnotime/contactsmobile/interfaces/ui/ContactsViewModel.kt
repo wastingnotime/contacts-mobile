@@ -86,6 +86,11 @@ class ContactsViewModel(
         publishContactsState()
     }
 
+    fun dismissContactsStaleIndicator() {
+        val current = _uiState.value as? ContactsUiState.Loaded ?: return
+        _uiState.value = current.copy(staleAcknowledged = true)
+    }
+
     fun openCreateContact() {
         _createUiState.value = CreateContactUiState.Form(CreateContactFormState())
     }
@@ -262,6 +267,11 @@ class ContactsViewModel(
         _detailUiState.value = ContactDetailUiState.Hidden
     }
 
+    fun dismissContactDetailStaleIndicator() {
+        val current = _detailUiState.value as? ContactDetailUiState.Loaded ?: return
+        _detailUiState.value = current.copy(staleAcknowledged = true)
+    }
+
     private suspend fun refreshContacts() {
         val previousState = _uiState.value
         _uiState.value = ContactsUiState.Loading
@@ -320,6 +330,7 @@ class ContactsViewModel(
             is ContactsUiState.Loaded -> previousState.copy(
                 transientErrorMessage = message,
                 freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = false,
             )
             is ContactsUiState.Empty -> previousState.copy(transientErrorMessage = message)
             is ContactsUiState.FilteredEmpty -> previousState.copy(transientErrorMessage = message)
@@ -336,11 +347,13 @@ class ContactsViewModel(
             is ContactDetailUiState.Loaded -> previousState.copy(
                 transientErrorMessage = message,
                 freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = false,
             )
             is ContactDetailUiState.Deleting -> ContactDetailUiState.Loaded(
                 contact = previousState.contact,
                 transientErrorMessage = message,
                 freshnessState = ContactsFreshnessState.Stale,
+                staleAcknowledged = false,
             )
             else -> ContactDetailUiState.Error(contactId, message)
         }
@@ -413,6 +426,8 @@ class ContactsViewModel(
             searchQuery.isBlank() -> ContactsUiState.Loaded(
                 contacts = sortContacts.execute(allContacts),
                 transientErrorMessage = transientErrorMessage,
+                freshnessState = ContactsFreshnessState.Fresh,
+                staleAcknowledged = false,
             )
             filteredContacts.isEmpty() -> ContactsUiState.FilteredEmpty(
                 query = searchQuery,
@@ -422,6 +437,8 @@ class ContactsViewModel(
                 contacts = sortContacts.execute(filteredContacts),
                 transientErrorMessage = transientErrorMessage,
                 searchQuery = searchQuery,
+                freshnessState = ContactsFreshnessState.Fresh,
+                staleAcknowledged = false,
             )
         }
         _uiState.value = nextState

@@ -14,6 +14,7 @@ sealed interface ContactsUiState {
         val transientErrorMessage: String? = null,
         val searchQuery: String = "",
         val freshnessState: ContactsFreshnessState = ContactsFreshnessState.Fresh,
+        val staleAcknowledged: Boolean = false,
     ) : ContactsUiState
 
     data class FilteredEmpty(
