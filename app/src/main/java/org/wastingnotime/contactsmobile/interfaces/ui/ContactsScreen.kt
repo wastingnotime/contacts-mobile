@@ -314,6 +314,7 @@ private fun EmptyState(
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         emptyState.transientErrorMessage?.let { message ->
@@ -685,7 +686,7 @@ private fun StateMessage(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.padding(24.dp),
+        modifier = modifier.fillMaxWidth().padding(24.dp),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -851,6 +852,7 @@ private fun FilteredEmptyState(
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         SearchField(
