@@ -937,6 +937,74 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun `keeps the viewport state while the search query changes`() = runTest {
+        val matching = contact()
+        val other = contact().copy(
+            id = "contact-2",
+            firstName = "Grace",
+            lastName = "Hopper",
+            phoneNumber = "555-0200",
+        )
+        val repository = ScriptedContactsRepository(
+            loadContactsResponses = arrayDequeOf(successContacts(listOf(matching, other))),
+        )
+        val viewModel = ContactsViewModel(
+            LoadContacts(repository),
+            LoadContactById(repository),
+            CreateContact(repository),
+            UpdateContact(repository),
+            DeleteContact(repository),
+        )
+
+        advanceUntilIdle()
+
+        viewModel.updateListViewport(
+            firstVisibleItemIndex = 4,
+            firstVisibleItemScrollOffset = 20,
+            anchorContactId = matching.id,
+            secondaryAnchorContactId = other.id,
+        )
+
+        viewModel.updateSearchQuery("ada")
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 4,
+                firstVisibleItemScrollOffset = 20,
+                anchorContactId = matching.id,
+                secondaryAnchorContactId = other.id,
+            ),
+            viewModel.listViewportState.value,
+        )
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(matching),
+                searchQuery = "ada",
+            ),
+            viewModel.uiState.value,
+        )
+
+        viewModel.updateSearchQuery("grace")
+
+        assertEquals(
+            ContactsListViewportState(
+                firstVisibleItemIndex = 4,
+                firstVisibleItemScrollOffset = 20,
+                anchorContactId = matching.id,
+                secondaryAnchorContactId = other.id,
+            ),
+            viewModel.listViewportState.value,
+        )
+        assertEquals(
+            ContactsUiState.Loaded(
+                contacts = listOf(other),
+                searchQuery = "grace",
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
     fun `preserves the search query when navigating to detail and back`() = runTest {
         val contact = contact()
         val repository = ScriptedContactsRepository(
