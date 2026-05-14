@@ -10,13 +10,16 @@ Use it during `extract`, `refine`, and `build` to define vocabulary, boundaries,
 
 ## Current Hypothesis
 
-The repository is a native Android client for the contacts product. Its current behavior is a contacts list experience plus an API-backed contact detail experience that both consume the external `axiom-exp-contacts` API directly.
+The repository is a native Android client for the contacts product. Its current behavior is a contacts list experience with API-backed contact detail, create, edit, and delete flows. The app consumes the external `axiom-exp-contacts` API directly and keeps several pieces of presentation state local.
 
 ### Core Concepts
 
 - `Contact`: a read-only contact record loaded from the backend
 - `ContactsList`: the collection state shown on the first screen
 - `ContactDetail`: the selected-contact state shown after tapping a contact
+- `CreateContact`: the write flow for creating a contact in the backend
+- `UpdateContact`: the write flow for editing a contact in the backend
+- `DeleteContact`: the write flow for deleting a contact in the backend
 - `ContactsSearchQuery`: the local query used to narrow the loaded contacts list
 - `ContactsSortOrder`: the local ordering applied to loaded contacts
 - `ContactsListViewportState`: the local scroll position used to resume the visible part of the contacts list
@@ -51,6 +54,9 @@ The repository is a native Android client for the contacts product. Its current 
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
 - moving from detail error or not-found back to loading on retry
+- creating a contact from a local form and surfacing the created contact back into the app flow
+- updating a contact from a local form and reflecting the saved values back into list and detail state
+- deleting a contact from the backend and returning to the list when successful
 - preserving last known contacts or contact detail while a refresh or reload fails
 
 ### Candidate Use Cases
@@ -61,8 +67,10 @@ The repository is a native Android client for the contacts product. Its current 
 - `LoadContactById`
 - `FilterContacts`
 - `SortContacts`
+- `CreateContact`
+- `UpdateContact`
+- `DeleteContact`
 
 ### Unresolved Tensions
 
-- whether the app should preserve last known data during transient failures or replace the view with a hard error immediately
 - whether the app should preserve the current list viewport inside the active search result set when the query changes, or intentionally reset it when filtering changes the visible rows

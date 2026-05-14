@@ -16,12 +16,15 @@ Contacts apps usually imply a simple and inspectable interaction pattern:
 
 - the user expects a list of people with names and phone numbers
 - the user also expects to be able to tap a person and inspect that contact's detail
+- the user may also expect to create, edit, or delete a contact without the app inventing a separate backend model for those actions
 - loading should be visible and not silent
 - an empty state should be explicit rather than looking like a failure
 - network failure should be distinguished from an empty data set
 - retry should be available when the transport fails
 - missing detail should be explicit rather than silently reusing stale list data
 - after an initial successful load, a transient refresh failure often feels more honest if the app keeps the last known data visible and shows the failure separately
+- local search should usually respect the fields the user can actually see, not hidden identifiers
+- if a backend expects explicit request claims or auth-style headers, the client should keep that contract visible at the transport boundary rather than hiding it behind an implicit session layer
 
 The backend contract in this repository exposes snake_case JSON fields for contacts:
 
@@ -39,6 +42,7 @@ Evaluation should watch for:
 - coupling the UI directly to transport payloads
 - treating list selection as if it were the same thing as a backend-backed detail fetch
 - replacing already-loaded contacts with a blank error screen when a refresh fails, if the user still expects the last known data to stay visible
+- matching search queries on hidden identifiers when the UI only exposes names and phone numbers
 - making the app require live network behavior in unit tests
 - mistaking a missing or unreachable emulator backend for an Android client regression during manual smoke tests
 - recording emulator smoke-test observations without first classifying whether backend readiness succeeded
