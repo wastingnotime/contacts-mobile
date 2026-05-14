@@ -252,6 +252,7 @@ class ContactsViewModel(
                 ContactDetailUiState.Loaded(
                     contact = currentDetail.contact,
                     transientErrorMessage = exception.message ?: "Unable to delete contact.",
+                    freshnessState = ContactsFreshnessState.Stale,
                 )
             }
         }
@@ -316,7 +317,10 @@ class ContactsViewModel(
         message: String,
     ): ContactsUiState {
         return when (previousState) {
-            is ContactsUiState.Loaded -> previousState.copy(transientErrorMessage = message)
+            is ContactsUiState.Loaded -> previousState.copy(
+                transientErrorMessage = message,
+                freshnessState = ContactsFreshnessState.Stale,
+            )
             is ContactsUiState.Empty -> previousState.copy(transientErrorMessage = message)
             is ContactsUiState.FilteredEmpty -> previousState.copy(transientErrorMessage = message)
             else -> ContactsUiState.Error(message)
@@ -329,10 +333,14 @@ class ContactsViewModel(
         message: String,
     ): ContactDetailUiState {
         return when (previousState) {
-            is ContactDetailUiState.Loaded -> previousState.copy(transientErrorMessage = message)
+            is ContactDetailUiState.Loaded -> previousState.copy(
+                transientErrorMessage = message,
+                freshnessState = ContactsFreshnessState.Stale,
+            )
             is ContactDetailUiState.Deleting -> ContactDetailUiState.Loaded(
                 contact = previousState.contact,
                 transientErrorMessage = message,
+                freshnessState = ContactsFreshnessState.Stale,
             )
             else -> ContactDetailUiState.Error(contactId, message)
         }

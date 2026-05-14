@@ -13,6 +13,7 @@ sealed interface ContactsUiState {
         val contacts: List<Contact>,
         val transientErrorMessage: String? = null,
         val searchQuery: String = "",
+        val freshnessState: ContactsFreshnessState = ContactsFreshnessState.Fresh,
     ) : ContactsUiState
 
     data class FilteredEmpty(

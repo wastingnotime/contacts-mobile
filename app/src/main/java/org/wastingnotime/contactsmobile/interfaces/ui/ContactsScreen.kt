@@ -336,6 +336,7 @@ private fun DetailContent(
         is ContactDetailUiState.Loaded -> ContactDetail(
             contact = detailUiState.contact,
             transientErrorMessage = detailUiState.transientErrorMessage,
+            freshnessState = detailUiState.freshnessState,
             onRetry = onRetry,
             onDelete = onDelete,
             modifier = modifier,
@@ -723,6 +724,12 @@ private fun ContactsList(
             onQueryChange = onSearchQueryChange,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         )
+        if (contactsState.freshnessState == ContactsFreshnessState.Stale) {
+            FreshnessBanner(
+                text = "Showing stale contacts",
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
         if (contactsState.searchQuery.isNotBlank()) {
             SearchSummary(
                 matchedCount = contactsState.contacts.size,
@@ -804,6 +811,20 @@ private fun FilteredEmptyState(
 }
 
 @Composable
+private fun FreshnessBanner(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Card(modifier = modifier) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@Composable
 private fun SearchSummary(
     matchedCount: Int,
     query: String,
@@ -844,6 +865,7 @@ private fun SearchField(
 private fun ContactDetail(
     contact: Contact,
     transientErrorMessage: String?,
+    freshnessState: ContactsFreshnessState,
     onRetry: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -857,6 +879,12 @@ private fun ContactDetail(
                 message = message,
                 onRetry = onRetry,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+        }
+        if (freshnessState == ContactsFreshnessState.Stale) {
+            FreshnessBanner(
+                text = "Showing stale contact details",
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
         Column(

@@ -123,6 +123,7 @@ class ContactsViewModelTest {
             ContactsUiState.Loaded(
                 contacts = listOf(contact),
                 transientErrorMessage = "backend unavailable",
+                freshnessState = ContactsFreshnessState.Stale,
             ),
             viewModel.uiState.value,
         )
@@ -154,6 +155,7 @@ class ContactsViewModelTest {
             ContactsUiState.Loaded(
                 contacts = listOf(contact),
                 transientErrorMessage = "backend unavailable",
+                freshnessState = ContactsFreshnessState.Stale,
             ),
             viewModel.uiState.value,
         )
@@ -243,6 +245,7 @@ class ContactsViewModelTest {
             ContactDetailUiState.Loaded(
                 contact = contact,
                 transientErrorMessage = "backend unavailable",
+                freshnessState = ContactsFreshnessState.Stale,
             ),
             viewModel.detailUiState.value,
         )
@@ -499,6 +502,7 @@ class ContactsViewModelTest {
             ContactDetailUiState.Loaded(
                 contact = contact,
                 transientErrorMessage = "backend unavailable",
+                freshnessState = ContactsFreshnessState.Stale,
             ),
             viewModel.detailUiState.value,
         )
