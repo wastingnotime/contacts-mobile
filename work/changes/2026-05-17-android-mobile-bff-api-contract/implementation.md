@@ -1,17 +1,18 @@
-# Implementation: Normalize Contacts Requests Onto The BFF `/api` Surface
+# Implementation: Centralize The BFF Route Surface
 
 ## Summary
 
-Updated the Android client transport seam so all contacts requests resolve through the fixed Go BFF `/api` prefix instead of assembling backend paths directly.
+Moved the fixed BFF `/api/contacts` path contract out of `HttpContactsBffClient` and into a dedicated route object so the transport seam has one explicit place for route assembly.
 
 ## What Changed
 
-- Added the `/api` prefix to every contacts request in `HttpContactsBffClient`
-- Kept the existing BFF base URL and request claims behavior intact
-- Updated the BFF client tests to assert the actual request paths for list, detail, create, update, and delete flows
+- Added `ContactsBffRoutes` to centralize the list and item route surface
+- Updated `HttpContactsBffClient` to resolve all contacts requests through the route object
+- Added tests for the route resolver itself
+- Kept the existing BFF base URL, auth headers, and transport mapping behavior intact
 
 ## Validation
 
 - `./gradlew test`
 
-The test suite passed after the path contract normalization.
+The test suite passed after the route abstraction refactor.

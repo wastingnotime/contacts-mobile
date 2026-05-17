@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthHeaders
 
 class HttpContactsBffClient(
@@ -14,7 +13,7 @@ class HttpContactsBffClient(
     private val connectionFactory: (URL) -> HttpURLConnection = { it.openConnection() as HttpURLConnection },
 ) : ContactsBffClient {
     override suspend fun fetchContacts(): List<RemoteContact> = withContext(Dispatchers.IO) {
-        val connection = openConnection()
+        val connection = openConnection(ContactsBffRoutes.contactsList())
         try {
             val statusCode = connection.responseCode
             if (statusCode !in 200..299) {
@@ -32,7 +31,7 @@ class HttpContactsBffClient(
     }
 
     override suspend fun fetchContactById(id: String): RemoteContact? = withContext(Dispatchers.IO) {
-        val connection = openConnection("contacts/${encodePathSegment(id)}")
+        val connection = openConnection(ContactsBffRoutes.contactById(id))
         try {
             val statusCode = connection.responseCode
             when {
@@ -58,7 +57,7 @@ class HttpContactsBffClient(
         phoneNumber: String,
     ): RemoteContact = withContext(Dispatchers.IO) {
         val connection = openConnection(
-            path = "contacts",
+            path = ContactsBffRoutes.createContact(),
             method = "POST",
         )
         try {
@@ -92,7 +91,7 @@ class HttpContactsBffClient(
         phoneNumber: String,
     ): RemoteContact = withContext(Dispatchers.IO) {
         val connection = openConnection(
-            path = "contacts/${encodePathSegment(id)}",
+            path = ContactsBffRoutes.updateContact(id),
             method = "PUT",
         )
         try {
@@ -121,7 +120,7 @@ class HttpContactsBffClient(
 
     override suspend fun deleteContact(id: String) = withContext(Dispatchers.IO) {
         val connection = openConnection(
-            path = "contacts/${encodePathSegment(id)}",
+            path = ContactsBffRoutes.deleteContact(id),
             method = "DELETE",
         )
         try {
@@ -138,13 +137,9 @@ class HttpContactsBffClient(
         }
     }
 
-    private fun openConnection(): HttpURLConnection {
-        return openConnection("contacts")
-    }
-
     private fun openConnection(path: String, method: String = "GET"): HttpURLConnection {
         val normalizedBaseUrl = baseUrl.trimEnd('/')
-        val endpoint = URL("$normalizedBaseUrl/api/$path")
+        val endpoint = URL("$normalizedBaseUrl$path")
         return connectionFactory(endpoint).apply {
             requestMethod = method
             connectTimeout = 5_000
@@ -156,9 +151,5 @@ class HttpContactsBffClient(
             }
             authHeaders.applyTo(this)
         }
-    }
-
-    private fun encodePathSegment(value: String): String {
-        return URLEncoder.encode(value, Charsets.UTF_8.name())
     }
 }
