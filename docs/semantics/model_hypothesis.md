@@ -35,6 +35,7 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsBffBootstrapDependencies`: the interface-layer value object that groups the resolved BFF client and repository dependencies
 - `ContactsBffUseCaseAssembly`: the interface-layer assembly that turns the resolved BFF repository into the app use cases
 - `ContactsBffViewModelFactoryAssembly`: the interface-layer assembly that turns the app use cases into the contacts view-model factory
+- `ContactsBffBootstrap`: the final interface-layer bootstrap object that exposes the view-model factory to the activity
 - `LoadContactById`: the use case for loading one contact from the backend
 - request claims headers: explicit claims-style headers sent with every contacts BFF request
 - `ContactsBffApiSurface`: the client-facing `/api` path prefix used by the BFF contract
@@ -52,6 +53,7 @@ The repository is a native Android client for the contacts product. Its current 
 - BFF bootstrap dependencies
 - BFF use-case assembly
 - BFF view-model factory assembly
+- BFF final bootstrap object
 - bootstrap configuration resolution
 
 ### Major State Transitions
