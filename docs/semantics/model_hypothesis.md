@@ -31,6 +31,7 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsBffClient`: the infrastructure client that performs HTTP requests to the Go BFF
 - `LoadContactById`: the use case for loading one contact from the backend
 - request claims headers: explicit claims-style headers sent with every contacts BFF request
+- `ContactsBffApiSurface`: the client-facing `/api` path prefix used by the BFF contract
 
 ### Key Value Objects
 
@@ -38,6 +39,7 @@ The repository is a native Android client for the contacts product. Its current 
 - first and last names
 - phone numbers
 - BFF base URL configuration
+- BFF API surface configuration
 
 ### Major State Transitions
 
@@ -54,6 +56,7 @@ The repository is a native Android client for the contacts product. Its current 
 - dismissing a stale-data indicator after the user has acknowledged the warning, independently for list and detail surfaces
 - moving from error to retry and back to loading
 - forwarding list and detail requests through the BFF boundary before they reach `contacts-api`
+- keeping the client on the fixed BFF `/api` surface instead of letting each use case assemble its own transport path
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
 - moving from detail error or not-found back to loading on retry
