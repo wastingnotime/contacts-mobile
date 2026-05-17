@@ -15,7 +15,7 @@ class HttpContactsBffClientTest {
     @Test
     fun `attaches auth headers to list requests`() = runTest {
         val connection = RecordingHttpURLConnection(
-            url = URL("http://example.com/contacts"),
+            url = URL("http://example.com/api/contacts"),
             responseCodeValue = HttpURLConnection.HTTP_OK,
             responseBody = """
                 [
@@ -39,6 +39,7 @@ class HttpContactsBffClientTest {
 
         val contacts = client.fetchContacts()
 
+        assertEquals("/api/contacts", connection.url.path)
         assertEquals("admin-user", connection.capturedRequestProperties["x-auth-subject"])
         assertEquals("admin", connection.capturedRequestProperties["x-auth-roles"])
         assertEquals(1, contacts.size)
@@ -47,7 +48,7 @@ class HttpContactsBffClientTest {
     @Test
     fun `attaches auth headers to detail requests`() = runTest {
         val connection = RecordingHttpURLConnection(
-            url = URL("http://example.com/contacts/contact-1"),
+            url = URL("http://example.com/api/contacts/contact-1"),
             responseCodeValue = HttpURLConnection.HTTP_OK,
             responseBody = """
                 {
@@ -69,6 +70,7 @@ class HttpContactsBffClientTest {
 
         val contact = client.fetchContactById("contact-1")
 
+        assertEquals("/api/contacts/contact-1", connection.url.path)
         assertEquals("admin-user", connection.capturedRequestProperties["x-auth-subject"])
         assertEquals("admin", connection.capturedRequestProperties["x-auth-roles"])
         assertEquals("contact-1", contact?.id)
@@ -77,7 +79,7 @@ class HttpContactsBffClientTest {
     @Test
     fun `attaches auth headers and body to create requests`() = runTest {
         val connection = RecordingHttpURLConnection(
-            url = URL("http://example.com/contacts"),
+            url = URL("http://example.com/api/contacts"),
             responseCodeValue = HttpURLConnection.HTTP_CREATED,
             responseBody = """
                 {
@@ -104,6 +106,7 @@ class HttpContactsBffClientTest {
         )
 
         assertEquals("POST", connection.requestMethodCaptured)
+        assertEquals("/api/contacts", connection.url.path)
         assertEquals("admin-user", connection.capturedRequestProperties["x-auth-subject"])
         assertEquals("admin", connection.capturedRequestProperties["x-auth-roles"])
         assertEquals(
@@ -116,7 +119,7 @@ class HttpContactsBffClientTest {
     @Test
     fun `attaches auth headers and body to update requests`() = runTest {
         val connection = RecordingHttpURLConnection(
-            url = URL("http://example.com/contacts/contact-9"),
+            url = URL("http://example.com/api/contacts/contact-9"),
             responseCodeValue = HttpURLConnection.HTTP_OK,
             responseBody = """
                 {
@@ -144,6 +147,7 @@ class HttpContactsBffClientTest {
         )
 
         assertEquals("PUT", connection.requestMethodCaptured)
+        assertEquals("/api/contacts/contact-9", connection.url.path)
         assertEquals("admin-user", connection.capturedRequestProperties["x-auth-subject"])
         assertEquals("admin", connection.capturedRequestProperties["x-auth-roles"])
         assertEquals(
@@ -156,7 +160,7 @@ class HttpContactsBffClientTest {
     @Test
     fun `attaches auth headers to delete requests`() = runTest {
         val connection = RecordingHttpURLConnection(
-            url = URL("http://example.com/contacts/contact-9"),
+            url = URL("http://example.com/api/contacts/contact-9"),
             responseCodeValue = HttpURLConnection.HTTP_NO_CONTENT,
             responseBody = "",
         )
@@ -172,6 +176,7 @@ class HttpContactsBffClientTest {
         client.deleteContact("contact-9")
 
         assertEquals("DELETE", connection.requestMethodCaptured)
+        assertEquals("/api/contacts/contact-9", connection.url.path)
         assertEquals("admin-user", connection.capturedRequestProperties["x-auth-subject"])
         assertEquals("admin", connection.capturedRequestProperties["x-auth-roles"])
     }

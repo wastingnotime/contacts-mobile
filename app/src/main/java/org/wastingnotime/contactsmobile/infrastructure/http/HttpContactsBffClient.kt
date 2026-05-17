@@ -144,7 +144,7 @@ class HttpContactsBffClient(
 
     private fun openConnection(path: String, method: String = "GET"): HttpURLConnection {
         val normalizedBaseUrl = baseUrl.trimEnd('/')
-        val endpoint = URL("$normalizedBaseUrl/$path")
+        val endpoint = URL("$normalizedBaseUrl/api/$path")
         return connectionFactory(endpoint).apply {
             requestMethod = method
             connectTimeout = 5_000
