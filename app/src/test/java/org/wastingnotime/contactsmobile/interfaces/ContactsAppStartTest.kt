@@ -6,8 +6,8 @@ import org.junit.Test
 
 class ContactsAppStartTest {
     @Test
-    fun `starts the app from an explicit bootstrap configuration`() {
-        val bootstrap = ContactsAppStart.start(
+    fun `bootstraps the app from an explicit bootstrap configuration`() {
+        val bootstrap = ContactsAppStart.bootstrap(
             ContactsBffBootstrapConfiguration(
                 environment = "emulator",
                 emulatorBaseUrl = "http://10.0.2.2:8010",

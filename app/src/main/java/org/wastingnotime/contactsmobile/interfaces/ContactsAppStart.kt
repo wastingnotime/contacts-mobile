@@ -1,11 +1,11 @@
 package org.wastingnotime.contactsmobile.interfaces
 
 object ContactsAppStart {
-    fun start(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrap {
+    fun bootstrap(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrap {
         return ContactsBffBootstrapper.build(configuration)
     }
 
-    fun start(): ContactsBffBootstrap {
+    fun bootstrap(): ContactsBffBootstrap {
         return ContactsBffBootstrapper.build()
     }
 }
