@@ -30,9 +30,9 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsRepository`: the app port for retrieving contacts
 - `ContactsBffClient`: the infrastructure client that performs HTTP requests to the Go BFF
 - `ContactsBffBootstrap`: the interface-layer assembly that wires BFF base URL, API surface, auth headers, and client creation
-- `ContactsBffBootstrapConfigurationResolver`: the interface-layer resolver that maps BuildConfig values into bootstrap configuration
-- `ContactsBffBootstrapBuildConfigurationSource`: the interface-layer source that reads raw BuildConfig values for BFF startup
-- `ContactsBffBootstrapDependencies`: the interface-layer value object that groups the resolved BFF client and repository dependencies
+- `ContactsBootstrapConfigurationResolver`: the interface-layer resolver that maps BuildConfig values into bootstrap configuration
+- `ContactsBootstrapBuildConfigurationSource`: the interface-layer source that reads raw BuildConfig values for app startup
+- `ContactsBootstrapDependencies`: the interface-layer value object that groups the resolved BFF client and repository dependencies
 - `ContactsBffUseCaseAssembly`: the interface-layer assembly that turns the resolved BFF repository into the app use cases
 - `ContactsBffViewModelFactoryAssembly`: the interface-layer assembly that turns the app use cases into the contacts view-model factory
 - `ContactsBootstrap`: the final interface-layer bootstrap object that exposes the view-model factory to the activity
@@ -50,9 +50,9 @@ The repository is a native Android client for the contacts product. Its current 
 - BFF base URL configuration
 - BFF API surface configuration
 - BFF bootstrap configuration
-- BFF bootstrap build configuration
-- BFF bootstrap build configuration source
-- BFF bootstrap dependencies
+- app bootstrap configuration
+- app bootstrap build configuration source
+- app bootstrap dependencies
 - BFF use-case assembly
 - BFF view-model factory assembly
 - app final bootstrap object
