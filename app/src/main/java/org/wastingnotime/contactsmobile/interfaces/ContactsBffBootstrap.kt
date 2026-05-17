@@ -1,10 +1,5 @@
 package org.wastingnotime.contactsmobile.interfaces
 
-import org.wastingnotime.contactsmobile.application.CreateContact
-import org.wastingnotime.contactsmobile.application.DeleteContact
-import org.wastingnotime.contactsmobile.application.LoadContactById
-import org.wastingnotime.contactsmobile.application.LoadContacts
-import org.wastingnotime.contactsmobile.application.UpdateContact
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthConfiguration
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthHeadersResolver
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffBaseUrlConfiguration
@@ -71,18 +66,13 @@ object ContactsBffBootstrapDependenciesResolver {
 object ContactsBffBootstrapper {
     fun build(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrap {
         val dependencies = ContactsBffBootstrapDependenciesResolver.resolve(configuration)
-        val repository = dependencies.repository
-        val loadContacts = LoadContacts(repository)
-        val loadContactById = LoadContactById(repository)
-        val createContact = CreateContact(repository)
-        val updateContact = UpdateContact(repository)
-        val deleteContact = DeleteContact(repository)
+        val useCases = ContactsBffUseCaseAssembly.assemble(dependencies.repository)
         val factory = ContactsViewModelFactory(
-            loadContacts,
-            loadContactById,
-            createContact,
-            updateContact,
-            deleteContact,
+            useCases.loadContacts,
+            useCases.loadContactById,
+            useCases.createContact,
+            useCases.updateContact,
+            useCases.deleteContact,
         )
         return ContactsBffBootstrap(viewModelFactory = factory)
     }
