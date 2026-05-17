@@ -4,11 +4,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 
-class ContactsBffBootstrapConfigurationResolverTest {
+class ContactsBootstrapConfigurationResolverTest {
     @Test
     fun `resolves and normalizes valid bootstrap build configuration`() {
-        val configuration = ContactsBffBootstrapConfigurationResolver.resolve(
-            ContactsBffBootstrapBuildConfiguration(
+        val configuration = ContactsBootstrapConfigurationResolver.resolve(
+            ContactsBootstrapBuildConfiguration(
                 environment = " Emulator ",
                 emulatorBaseUrl = " http://10.0.2.2:8010 ",
                 localDeviceBaseUrl = " http://127.0.0.1:8010 ",
@@ -31,8 +31,8 @@ class ContactsBffBootstrapConfigurationResolverTest {
     @Test
     fun `fails when the api prefix is blank`() {
         try {
-            ContactsBffBootstrapConfigurationResolver.resolve(
-                ContactsBffBootstrapBuildConfiguration(
+            ContactsBootstrapConfigurationResolver.resolve(
+                ContactsBootstrapBuildConfiguration(
                     environment = "emulator",
                     emulatorBaseUrl = "http://10.0.2.2:8010",
                     localDeviceBaseUrl = "http://127.0.0.1:8010",

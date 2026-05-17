@@ -5,11 +5,11 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
 
-class ContactsBffBootstrapperTest {
+class ContactsBootstrapperTest {
     @Test
     fun `builds a view model factory from valid bootstrap configuration`() {
         val bootstrap = ContactsBffBootstrapper.build(
-            ContactsBffBootstrapConfiguration(
+            ContactsBootstrapConfiguration(
                 environment = "emulator",
                 emulatorBaseUrl = "http://10.0.2.2:8010",
                 localDeviceBaseUrl = "http://127.0.0.1:8010",
@@ -27,7 +27,7 @@ class ContactsBffBootstrapperTest {
     fun `fails when the api prefix is blank`() {
         try {
             ContactsBffBootstrapper.build(
-                ContactsBffBootstrapConfiguration(
+                ContactsBootstrapConfiguration(
                     environment = "emulator",
                     emulatorBaseUrl = "http://10.0.2.2:8010",
                     localDeviceBaseUrl = "http://127.0.0.1:8010",

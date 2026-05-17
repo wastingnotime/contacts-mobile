@@ -2,9 +2,9 @@ package org.wastingnotime.contactsmobile.interfaces
 
 import org.wastingnotime.contactsmobile.BuildConfig
 
-object ContactsBffBootstrapBuildConfigurationSource {
-    fun resolve(): ContactsBffBootstrapBuildConfiguration {
-        return ContactsBffBootstrapBuildConfiguration(
+object ContactsBootstrapBuildConfigurationSource {
+    fun resolve(): ContactsBootstrapBuildConfiguration {
+        return ContactsBootstrapBuildConfiguration(
             environment = BuildConfig.CONTACTS_BFF_ENVIRONMENT,
             emulatorBaseUrl = BuildConfig.CONTACTS_BFF_EMULATOR_BASE_URL,
             localDeviceBaseUrl = BuildConfig.CONTACTS_BFF_LOCAL_DEVICE_BASE_URL,

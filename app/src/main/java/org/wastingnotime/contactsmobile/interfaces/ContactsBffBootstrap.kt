@@ -10,7 +10,7 @@ import org.wastingnotime.contactsmobile.infrastructure.http.DefaultContactsRepos
 import org.wastingnotime.contactsmobile.infrastructure.http.HttpContactsBffClient
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModelFactory
 
-data class ContactsBffBootstrapConfiguration(
+data class ContactsBootstrapConfiguration(
     val environment: String,
     val emulatorBaseUrl: String,
     val localDeviceBaseUrl: String,
@@ -30,13 +30,13 @@ object ContactsBootstrapAssembly {
     }
 }
 
-data class ContactsBffBootstrapDependencies(
+data class ContactsBootstrapDependencies(
     val apiClient: HttpContactsBffClient,
     val repository: DefaultContactsRepository,
 )
 
-object ContactsBffBootstrapDependenciesResolver {
-    fun resolve(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrapDependencies {
+object ContactsBootstrapDependenciesResolver {
+    fun resolve(configuration: ContactsBootstrapConfiguration): ContactsBootstrapDependencies {
         val baseUrl = ContactsBffBaseUrlResolver.resolve(
             ContactsBffBaseUrlConfiguration(
                 environment = configuration.environment,
@@ -62,7 +62,7 @@ object ContactsBffBootstrapDependenciesResolver {
             authHeaders = authHeaders,
         )
         val repository = DefaultContactsRepository(apiClient)
-        return ContactsBffBootstrapDependencies(
+        return ContactsBootstrapDependencies(
             apiClient = apiClient,
             repository = repository,
         )
@@ -70,8 +70,8 @@ object ContactsBffBootstrapDependenciesResolver {
 }
 
 object ContactsBffBootstrapper {
-    fun build(configuration: ContactsBffBootstrapConfiguration): ContactsBootstrap {
-        val dependencies = ContactsBffBootstrapDependenciesResolver.resolve(configuration)
+    fun build(configuration: ContactsBootstrapConfiguration): ContactsBootstrap {
+        val dependencies = ContactsBootstrapDependenciesResolver.resolve(configuration)
         val useCases = ContactsBffUseCaseAssembly.assemble(dependencies.repository)
         val factory = ContactsBffViewModelFactoryAssembly.assemble(useCases)
         return ContactsBootstrapAssembly.assemble(factory)
@@ -79,8 +79,8 @@ object ContactsBffBootstrapper {
 
     fun build(): ContactsBootstrap {
         return build(
-            ContactsBffBootstrapConfigurationResolver.resolve(
-                ContactsBffBootstrapBuildConfigurationSource.resolve(),
+            ContactsBootstrapConfigurationResolver.resolve(
+                ContactsBootstrapBuildConfigurationSource.resolve(),
             ),
         )
     }

@@ -1,6 +1,6 @@
 package org.wastingnotime.contactsmobile.interfaces
 
-data class ContactsBffBootstrapBuildConfiguration(
+data class ContactsBootstrapBuildConfiguration(
     val environment: String,
     val emulatorBaseUrl: String,
     val localDeviceBaseUrl: String,
@@ -10,8 +10,8 @@ data class ContactsBffBootstrapBuildConfiguration(
     val apiPrefix: String,
 )
 
-object ContactsBffBootstrapConfigurationResolver {
-    fun resolve(configuration: ContactsBffBootstrapBuildConfiguration): ContactsBffBootstrapConfiguration {
+object ContactsBootstrapConfigurationResolver {
+    fun resolve(configuration: ContactsBootstrapBuildConfiguration): ContactsBootstrapConfiguration {
         val environment = configuration.environment.trim().lowercase()
         require(environment.isNotBlank()) {
             "contactsBffEnvironment must not be blank."
@@ -52,7 +52,7 @@ object ContactsBffBootstrapConfigurationResolver {
             "contactsBffApiPrefix must not be blank."
         }
 
-        return ContactsBffBootstrapConfiguration(
+        return ContactsBootstrapConfiguration(
             environment = environment,
             emulatorBaseUrl = emulatorBaseUrl,
             localDeviceBaseUrl = localDeviceBaseUrl,

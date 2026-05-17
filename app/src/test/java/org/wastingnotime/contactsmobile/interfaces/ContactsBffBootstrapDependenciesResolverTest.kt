@@ -4,11 +4,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
-class ContactsBffBootstrapDependenciesResolverTest {
+class ContactsBootstrapDependenciesResolverTest {
     @Test
     fun `resolves api client and repository from valid bootstrap configuration`() {
-        val dependencies = ContactsBffBootstrapDependenciesResolver.resolve(
-            ContactsBffBootstrapConfiguration(
+        val dependencies = ContactsBootstrapDependenciesResolver.resolve(
+            ContactsBootstrapConfiguration(
                 environment = "emulator",
                 emulatorBaseUrl = "http://10.0.2.2:8010",
                 localDeviceBaseUrl = "http://127.0.0.1:8010",

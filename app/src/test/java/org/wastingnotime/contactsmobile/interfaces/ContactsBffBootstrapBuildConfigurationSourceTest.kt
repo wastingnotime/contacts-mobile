@@ -4,10 +4,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.wastingnotime.contactsmobile.BuildConfig
 
-class ContactsBffBootstrapBuildConfigurationSourceTest {
+class ContactsBootstrapBuildConfigurationSourceTest {
     @Test
     fun `resolves raw build configuration from build config values`() {
-        val configuration = ContactsBffBootstrapBuildConfigurationSource.resolve()
+        val configuration = ContactsBootstrapBuildConfigurationSource.resolve()
 
         assertEquals(BuildConfig.CONTACTS_BFF_ENVIRONMENT, configuration.environment)
         assertEquals(BuildConfig.CONTACTS_BFF_EMULATOR_BASE_URL, configuration.emulatorBaseUrl)
