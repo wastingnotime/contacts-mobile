@@ -4,10 +4,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
-class ContactsBffAppStartTest {
+class ContactsAppStartTest {
     @Test
     fun `starts the app from an explicit bootstrap configuration`() {
-        val bootstrap = ContactsBffAppStart.start(
+        val bootstrap = ContactsAppStart.start(
             ContactsBffBootstrapConfiguration(
                 environment = "emulator",
                 emulatorBaseUrl = "http://10.0.2.2:8010",

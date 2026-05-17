@@ -9,7 +9,7 @@ import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val factory = ContactsBffAppStart.start().viewModelFactory
+        val factory = ContactsAppStart.start().viewModelFactory
 
         setContent {
             val viewModel: ContactsViewModel = viewModel(factory = factory)
