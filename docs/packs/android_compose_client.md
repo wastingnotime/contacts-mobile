@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use this pack when the target product is a native Android client that consumes an external HTTP API.
+Use this pack when the target product is a native Android client that consumes an external HTTP API through a BFF boundary.
 
 This pack defines reusable implementation defaults for Android repositories that need a thin UI shell, explicit use cases, and a stable API transport boundary.
 
@@ -11,14 +11,14 @@ This pack defines reusable implementation defaults for Android repositories that
 ## Shape
 
 - language: Kotlin
-- runtime topology: Android client plus external API
-- architecture mode: layered Android client with explicit application and infrastructure boundaries
+- runtime topology: Android client plus Go BFF plus external API
+- architecture mode: layered Android client with explicit application and infrastructure boundaries, with the BFF owning backend-facing transport
 
 ---
 
 ## Good Fit
 
-- native Android apps that consume an existing REST API
+- native Android apps that consume an existing REST API through a BFF
 - client-first products where the UI is part of the validation surface
 - slices that need deterministic state, request mapping, and offline-friendly test seams
 
@@ -28,7 +28,7 @@ This pack defines reusable implementation defaults for Android repositories that
 
 - backend services
 - pure library modules with no Android runtime
-- systems that need a full server/runtime pair inside one repository
+- systems where Android is not the primary runtime or where several backend services need to live in the same repository
 
 ---
 
@@ -61,13 +61,14 @@ scripts/
 - persistence and HTTP concerns live in `infrastructure/`
 - interface and rendering concerns live in `interfaces/`
 - shared contracts with the backend live in slice documents and transport mappers
+- BFF-facing contracts should live alongside the transport boundary, with the BFF mediating backend shape changes
 
 ---
 
 ## Testing Defaults
 
 - unit/spec focus: contact mapping, load use cases, state transitions
-- integration focus: HTTP transport parsing and repository wiring
+- integration focus: BFF transport parsing, backend gateway wiring, and repository wiring
 - determinism rules: fixed JSON payloads, fake repositories, controlled load outcomes, no live network in unit tests
 - preferred test command: `./gradlew test`
 
@@ -86,6 +87,7 @@ scripts/
 
 - slices using this pack should declare runtime targets as:
   - `android/app`
+  - `go/bff`
   - `external-api/axiom-exp-contacts`
 - cross-runtime contracts should live in slice documents and transport DTOs
 - event/message boundaries should be expressed in application use cases and documentation

@@ -157,31 +157,31 @@ The root `LICENSE` should keep this split visible, and repository-specific sourc
 - Owners: both
 
 ### Context
-The requested product for this repository is no longer a backend/lab monolith. The adjacent repositories now provide the contacts API and the web frontend, and this repository needs to become a native Android client that consumes the backend directly.
+The requested product for this repository is no longer a backend/lab monolith. The adjacent repositories now provide the contacts API and the web frontend, and this repository needs to become a native Android client that consumes the backend through a BFF boundary.
 
 ### Decision
-The repository now adopts an `android_compose_client` pack. The implementation should use Kotlin, the Android Gradle project model, and Jetpack Compose for the interface layer. The first slice is an API-backed contacts list screen that loads `GET /contacts` and renders loading, empty, error, and list states.
+The repository now adopts an `android_compose_client` pack. The implementation should use Kotlin, the Android Gradle project model, and Jetpack Compose for the interface layer. The first slice is a BFF-backed contacts list screen that loads `GET /contacts` through the Go BFF and renders loading, empty, error, and list states.
 
 ### Consequences
-The starter Python pack is no longer the right mental model for implementation. The repo structure should shift toward an Android `app/` module, Kotlin source sets, and explicit transport parsing for the contacts API. The semantic and slice documents should describe client behavior instead of server-side business rules.
+The starter Python pack is no longer the right mental model for implementation. The repo structure should shift toward an Android `app/` module, Kotlin source sets, and explicit transport parsing for the BFF boundary. The semantic and slice documents should describe client behavior instead of server-side business rules.
 
 ### Alternatives considered
 Keep the `python_ddd_monolith` example pack and treat the mobile app as a conceptual overlay. That was rejected because it would hide the real runtime and make the repository misleading for future implementation work.
 
 ### Notes
-The API contract being consumed is the external `axiom-exp-contacts` service. The mobile app should treat its `/contacts` endpoint as the source of truth and keep the base URL configurable for emulator, local, and production environments.
+The API contract being consumed is the external `axiom-exp-contacts` service, but the mobile app should target the Go BFF as its client-facing boundary and keep that base URL configurable for emulator, local, and production environments.
 
-## DEC-0007 - Resolve Contacts API Base URL At Build Time
+## DEC-0007 - Resolve BFF Base URL At Build Time
 
 - Date: 2026-05-13
 - Status: accepted
 - Owners: both
 
 ### Context
-The Android client needs to talk to the contacts API in three common environments: emulator, local-device development, and production. Hardcoding a single host makes the app awkward to run outside the emulator and hides the deployment contract.
+The Android client needs to talk to the Go BFF in three common environments: emulator, local-device development, and production. Hardcoding a single host makes the app awkward to run outside the emulator and hides the deployment contract.
 
 ### Decision
-The app now resolves the contacts API base URL from BuildConfig values populated by Gradle properties. The default build targets the emulator host `http://10.0.2.2:8010`. Local-device development uses a separate configurable base URL, and production builds require an explicit production base URL to be provided at configuration time.
+The app now resolves the BFF base URL from BuildConfig values populated by Gradle properties. The default build targets the emulator-hosted BFF URL. Local-device development uses a separate configurable base URL, and production builds require an explicit production base URL to be provided at configuration time.
 
 ### Consequences
 The runtime stays simple because the app still receives a single resolved base URL. Build configuration becomes the explicit place where environment selection lives. Production misconfiguration fails fast during Gradle configuration instead of surfacing later as an app launch failure.
@@ -297,3 +297,24 @@ Keep the existing `com.wastingnotime.contactsmobile` package to avoid a repo-wid
 
 ### Notes
 This is a naming and identity correction only. The runtime behavior and API contract are unchanged.
+
+## DEC-0012 - Route Mobile Traffic Through A Go BFF
+
+- Date: 2026-05-17
+- Status: accepted
+- Owners: both
+
+### Context
+Contacts Mobile needs to reach `contacts-api` through a Go BFF, but a direct Android-to-backend link would couple the mobile client to backend transport shape and make backend evolution harder. The sibling `contacts-web` repository already uses a Go BFF pattern that keeps the browser/client boundary explicit.
+
+### Decision
+The Android client should call a Go BFF rather than calling `contacts-api` directly. The BFF should start with near 1:1 request forwarding where that is sufficient, but it remains the place where backend shape, aggregation, auth/session handling, and response adaptation can evolve independently of the mobile app.
+
+### Consequences
+The mobile client owns a stable, client-facing API boundary instead of depending on backend transport details. The repository now has an explicit place to absorb backend contract drift without forcing coordinated mobile changes for every backend adjustment. The Go BFF also becomes the natural seam for transport mapping tests and request-shaping behavior.
+
+### Alternatives considered
+Keep the Android app pointed directly at `contacts-api`. That was rejected because it makes the mobile app the first consumer of backend transport changes and removes the opportunity to evolve a client-specific contract boundary.
+
+### Notes
+The BFF should be implemented in Go to match the sibling web repository's server-side boundary style. The initial implementation can stay close to the backend contract, but the boundary should remain owned by the mobile stack rather than treated as a temporary proxy with no future design intent.

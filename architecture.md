@@ -28,7 +28,13 @@ The MRL core defines:
 
 Implementation shape is selected through a pack.
 
-This repository currently adopts the `android_compose_client` pack. Other repositories may instead adopt:
+This repository currently adopts the `android_compose_client` pack. In this repository, that pack is interpreted as a multi-runtime delivery shape:
+
+- Android Compose client runtime
+- Go web BFF runtime
+- external `contacts-api` runtime
+
+Other repositories may instead adopt:
 
 - `typescript_application`
 - `go_service`
@@ -43,7 +49,7 @@ If a repository changes pack, record the decision in `decisions.md` and update t
 
 ## Core Intent
 
-Within this repository, the system should behave like a **native Android client** with an explicit API boundary to the contacts backend.
+Within this repository, the system should behave like a **native Android client** with an explicit BFF boundary to the contacts backend.
 
 It should prefer:
 
@@ -52,6 +58,7 @@ It should prefer:
 - ports and adapters over direct framework coupling
 - deterministic local simulation over distributed complexity
 - testability and inspectability over premature realism
+- a Go BFF boundary over direct Android-to-backend coupling
 
 This project is a **refinement environment**, not a microservices platform.
 
@@ -66,7 +73,8 @@ The project follows a layered approach:
 ```text
 UI Screens -------------> Use Cases -----------------> Domain Models
 MainActivity/Compose ---> Use Cases -----------------> Repositories (ports)
-                                       -------------> External API clients (ports)
+                                       -------------> Go BFF client (port)
+                                                       -------------> External API clients (ports)
 ```
 
 A more explicit view:
@@ -171,7 +179,7 @@ Some models span more than one runtime.
 
 Examples:
 
-- Android client plus external HTTP API
+- Android client plus Go BFF plus external HTTP API
 - simulation engine plus UI shell
 - event producer plus projection consumer
 
