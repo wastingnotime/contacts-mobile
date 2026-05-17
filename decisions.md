@@ -219,6 +219,27 @@ This is a policy compatibility update, not a feature change.
 - Status: superseded
 - Owners: both
 
+## DEC-0012 - Build A Debug APK In GitHub Actions
+
+- Date: 2026-05-17
+- Status: accepted
+- Owners: both
+
+### Context
+The repository needs a repeatable CI path that produces an APK a phone can install without requiring a full release-signing setup. The app already builds locally, but there was no pipeline artifact for sharing or sideloading.
+
+### Decision
+Add a GitHub Actions workflow that runs the Android unit tests, assembles the debug APK, and uploads the resulting APK as a workflow artifact. Keep the pipeline on the debug signing key for now so it works without extra secrets.
+
+### Consequences
+Anyone with access to the workflow run can download an installable APK artifact. The pipeline does not yet produce a Play-ready release APK, and it does not solve signing-key management.
+
+### Alternatives considered
+Build a signed release APK in CI. That was not chosen because the repository does not yet have a managed release keystore or secret-handling policy for distribution.
+
+### Notes
+If release distribution becomes necessary, add a separate signing flow and keep this debug artifact pipeline as the fast installable path.
+
 ### Context
 Android 16 is the desired platform target for the mobile client, and the current Android Gradle plugin line already supports API level 36.
 
