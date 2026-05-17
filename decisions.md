@@ -239,6 +239,7 @@ Build a signed release APK in CI. That was not chosen because the repository doe
 
 ### Notes
 If release distribution becomes necessary, add a separate signing flow and keep this debug artifact pipeline as the fast installable path.
+The workflow also opts into Node.js 24 for JavaScript-based actions so it stays clear of the current deprecation warning while `android-actions/setup-android` remains on `v3`.
 
 ### Context
 Android 16 is the desired platform target for the mobile client, and the current Android Gradle plugin line already supports API level 36.
