@@ -29,6 +29,7 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsStaleAcknowledgement`: the local acknowledgement that the stale indicator has been dismissed
 - `ContactsRepository`: the app port for retrieving contacts
 - `ContactsBffClient`: the infrastructure client that performs HTTP requests to the Go BFF
+- `ContactsBffBootstrap`: the interface-layer assembly that wires BFF base URL, API surface, auth headers, and client creation
 - `LoadContactById`: the use case for loading one contact from the backend
 - request claims headers: explicit claims-style headers sent with every contacts BFF request
 - `ContactsBffApiSurface`: the client-facing `/api` path prefix used by the BFF contract
@@ -40,6 +41,7 @@ The repository is a native Android client for the contacts product. Its current 
 - phone numbers
 - BFF base URL configuration
 - BFF API surface configuration
+- BFF bootstrap configuration
 
 ### Major State Transitions
 
