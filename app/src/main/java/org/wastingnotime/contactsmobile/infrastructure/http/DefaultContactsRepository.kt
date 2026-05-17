@@ -4,7 +4,7 @@ import org.wastingnotime.contactsmobile.application.ContactsRepository
 import org.wastingnotime.contactsmobile.domain.Contact
 
 class DefaultContactsRepository(
-    private val apiClient: ContactsApiClient,
+    private val apiClient: ContactsBffClient,
 ) : ContactsRepository {
     override suspend fun loadContacts(): List<Contact> {
         return apiClient.fetchContacts().map { it.toDomain() }

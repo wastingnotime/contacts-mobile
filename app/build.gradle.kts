@@ -7,18 +7,18 @@ android {
     namespace = "org.wastingnotime.contactsmobile"
     compileSdk = 36
 
-    val contactsApiEnvironment = providers.gradleProperty("contactsApiEnvironment")
+    val contactsBffEnvironment = providers.gradleProperty("contactsBffEnvironment")
         .orElse("emulator")
         .get()
         .trim()
         .lowercase()
-    val contactsApiEmulatorBaseUrl = providers.gradleProperty("contactsApiEmulatorBaseUrl")
+    val contactsBffEmulatorBaseUrl = providers.gradleProperty("contactsBffEmulatorBaseUrl")
         .orElse("http://10.0.2.2:8010")
         .get()
-    val contactsApiLocalDeviceBaseUrl = providers.gradleProperty("contactsApiLocalDeviceBaseUrl")
+    val contactsBffLocalDeviceBaseUrl = providers.gradleProperty("contactsBffLocalDeviceBaseUrl")
         .orElse("http://127.0.0.1:8010")
         .get()
-    val contactsApiProductionBaseUrl = providers.gradleProperty("contactsApiProductionBaseUrl")
+    val contactsBffProductionBaseUrl = providers.gradleProperty("contactsBffProductionBaseUrl")
         .orElse("")
         .get()
     val contactsApiAuthSubject = providers.gradleProperty("contactsApiAuthSubject")
@@ -28,11 +28,11 @@ android {
         .orElse("admin")
         .get()
 
-    require(contactsApiEnvironment in setOf("emulator", "local_device", "local-device", "device", "production")) {
-        "contactsApiEnvironment must be emulator, local_device, or production."
+    require(contactsBffEnvironment in setOf("emulator", "local_device", "local-device", "device", "production")) {
+        "contactsBffEnvironment must be emulator, local_device, or production."
     }
-    require(contactsApiEnvironment != "production" || contactsApiProductionBaseUrl.isNotBlank()) {
-        "contactsApiProductionBaseUrl must be set when contactsApiEnvironment=production."
+    require(contactsBffEnvironment != "production" || contactsBffProductionBaseUrl.isNotBlank()) {
+        "contactsBffProductionBaseUrl must be set when contactsBffEnvironment=production."
     }
 
     defaultConfig {
@@ -44,23 +44,43 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(
             "String",
+            "CONTACTS_BFF_ENVIRONMENT",
+            "\"$contactsBffEnvironment\"",
+        )
+        buildConfigField(
+            "String",
+            "CONTACTS_BFF_EMULATOR_BASE_URL",
+            "\"$contactsBffEmulatorBaseUrl\"",
+        )
+        buildConfigField(
+            "String",
+            "CONTACTS_BFF_LOCAL_DEVICE_BASE_URL",
+            "\"$contactsBffLocalDeviceBaseUrl\"",
+        )
+        buildConfigField(
+            "String",
+            "CONTACTS_BFF_PRODUCTION_BASE_URL",
+            "\"$contactsBffProductionBaseUrl\"",
+        )
+        buildConfigField(
+            "String",
             "CONTACTS_API_ENVIRONMENT",
-            "\"$contactsApiEnvironment\"",
+            "\"$contactsBffEnvironment\"",
         )
         buildConfigField(
             "String",
             "CONTACTS_API_EMULATOR_BASE_URL",
-            "\"$contactsApiEmulatorBaseUrl\"",
+            "\"$contactsBffEmulatorBaseUrl\"",
         )
         buildConfigField(
             "String",
             "CONTACTS_API_LOCAL_DEVICE_BASE_URL",
-            "\"$contactsApiLocalDeviceBaseUrl\"",
+            "\"$contactsBffLocalDeviceBaseUrl\"",
         )
         buildConfigField(
             "String",
             "CONTACTS_API_PRODUCTION_BASE_URL",
-            "\"$contactsApiProductionBaseUrl\"",
+            "\"$contactsBffProductionBaseUrl\"",
         )
         buildConfigField(
             "String",

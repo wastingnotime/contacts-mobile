@@ -12,10 +12,10 @@ import org.wastingnotime.contactsmobile.application.DeleteContact
 import org.wastingnotime.contactsmobile.application.UpdateContact
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthConfiguration
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeadersResolver
-import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlConfiguration
-import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiBaseUrlResolver
+import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffBaseUrlConfiguration
+import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffBaseUrlResolver
 import org.wastingnotime.contactsmobile.infrastructure.http.DefaultContactsRepository
-import org.wastingnotime.contactsmobile.infrastructure.http.HttpContactsApiClient
+import org.wastingnotime.contactsmobile.infrastructure.http.HttpContactsBffClient
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModel
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModelFactory
 
@@ -23,12 +23,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val baseUrl = ContactsApiBaseUrlResolver.resolve(
-            ContactsApiBaseUrlConfiguration(
-                environment = BuildConfig.CONTACTS_API_ENVIRONMENT,
-                emulatorBaseUrl = BuildConfig.CONTACTS_API_EMULATOR_BASE_URL,
-                localDeviceBaseUrl = BuildConfig.CONTACTS_API_LOCAL_DEVICE_BASE_URL,
-                productionBaseUrl = BuildConfig.CONTACTS_API_PRODUCTION_BASE_URL,
+        val baseUrl = ContactsBffBaseUrlResolver.resolve(
+            ContactsBffBaseUrlConfiguration(
+                environment = BuildConfig.CONTACTS_BFF_ENVIRONMENT,
+                emulatorBaseUrl = BuildConfig.CONTACTS_BFF_EMULATOR_BASE_URL,
+                localDeviceBaseUrl = BuildConfig.CONTACTS_BFF_LOCAL_DEVICE_BASE_URL,
+                productionBaseUrl = BuildConfig.CONTACTS_BFF_PRODUCTION_BASE_URL,
             ),
         )
         val authHeaders = ContactsApiAuthHeadersResolver.resolve(
@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 roles = BuildConfig.CONTACTS_API_AUTH_ROLES,
             ),
         )
-        val apiClient = HttpContactsApiClient(
+        val apiClient = HttpContactsBffClient(
             baseUrl = baseUrl,
             authHeaders = authHeaders,
         )

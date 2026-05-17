@@ -4,11 +4,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 
-class ContactsApiBaseUrlResolverTest {
+class ContactsBffBaseUrlResolverTest {
     @Test
     fun `resolves the emulator base url`() {
-        val baseUrl = ContactsApiBaseUrlResolver.resolve(
-            ContactsApiBaseUrlConfiguration(
+        val baseUrl = ContactsBffBaseUrlResolver.resolve(
+            ContactsBffBaseUrlConfiguration(
                 environment = "emulator",
                 emulatorBaseUrl = "http://10.0.2.2:8010",
                 localDeviceBaseUrl = "http://127.0.0.1:8010",
@@ -21,8 +21,8 @@ class ContactsApiBaseUrlResolverTest {
 
     @Test
     fun `resolves the local device base url`() {
-        val baseUrl = ContactsApiBaseUrlResolver.resolve(
-            ContactsApiBaseUrlConfiguration(
+        val baseUrl = ContactsBffBaseUrlResolver.resolve(
+            ContactsBffBaseUrlConfiguration(
                 environment = "local_device",
                 emulatorBaseUrl = "http://10.0.2.2:8010",
                 localDeviceBaseUrl = "http://192.168.1.40:8010",
@@ -36,8 +36,8 @@ class ContactsApiBaseUrlResolverTest {
     @Test
     fun `requires a configured production base url`() {
         try {
-            ContactsApiBaseUrlResolver.resolve(
-                ContactsApiBaseUrlConfiguration(
+            ContactsBffBaseUrlResolver.resolve(
+                ContactsBffBaseUrlConfiguration(
                     environment = "production",
                     emulatorBaseUrl = "http://10.0.2.2:8010",
                     localDeviceBaseUrl = "http://127.0.0.1:8010",
@@ -47,7 +47,7 @@ class ContactsApiBaseUrlResolverTest {
             fail("Expected production base url validation to fail.")
         } catch (exception: IllegalArgumentException) {
             assertEquals(
-                "contactsApiProductionBaseUrl must be configured when contactsApiEnvironment=production.",
+                "contactsBffProductionBaseUrl must be configured when contactsBffEnvironment=production.",
                 exception.message,
             )
         }
