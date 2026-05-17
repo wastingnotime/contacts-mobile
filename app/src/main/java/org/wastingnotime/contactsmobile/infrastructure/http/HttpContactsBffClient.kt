@@ -9,11 +9,12 @@ import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthHea
 
 class HttpContactsBffClient(
     private val baseUrl: String,
+    private val apiSurface: ContactsBffApiSurface,
     private val authHeaders: ContactsBffAuthHeaders,
     private val connectionFactory: (URL) -> HttpURLConnection = { it.openConnection() as HttpURLConnection },
 ) : ContactsBffClient {
     override suspend fun fetchContacts(): List<RemoteContact> = withContext(Dispatchers.IO) {
-        val connection = openConnection(ContactsBffRoutes.contactsList())
+        val connection = openConnection(apiSurface.contactsList())
         try {
             val statusCode = connection.responseCode
             if (statusCode !in 200..299) {
@@ -31,7 +32,7 @@ class HttpContactsBffClient(
     }
 
     override suspend fun fetchContactById(id: String): RemoteContact? = withContext(Dispatchers.IO) {
-        val connection = openConnection(ContactsBffRoutes.contactById(id))
+        val connection = openConnection(apiSurface.contactById(id))
         try {
             val statusCode = connection.responseCode
             when {
@@ -57,7 +58,7 @@ class HttpContactsBffClient(
         phoneNumber: String,
     ): RemoteContact = withContext(Dispatchers.IO) {
         val connection = openConnection(
-            path = ContactsBffRoutes.createContact(),
+            path = apiSurface.createContact(),
             method = "POST",
         )
         try {
@@ -91,7 +92,7 @@ class HttpContactsBffClient(
         phoneNumber: String,
     ): RemoteContact = withContext(Dispatchers.IO) {
         val connection = openConnection(
-            path = ContactsBffRoutes.updateContact(id),
+            path = apiSurface.updateContact(id),
             method = "PUT",
         )
         try {
@@ -120,7 +121,7 @@ class HttpContactsBffClient(
 
     override suspend fun deleteContact(id: String) = withContext(Dispatchers.IO) {
         val connection = openConnection(
-            path = ContactsBffRoutes.deleteContact(id),
+            path = apiSurface.deleteContact(id),
             method = "DELETE",
         )
         try {

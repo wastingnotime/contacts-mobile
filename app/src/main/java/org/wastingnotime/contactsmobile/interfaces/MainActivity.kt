@@ -14,6 +14,8 @@ import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthCon
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthHeadersResolver
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffBaseUrlConfiguration
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffBaseUrlResolver
+import org.wastingnotime.contactsmobile.infrastructure.http.ContactsBffApiSurfaceConfiguration
+import org.wastingnotime.contactsmobile.infrastructure.http.ContactsBffApiSurfaceResolver
 import org.wastingnotime.contactsmobile.infrastructure.http.DefaultContactsRepository
 import org.wastingnotime.contactsmobile.infrastructure.http.HttpContactsBffClient
 import org.wastingnotime.contactsmobile.interfaces.ui.ContactsViewModel
@@ -37,8 +39,14 @@ class MainActivity : ComponentActivity() {
                 roles = BuildConfig.CONTACTS_BFF_AUTH_ROLES,
             ),
         )
+        val apiSurface = ContactsBffApiSurfaceResolver.resolve(
+            ContactsBffApiSurfaceConfiguration(
+                apiPrefix = BuildConfig.CONTACTS_BFF_API_PREFIX,
+            ),
+        )
         val apiClient = HttpContactsBffClient(
             baseUrl = baseUrl,
+            apiSurface = apiSurface,
             authHeaders = authHeaders,
         )
         val repository = DefaultContactsRepository(apiClient)

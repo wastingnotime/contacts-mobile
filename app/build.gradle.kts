@@ -27,12 +27,18 @@ android {
     val contactsBffAuthRoles = providers.gradleProperty("contactsBffAuthRoles")
         .orElse("admin")
         .get()
+    val contactsBffApiPrefix = providers.gradleProperty("contactsBffApiPrefix")
+        .orElse("/api")
+        .get()
 
     require(contactsBffEnvironment in setOf("emulator", "local_device", "local-device", "device", "production")) {
         "contactsBffEnvironment must be emulator, local_device, or production."
     }
     require(contactsBffEnvironment != "production" || contactsBffProductionBaseUrl.isNotBlank()) {
         "contactsBffProductionBaseUrl must be set when contactsBffEnvironment=production."
+    }
+    require(contactsBffApiPrefix.trim().isNotBlank()) {
+        "contactsBffApiPrefix must not be blank."
     }
 
     defaultConfig {
@@ -71,6 +77,11 @@ android {
             "String",
             "CONTACTS_BFF_AUTH_ROLES",
             "\"$contactsBffAuthRoles\"",
+        )
+        buildConfigField(
+            "String",
+            "CONTACTS_BFF_API_PREFIX",
+            "\"$contactsBffApiPrefix\"",
         )
     }
 

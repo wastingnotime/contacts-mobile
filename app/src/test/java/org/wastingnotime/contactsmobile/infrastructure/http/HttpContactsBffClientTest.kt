@@ -30,6 +30,11 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
+            apiSurface = ContactsBffApiSurface.from(
+                ContactsBffApiSurfaceConfiguration(
+                    apiPrefix = "/api",
+                ),
+            ),
             authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
@@ -61,6 +66,11 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
+            apiSurface = ContactsBffApiSurface.from(
+                ContactsBffApiSurfaceConfiguration(
+                    apiPrefix = "/api",
+                ),
+            ),
             authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
@@ -92,6 +102,11 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
+            apiSurface = ContactsBffApiSurface.from(
+                ContactsBffApiSurfaceConfiguration(
+                    apiPrefix = "/api",
+                ),
+            ),
             authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
@@ -132,6 +147,11 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
+            apiSurface = ContactsBffApiSurface.from(
+                ContactsBffApiSurfaceConfiguration(
+                    apiPrefix = "/api",
+                ),
+            ),
             authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
@@ -166,6 +186,11 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
+            apiSurface = ContactsBffApiSurface.from(
+                ContactsBffApiSurfaceConfiguration(
+                    apiPrefix = "/api",
+                ),
+            ),
             authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
