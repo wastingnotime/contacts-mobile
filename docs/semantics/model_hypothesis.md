@@ -10,7 +10,7 @@ Use it during `extract`, `refine`, and `build` to define vocabulary, boundaries,
 
 ## Current Hypothesis
 
-The repository is a native Android client for the contacts product. Its current behavior is a contacts list experience with API-backed contact detail, create, edit, and delete flows. The app consumes the external `axiom-exp-contacts` API directly and keeps several pieces of presentation state local.
+The repository is a native Android client for the contacts product. Its current behavior is a contacts list experience with API-backed contact detail, create, edit, and delete flows. The app consumes the external `axiom-exp-contacts` system through a Go BFF, and keeps several pieces of presentation state local.
 
 ### Core Concepts
 
@@ -28,16 +28,16 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsFreshnessState`: the visible indicator for whether loaded data is fresh or stale
 - `ContactsStaleAcknowledgement`: the local acknowledgement that the stale indicator has been dismissed
 - `ContactsRepository`: the app port for retrieving contacts
-- `ContactsApiClient`: the infrastructure client that performs HTTP requests
+- `ContactsBffClient`: the infrastructure client that performs HTTP requests to the Go BFF
 - `LoadContactById`: the use case for loading one contact from the backend
-- request claims headers: explicit claims-style headers sent with every contacts API request
+- request claims headers: explicit claims-style headers sent with every contacts BFF request
 
 ### Key Value Objects
 
 - contact identifiers
 - first and last names
 - phone numbers
-- base URL configuration
+- BFF base URL configuration
 
 ### Major State Transitions
 
@@ -53,6 +53,7 @@ The repository is a native Android client for the contacts product. Its current 
 - making stale preserved data explicit after a transient refresh or reload failure
 - dismissing a stale-data indicator after the user has acknowledged the warning, independently for list and detail surfaces
 - moving from error to retry and back to loading
+- forwarding list and detail requests through the BFF boundary before they reach `contacts-api`
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
 - moving from detail error or not-found back to loading on retry
