@@ -1,4 +1,0 @@
-package org.wastingnotime.contactsmobile.infrastructure.config
-
-typealias ContactsApiBaseUrlConfiguration = ContactsBffBaseUrlConfiguration
-typealias ContactsApiBaseUrlResolver = ContactsBffBaseUrlResolver

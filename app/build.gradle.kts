@@ -64,26 +64,6 @@ android {
         )
         buildConfigField(
             "String",
-            "CONTACTS_API_ENVIRONMENT",
-            "\"$contactsBffEnvironment\"",
-        )
-        buildConfigField(
-            "String",
-            "CONTACTS_API_EMULATOR_BASE_URL",
-            "\"$contactsBffEmulatorBaseUrl\"",
-        )
-        buildConfigField(
-            "String",
-            "CONTACTS_API_LOCAL_DEVICE_BASE_URL",
-            "\"$contactsBffLocalDeviceBaseUrl\"",
-        )
-        buildConfigField(
-            "String",
-            "CONTACTS_API_PRODUCTION_BASE_URL",
-            "\"$contactsBffProductionBaseUrl\"",
-        )
-        buildConfigField(
-            "String",
             "CONTACTS_API_AUTH_SUBJECT",
             "\"$contactsApiAuthSubject\"",
         )

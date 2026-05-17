@@ -11,7 +11,7 @@ import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class HttpContactsApiClientTest {
+class HttpContactsBffClientTest {
     @Test
     fun `attaches auth headers to list requests`() = runTest {
         val connection = RecordingHttpURLConnection(
@@ -28,7 +28,7 @@ class HttpContactsApiClientTest {
                 ]
             """.trimIndent(),
         )
-        val client = HttpContactsApiClient(
+        val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
             authHeaders = ContactsApiAuthHeaders(
                 subject = "admin-user",
@@ -58,7 +58,7 @@ class HttpContactsApiClientTest {
                 }
             """.trimIndent(),
         )
-        val client = HttpContactsApiClient(
+        val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
             authHeaders = ContactsApiAuthHeaders(
                 subject = "admin-user",
@@ -88,7 +88,7 @@ class HttpContactsApiClientTest {
                 }
             """.trimIndent(),
         )
-        val client = HttpContactsApiClient(
+        val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
             authHeaders = ContactsApiAuthHeaders(
                 subject = "admin-user",
@@ -127,7 +127,7 @@ class HttpContactsApiClientTest {
                 }
             """.trimIndent(),
         )
-        val client = HttpContactsApiClient(
+        val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
             authHeaders = ContactsApiAuthHeaders(
                 subject = "admin-user",
@@ -160,7 +160,7 @@ class HttpContactsApiClientTest {
             responseCodeValue = HttpURLConnection.HTTP_NO_CONTENT,
             responseBody = "",
         )
-        val client = HttpContactsApiClient(
+        val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
             authHeaders = ContactsApiAuthHeaders(
                 subject = "admin-user",

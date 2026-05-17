@@ -9,7 +9,7 @@ class DefaultContactsRepositoryTest {
     @Test
     fun `maps remote contacts into domain contacts`() = runTest {
         val repository = DefaultContactsRepository(
-            apiClient = FakeContactsApiClient(
+            apiClient = FakeContactsBffClient(
                 listOf(
                     RemoteContact(
                         id = "contact-1",
@@ -39,7 +39,7 @@ class DefaultContactsRepositoryTest {
     @Test
     fun `maps a remote contact by id into a domain contact`() = runTest {
         val repository = DefaultContactsRepository(
-            apiClient = FakeContactsApiClient(
+            apiClient = FakeContactsBffClient(
                 listOf(
                     RemoteContact(
                         id = "contact-1",
@@ -67,7 +67,7 @@ class DefaultContactsRepositoryTest {
     @Test
     fun `returns null when a remote contact is missing`() = runTest {
         val repository = DefaultContactsRepository(
-            apiClient = FakeContactsApiClient(emptyList()),
+            apiClient = FakeContactsBffClient(emptyList()),
         )
 
         val contact = repository.loadContactById("missing-contact")
@@ -78,7 +78,7 @@ class DefaultContactsRepositoryTest {
     @Test
     fun `maps a created remote contact into a domain contact`() = runTest {
         val repository = DefaultContactsRepository(
-            apiClient = FakeContactsApiClient(
+            apiClient = FakeContactsBffClient(
                 contacts = emptyList(),
                 createdContact = RemoteContact(
                     id = "contact-3",
@@ -109,7 +109,7 @@ class DefaultContactsRepositoryTest {
     @Test
     fun `maps an updated remote contact into a domain contact`() = runTest {
         val repository = DefaultContactsRepository(
-            apiClient = FakeContactsApiClient(
+            apiClient = FakeContactsBffClient(
                 contacts = emptyList(),
                 updatedContact = RemoteContact(
                     id = "contact-3",
@@ -139,11 +139,11 @@ class DefaultContactsRepositoryTest {
     }
 }
 
-private class FakeContactsApiClient(
+private class FakeContactsBffClient(
     private val contacts: List<RemoteContact>,
     private val createdContact: RemoteContact? = null,
     private val updatedContact: RemoteContact? = null,
-) : ContactsApiClient {
+) : ContactsBffClient {
     override suspend fun fetchContacts(): List<RemoteContact> = contacts
 
     override suspend fun fetchContactById(id: String): RemoteContact? = contacts.firstOrNull { it.id == id }
