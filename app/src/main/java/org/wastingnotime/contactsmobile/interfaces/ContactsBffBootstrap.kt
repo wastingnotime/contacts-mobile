@@ -20,13 +20,13 @@ data class ContactsBffBootstrapConfiguration(
     val apiPrefix: String,
 )
 
-data class ContactsBffBootstrap(
+data class ContactsBootstrap(
     val viewModelFactory: ContactsViewModelFactory,
 )
 
-object ContactsBffBootstrapAssembly {
-    fun assemble(viewModelFactory: ContactsViewModelFactory): ContactsBffBootstrap {
-        return ContactsBffBootstrap(viewModelFactory = viewModelFactory)
+object ContactsBootstrapAssembly {
+    fun assemble(viewModelFactory: ContactsViewModelFactory): ContactsBootstrap {
+        return ContactsBootstrap(viewModelFactory = viewModelFactory)
     }
 }
 
@@ -70,14 +70,14 @@ object ContactsBffBootstrapDependenciesResolver {
 }
 
 object ContactsBffBootstrapper {
-    fun build(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrap {
+    fun build(configuration: ContactsBffBootstrapConfiguration): ContactsBootstrap {
         val dependencies = ContactsBffBootstrapDependenciesResolver.resolve(configuration)
         val useCases = ContactsBffUseCaseAssembly.assemble(dependencies.repository)
         val factory = ContactsBffViewModelFactoryAssembly.assemble(useCases)
-        return ContactsBffBootstrapAssembly.assemble(factory)
+        return ContactsBootstrapAssembly.assemble(factory)
     }
 
-    fun build(): ContactsBffBootstrap {
+    fun build(): ContactsBootstrap {
         return build(
             ContactsBffBootstrapConfigurationResolver.resolve(
                 ContactsBffBootstrapBuildConfigurationSource.resolve(),

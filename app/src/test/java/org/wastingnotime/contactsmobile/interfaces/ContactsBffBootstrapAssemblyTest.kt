@@ -4,16 +4,17 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
-class ContactsBffBootstrapAssemblyTest {
+class ContactsBootstrapAssemblyTest {
     @Test
-    fun `assembles the final contacts bff bootstrap from a view model factory`() {
-        val bootstrap = ContactsBffBootstrapAssembly.assemble(
+    fun `assembles the final contacts bootstrap from a view model factory`() {
+        val bootstrap = ContactsBootstrapAssembly.assemble(
             ContactsBffViewModelFactoryAssembly.assemble(
                 ContactsBffUseCaseAssembly.assemble(NoOpContactsRepository),
             ),
         )
 
         assertNotNull(bootstrap.viewModelFactory)
+        assertEquals("ContactsBootstrap", bootstrap::class.simpleName)
         assertEquals("ContactsViewModelFactory", bootstrap.viewModelFactory::class.simpleName)
     }
 }
