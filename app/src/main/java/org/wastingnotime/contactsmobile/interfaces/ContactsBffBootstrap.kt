@@ -29,8 +29,13 @@ data class ContactsBffBootstrap(
     val viewModelFactory: ContactsViewModelFactory,
 )
 
-object ContactsBffBootstrapper {
-    fun build(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrap {
+data class ContactsBffBootstrapDependencies(
+    val apiClient: HttpContactsBffClient,
+    val repository: DefaultContactsRepository,
+)
+
+object ContactsBffBootstrapDependenciesResolver {
+    fun resolve(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrapDependencies {
         val baseUrl = ContactsBffBaseUrlResolver.resolve(
             ContactsBffBaseUrlConfiguration(
                 environment = configuration.environment,
@@ -56,6 +61,17 @@ object ContactsBffBootstrapper {
             authHeaders = authHeaders,
         )
         val repository = DefaultContactsRepository(apiClient)
+        return ContactsBffBootstrapDependencies(
+            apiClient = apiClient,
+            repository = repository,
+        )
+    }
+}
+
+object ContactsBffBootstrapper {
+    fun build(configuration: ContactsBffBootstrapConfiguration): ContactsBffBootstrap {
+        val dependencies = ContactsBffBootstrapDependenciesResolver.resolve(configuration)
+        val repository = dependencies.repository
         val loadContacts = LoadContacts(repository)
         val loadContactById = LoadContactById(repository)
         val createContact = CreateContact(repository)
