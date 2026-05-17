@@ -12,9 +12,10 @@ Shifted the Android client transport seam from a direct contacts API shape to a 
   - `ContactsBffBaseUrlConfiguration`
   - `ContactsBffBaseUrlResolver`
 - Updated `DefaultContactsRepository` and `MainActivity` to use the BFF seam explicitly
-- Added BFF build config fields alongside the existing API-named fields so the app can resolve the BFF base URL from Gradle properties
+- Added BFF build config fields so the app can resolve the BFF base URL and BFF auth headers from Gradle properties
 - Updated the BFF base URL resolver test to validate the new BFF-specific configuration messages
 - Removed the temporary `ContactsApi*` compatibility aliases and renamed the affected tests so the codebase now uses the BFF vocabulary consistently
+- Renamed the auth configuration and headers types and test file to the BFF naming convention
 
 ## Validation
 

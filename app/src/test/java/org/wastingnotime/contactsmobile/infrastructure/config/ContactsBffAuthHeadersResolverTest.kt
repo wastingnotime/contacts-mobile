@@ -4,18 +4,18 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 
-class ContactsApiAuthHeadersResolverTest {
+class ContactsBffAuthHeadersResolverTest {
     @Test
     fun `resolves default admin claims`() {
-        val headers = ContactsApiAuthHeadersResolver.resolve(
-            ContactsApiAuthConfiguration(
+        val headers = ContactsBffAuthHeadersResolver.resolve(
+            ContactsBffAuthConfiguration(
                 subject = "admin-user",
                 roles = "admin",
             ),
         )
 
         assertEquals(
-            ContactsApiAuthHeaders(
+            ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
             ),
@@ -26,30 +26,30 @@ class ContactsApiAuthHeadersResolverTest {
     @Test
     fun `fails when the subject is blank`() {
         try {
-            ContactsApiAuthHeadersResolver.resolve(
-                ContactsApiAuthConfiguration(
+            ContactsBffAuthHeadersResolver.resolve(
+                ContactsBffAuthConfiguration(
                     subject = "   ",
                     roles = "admin",
                 ),
             )
             fail("Expected subject validation to fail.")
         } catch (exception: IllegalArgumentException) {
-            assertEquals("contactsApiAuthSubject must not be blank.", exception.message)
+            assertEquals("contactsBffAuthSubject must not be blank.", exception.message)
         }
     }
 
     @Test
     fun `fails when the roles are blank`() {
         try {
-            ContactsApiAuthHeadersResolver.resolve(
-                ContactsApiAuthConfiguration(
+            ContactsBffAuthHeadersResolver.resolve(
+                ContactsBffAuthConfiguration(
                     subject = "admin-user",
                     roles = "   ",
                 ),
             )
             fail("Expected roles validation to fail.")
         } catch (exception: IllegalArgumentException) {
-            assertEquals("contactsApiAuthRoles must not be blank.", exception.message)
+            assertEquals("contactsBffAuthRoles must not be blank.", exception.message)
         }
     }
 }

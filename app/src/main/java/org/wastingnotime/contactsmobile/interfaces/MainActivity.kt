@@ -10,8 +10,8 @@ import org.wastingnotime.contactsmobile.application.LoadContacts
 import org.wastingnotime.contactsmobile.application.CreateContact
 import org.wastingnotime.contactsmobile.application.DeleteContact
 import org.wastingnotime.contactsmobile.application.UpdateContact
-import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthConfiguration
-import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeadersResolver
+import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthConfiguration
+import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthHeadersResolver
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffBaseUrlConfiguration
 import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffBaseUrlResolver
 import org.wastingnotime.contactsmobile.infrastructure.http.DefaultContactsRepository
@@ -31,10 +31,10 @@ class MainActivity : ComponentActivity() {
                 productionBaseUrl = BuildConfig.CONTACTS_BFF_PRODUCTION_BASE_URL,
             ),
         )
-        val authHeaders = ContactsApiAuthHeadersResolver.resolve(
-            ContactsApiAuthConfiguration(
-                subject = BuildConfig.CONTACTS_API_AUTH_SUBJECT,
-                roles = BuildConfig.CONTACTS_API_AUTH_ROLES,
+        val authHeaders = ContactsBffAuthHeadersResolver.resolve(
+            ContactsBffAuthConfiguration(
+                subject = BuildConfig.CONTACTS_BFF_AUTH_SUBJECT,
+                roles = BuildConfig.CONTACTS_BFF_AUTH_ROLES,
             ),
         )
         val apiClient = HttpContactsBffClient(

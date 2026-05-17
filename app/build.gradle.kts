@@ -21,10 +21,10 @@ android {
     val contactsBffProductionBaseUrl = providers.gradleProperty("contactsBffProductionBaseUrl")
         .orElse("")
         .get()
-    val contactsApiAuthSubject = providers.gradleProperty("contactsApiAuthSubject")
+    val contactsBffAuthSubject = providers.gradleProperty("contactsBffAuthSubject")
         .orElse("admin-user")
         .get()
-    val contactsApiAuthRoles = providers.gradleProperty("contactsApiAuthRoles")
+    val contactsBffAuthRoles = providers.gradleProperty("contactsBffAuthRoles")
         .orElse("admin")
         .get()
 
@@ -64,13 +64,13 @@ android {
         )
         buildConfigField(
             "String",
-            "CONTACTS_API_AUTH_SUBJECT",
-            "\"$contactsApiAuthSubject\"",
+            "CONTACTS_BFF_AUTH_SUBJECT",
+            "\"$contactsBffAuthSubject\"",
         )
         buildConfigField(
             "String",
-            "CONTACTS_API_AUTH_ROLES",
-            "\"$contactsApiAuthRoles\"",
+            "CONTACTS_BFF_AUTH_ROLES",
+            "\"$contactsBffAuthRoles\"",
         )
     }
 

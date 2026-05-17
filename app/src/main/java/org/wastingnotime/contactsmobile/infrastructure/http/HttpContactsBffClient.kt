@@ -6,11 +6,11 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
-import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeaders
+import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthHeaders
 
 class HttpContactsBffClient(
     private val baseUrl: String,
-    private val authHeaders: ContactsApiAuthHeaders,
+    private val authHeaders: ContactsBffAuthHeaders,
     private val connectionFactory: (URL) -> HttpURLConnection = { it.openConnection() as HttpURLConnection },
 ) : ContactsBffClient {
     override suspend fun fetchContacts(): List<RemoteContact> = withContext(Dispatchers.IO) {

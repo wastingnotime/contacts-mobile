@@ -1,11 +1,11 @@
 package org.wastingnotime.contactsmobile.infrastructure.config
 
-data class ContactsApiAuthConfiguration(
+data class ContactsBffAuthConfiguration(
     val subject: String,
     val roles: String,
 )
 
-data class ContactsApiAuthHeaders(
+data class ContactsBffAuthHeaders(
     val subject: String,
     val roles: String,
 ) {
@@ -15,19 +15,19 @@ data class ContactsApiAuthHeaders(
     }
 }
 
-object ContactsApiAuthHeadersResolver {
-    fun resolve(configuration: ContactsApiAuthConfiguration): ContactsApiAuthHeaders {
+object ContactsBffAuthHeadersResolver {
+    fun resolve(configuration: ContactsBffAuthConfiguration): ContactsBffAuthHeaders {
         val subject = configuration.subject.trim()
         require(subject.isNotBlank()) {
-            "contactsApiAuthSubject must not be blank."
+            "contactsBffAuthSubject must not be blank."
         }
 
         val roles = configuration.roles.trim()
         require(roles.isNotBlank()) {
-            "contactsApiAuthRoles must not be blank."
+            "contactsBffAuthRoles must not be blank."
         }
 
-        return ContactsApiAuthHeaders(
+        return ContactsBffAuthHeaders(
             subject = subject,
             roles = roles,
         )

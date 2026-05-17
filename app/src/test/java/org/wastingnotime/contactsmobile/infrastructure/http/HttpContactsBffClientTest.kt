@@ -1,6 +1,6 @@
 package org.wastingnotime.contactsmobile.infrastructure.http
 
-import org.wastingnotime.contactsmobile.infrastructure.config.ContactsApiAuthHeaders
+import org.wastingnotime.contactsmobile.infrastructure.config.ContactsBffAuthHeaders
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -30,7 +30,7 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
-            authHeaders = ContactsApiAuthHeaders(
+            authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
             ),
@@ -60,7 +60,7 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
-            authHeaders = ContactsApiAuthHeaders(
+            authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
             ),
@@ -90,7 +90,7 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
-            authHeaders = ContactsApiAuthHeaders(
+            authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
             ),
@@ -129,7 +129,7 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
-            authHeaders = ContactsApiAuthHeaders(
+            authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
             ),
@@ -162,7 +162,7 @@ class HttpContactsBffClientTest {
         )
         val client = HttpContactsBffClient(
             baseUrl = "http://example.com",
-            authHeaders = ContactsApiAuthHeaders(
+            authHeaders = ContactsBffAuthHeaders(
                 subject = "admin-user",
                 roles = "admin",
             ),
