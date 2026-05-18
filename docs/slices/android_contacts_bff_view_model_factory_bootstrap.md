@@ -9,7 +9,7 @@
 
 ## Discovery Scope
 
-Keep the current BFF startup behavior intact while moving the final `ContactsBffBootstrap` wrapping step into one explicit interface-layer assembly:
+Keep the current repository-owned BFF startup behavior intact while moving the final `ContactsBffBootstrap` wrapping step into one explicit interface-layer assembly:
 
 - preserve the existing contacts flows and startup behavior
 - keep raw build-value sourcing, startup normalization, dependency resolution, use-case assembly, and factory assembly unchanged
@@ -43,7 +43,7 @@ The use cases should still run exactly as before, but the app should produce the
 - `ContactsBffBootstrapDependencies`
 - `ContactsBffBootstrapConfigurationResolver`
 - `ContactsBffBootstrapBuildConfigurationSource`
-- optional final bootstrap assembly object for BFF startup
+- optional final bootstrap assembly object for repository-owned BFF startup
 
 ## Initial Test Plan
 
@@ -54,7 +54,7 @@ The use cases should still run exactly as before, but the app should produce the
 
 ## Scenario Definition
 
-Given valid build values, the app should source raw startup values once, normalize them once, resolve BFF dependencies once, assemble application use cases once, assemble the view-model factory once, wrap the final bootstrap once, and reach the existing UI with no visible behavior change.
+Given valid build values, the app should source raw startup values once, normalize them once, resolve repository-owned BFF dependencies once, assemble application use cases once, assemble the view-model factory once, wrap the final bootstrap once, and reach the existing UI with no visible behavior change.
 
 If build values are invalid, the startup flow should fail clearly before the app tries to construct a partial client, repository, use-case graph, UI factory, or final bootstrap object.
 
@@ -63,4 +63,4 @@ If build values are invalid, the startup flow should fail clearly before the app
 - the app module compiles in the Android Gradle project shape
 - the final bootstrap object lives in one explicit interface-layer assembly object
 - deterministic tests cover final bootstrap assembly and the existing startup resolution seams
-- the repository documents the Android pack and BFF final-bootstrap boundary explicitly
+- the repository documents the Android pack and repository-owned BFF final-bootstrap boundary explicitly

@@ -9,10 +9,10 @@
 
 ## Discovery Scope
 
-Keep the current BFF startup behavior intact while moving raw `BuildConfig` reading into one explicit source object:
+Keep the current repository-owned BFF startup behavior intact while moving raw `BuildConfig` reading into one explicit source object:
 
 - preserve the existing contacts flows and bootstrap assembly
-- read BFF startup values from `BuildConfig` in one place only
+- read repository-owned BFF startup values from `BuildConfig` in one place only
 - hand the bootstrapper a dedicated raw startup configuration instead of embedding `BuildConfig` access in the bootstrapper
 - keep `MainActivity` thin and unchanged as a UI entry point
 
@@ -28,7 +28,7 @@ This slice changes the startup source for the existing contacts use cases:
 - `UpdateContact`
 - `DeleteContact`
 
-The use cases should still run exactly as before, but the app should obtain raw BFF startup values through one dedicated source before those values are normalized by the configuration resolver.
+The use cases should still run exactly as before, but the app should obtain raw repository-owned BFF startup values through one dedicated source before those values are normalized by the configuration resolver.
 
 ## Main Business Rules
 
@@ -41,12 +41,12 @@ The use cases should still run exactly as before, but the app should obtain raw 
 
 - `ContactsBffBootstrapConfigurationResolver`
 - `ContactsBffBootstrapBuildConfiguration`
-- optional build-configuration source or startup value object for BFF bootstrapping
+- optional build-configuration source or startup value object for repository-owned BFF bootstrapping
 
 ## Initial Test Plan
 
 - verify the build-configuration source maps `BuildConfig` values into the raw startup configuration
-- verify the bootstrapper still assembles the BFF client and repository from the normalized configuration
+- verify the bootstrapper still assembles the repository-owned BFF client and repository from the normalized configuration
 - verify invalid startup values still fail early in the existing configuration-resolution seam
 - verify `MainActivity` continues to delegate through the bootstrap seam without knowing `BuildConfig`
 
@@ -61,4 +61,4 @@ If build values are invalid, the startup flow should fail clearly before the app
 - the app module compiles in the Android Gradle project shape
 - raw `BuildConfig` reading lives in one explicit bootstrap-source seam instead of in the bootstrapper
 - deterministic tests cover build-configuration sourcing and the existing normalization seam
-- the repository documents the Android pack and BFF startup-source boundary explicitly
+- the repository documents the Android pack and repository-owned BFF startup-source boundary explicitly

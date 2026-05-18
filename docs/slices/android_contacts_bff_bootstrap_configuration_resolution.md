@@ -9,12 +9,12 @@
 
 ## Discovery Scope
 
-Keep the current BFF startup behavior intact while moving `BuildConfig` mapping into one explicit configuration resolver:
+Keep the current repository-owned BFF startup behavior intact while moving `BuildConfig` mapping into one explicit configuration resolver:
 
 - preserve the current contacts flows and bootstrap assembly
-- resolve the BFF bootstrap configuration from app build values in one place
+- resolve the repository-owned BFF bootstrap configuration from app build values in one place
 - keep `MainActivity` thin by handing it an already-resolved bootstrap configuration
-- keep invalid BFF startup values failing early and clearly
+- keep invalid repository-owned BFF startup values failing early and clearly
 
 ## Use-Case Contract
 
@@ -41,7 +41,7 @@ The use cases should still run exactly as before, but the bootstrap configuratio
 
 - `ContactsRepository`
 - `ContactsBffClient`
-- optional startup configuration resolver or value object for BFF bootstrapping
+- optional startup configuration resolver or value object for repository-owned BFF bootstrapping
 
 ## Initial Test Plan
 
@@ -52,7 +52,7 @@ The use cases should still run exactly as before, but the bootstrap configuratio
 
 ## Scenario Definition
 
-Given valid build values, the app should resolve BFF startup configuration once, bootstrap the contacts client, and reach the existing UI with no visible behavior change.
+Given valid build values, the app should resolve repository-owned BFF startup configuration once, bootstrap the contacts client, and reach the existing UI with no visible behavior change.
 
 If build values are invalid, the resolver or bootstrap should fail clearly before the app tries to construct a partial client.
 
@@ -61,4 +61,4 @@ If build values are invalid, the resolver or bootstrap should fail clearly befor
 - the app module compiles in the Android Gradle project shape
 - BuildConfig mapping lives in one explicit bootstrap-configuration resolver
 - deterministic tests cover valid and invalid startup configuration resolution
-- the repository documents the Android pack and BFF startup boundary explicitly
+- the repository documents the Android pack and repository-owned BFF startup boundary explicitly

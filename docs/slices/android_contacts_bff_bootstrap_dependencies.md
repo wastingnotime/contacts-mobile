@@ -9,11 +9,11 @@
 
 ## Discovery Scope
 
-Keep the current BFF startup behavior intact while moving the resolved BFF dependency graph into one explicit interface-layer value object:
+Keep the current repository-owned BFF startup behavior intact while moving the resolved BFF dependency graph into one explicit interface-layer value object:
 
 - preserve the existing contacts flows and startup behavior
 - keep raw build-value sourcing and startup configuration resolution unchanged
-- assemble the resolved BFF client and repository in one place
+- assemble the repository-owned BFF client and repository in one place
 - keep `ContactsBffBootstrapper` focused on turning dependencies into the final UI bootstrap
 
 ## Use-Case Contract
@@ -28,7 +28,7 @@ This slice changes the resolved dependency graph for the existing contacts use c
 - `UpdateContact`
 - `DeleteContact`
 
-The use cases should still run exactly as before, but the app should group the resolved BFF client and repository into one explicit dependency object before creating the view-model factory.
+The use cases should still run exactly as before, but the app should group the repository-owned BFF client and repository into one explicit dependency object before creating the view-model factory.
 
 ## Main Business Rules
 
@@ -43,24 +43,24 @@ The use cases should still run exactly as before, but the app should group the r
 - `ContactsRepository`
 - `ContactsBffBootstrapConfigurationResolver`
 - `ContactsBffBootstrapBuildConfigurationSource`
-- optional BFF dependency value object for startup assembly
+- optional repository-owned BFF dependency value object for startup assembly
 
 ## Initial Test Plan
 
-- verify the dependency object groups the resolved BFF client and repository
+- verify the dependency object groups the repository-owned BFF client and repository
 - verify the bootstrapper still assembles the final UI bootstrap from those resolved dependencies
 - verify invalid startup configuration still fails in the existing resolution seam
 - verify the build-configuration source and configuration resolver tests still pass unchanged
 
 ## Scenario Definition
 
-Given valid build values, the app should source raw startup values once, normalize them once, assemble the resolved BFF dependency graph once, and reach the existing UI with no visible behavior change.
+Given valid build values, the app should source raw startup values once, normalize them once, assemble the repository-owned BFF dependency graph once, and reach the existing UI with no visible behavior change.
 
 If build values are invalid, the startup flow should fail clearly before the app tries to construct a partial client or repository.
 
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- resolved BFF dependencies live in one explicit interface-layer value object
+- repository-owned BFF dependencies live in one explicit interface-layer value object
 - deterministic tests cover dependency assembly and the existing startup resolution seams
-- the repository documents the Android pack and BFF dependency boundary explicitly
+- the repository documents the Android pack and repository-owned BFF dependency boundary explicitly

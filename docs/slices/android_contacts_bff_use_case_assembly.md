@@ -9,7 +9,7 @@
 
 ## Discovery Scope
 
-Keep the current BFF startup behavior intact while moving the application use-case construction into one explicit interface-layer assembly:
+Keep the current repository-owned BFF startup behavior intact while moving the application use-case construction into one explicit interface-layer assembly:
 
 - preserve the existing contacts flows and startup behavior
 - keep raw build-value sourcing, startup normalization, and dependency resolution unchanged
@@ -43,7 +43,7 @@ The use cases should still run exactly as before, but the app should construct t
 - `ContactsBffBootstrapDependencies`
 - `ContactsBffBootstrapConfigurationResolver`
 - `ContactsBffBootstrapBuildConfigurationSource`
-- optional use-case assembly object for BFF startup
+- optional use-case assembly object for repository-owned BFF startup
 
 ## Initial Test Plan
 
@@ -54,7 +54,7 @@ The use cases should still run exactly as before, but the app should construct t
 
 ## Scenario Definition
 
-Given valid build values, the app should source raw startup values once, normalize them once, resolve BFF dependencies once, assemble application use cases once, and reach the existing UI with no visible behavior change.
+Given valid build values, the app should source raw startup values once, normalize them once, resolve repository-owned BFF dependencies once, assemble application use cases once, and reach the existing UI with no visible behavior change.
 
 If build values are invalid, the startup flow should fail clearly before the app tries to construct a partial client, repository, or use-case graph.
 
@@ -63,4 +63,4 @@ If build values are invalid, the startup flow should fail clearly before the app
 - the app module compiles in the Android Gradle project shape
 - application use cases live in one explicit interface-layer assembly object
 - deterministic tests cover use-case assembly and the existing startup resolution seams
-- the repository documents the Android pack and BFF use-case boundary explicitly
+- the repository documents the Android pack and repository-owned BFF use-case boundary explicitly

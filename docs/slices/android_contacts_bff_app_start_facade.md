@@ -9,12 +9,12 @@
 
 ## Discovery Scope
 
-Keep the current BFF startup behavior intact while moving the `MainActivity` startup handoff into one explicit interface-layer facade:
+Keep the current repository-owned BFF startup behavior intact while moving the `MainActivity` startup handoff into one explicit interface-layer facade:
 
 - preserve the existing contacts flows and startup behavior
 - keep raw build-value sourcing, startup normalization, dependency resolution, use-case assembly, factory assembly, and final bootstrap assembly unchanged
 - expose one startup facade that returns the final `ContactsBffBootstrap`
-- keep `MainActivity` dependent on one app-start object instead of the bootstrapper name
+- keep `MainActivity` dependent on one app-start object instead of the repository-owned BFF bootstrapper name
 
 ## Use-Case Contract
 
@@ -48,13 +48,13 @@ The use cases should still run exactly as before, but the activity should start 
 ## Initial Test Plan
 
 - verify the app-start facade returns the final `ContactsBffBootstrap`
-- verify `MainActivity` can depend on the facade instead of the bootstrapper name
+- verify `MainActivity` can depend on the facade instead of the repository-owned BFF bootstrapper name
 - verify invalid startup configuration still fails in the existing resolution seam
 - verify the build-configuration source, configuration resolver, dependency resolver, use-case assembly, factory assembly, and final bootstrap tests still pass unchanged
 
 ## Scenario Definition
 
-Given valid build values, the app should source raw startup values once, normalize them once, resolve BFF dependencies once, assemble application use cases once, assemble the view-model factory once, wrap the final bootstrap once, hand that bootstrap through one startup facade, and reach the existing UI with no visible behavior change.
+Given valid build values, the app should source raw startup values once, normalize them once, resolve repository-owned BFF dependencies once, assemble application use cases once, assemble the view-model factory once, wrap the final bootstrap once, hand that bootstrap through one startup facade, and reach the existing UI with no visible behavior change.
 
 If build values are invalid, the startup flow should fail clearly before the app tries to construct a partial client, repository, use-case graph, UI factory, or final bootstrap object.
 
