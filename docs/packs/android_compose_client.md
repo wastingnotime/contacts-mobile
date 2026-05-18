@@ -49,6 +49,10 @@ app/
     infrastructure/
     interfaces/
 
+server/
+  cmd/
+  internal/
+
 scripts/
 ```
 
@@ -110,6 +114,7 @@ scripts/
 - keep API parsing separate from rendering
 - make the base URL configurable
 - favor deterministic test fixtures over live backend assumptions
+- keep the Go BFF runtime in a separate top-level `server/` tree rather than hiding it inside the Android module
 
 ---
 

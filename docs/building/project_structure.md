@@ -83,6 +83,7 @@ project_root/
     changes/
 
   app/                         # Android app module for the selected mobile pack
+  server/                      # Go BFF runtime module for the selected mobile pack
   build.gradle.kts
   settings.gradle.kts
   gradle.properties

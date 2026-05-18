@@ -44,6 +44,10 @@ Use `docs/operating/emulator_smoke_test_runbook.md` for emulator validation.
 
 Backend simulation for that flow comes from `../runtime-sandbox`.
 
+## BFF Runtime
+
+Use `docs/operating/contacts_bff_runtime_runbook.md` for the local Go BFF startup command and required environment.
+
 ## Campaign Notifications
 
 Campaign issues use GitHub Actions in:
