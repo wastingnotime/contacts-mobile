@@ -318,3 +318,25 @@ Keep the Android app pointed directly at `contacts-api`. That was rejected becau
 
 ### Notes
 The BFF should be implemented in Go to match the sibling web repository's server-side boundary style. The initial implementation can stay close to the backend contract, but the boundary should remain owned by the mobile stack rather than treated as a temporary proxy with no future design intent.
+See `DEC-0013` for the repository-ownership clarification.
+
+## DEC-0013 - Own The Go BFF In This Repository
+
+- Date: 2026-05-18
+- Status: accepted
+- Owners: both
+
+### Context
+The repository model had already moved mobile traffic through a Go BFF, but the surrounding docs still described that BFF as if it lived outside this repository. That made the repository boundary unclear and left the architecture inconsistent with the intended ownership model.
+
+### Decision
+This repository owns both the Android client and the Go BFF runtime. The BFF remains the client-facing transport boundary to `contacts-api`, but its implementation, evolution, and repository history live here rather than in a sibling project.
+
+### Consequences
+The repo can version Android and BFF changes together, keep the client-facing transport contract explicit, and record BFF behavior changes alongside the app slices that depend on them. The semantic docs, pack, and top-level README must describe the BFF as repository-owned instead of external.
+
+### Alternatives considered
+Keep the BFF in a separate repository and only point the Android client at it. That was rejected because it would keep the ownership boundary split from the artifact trail and make coordinated changes harder to reason about.
+
+### Notes
+This decision clarifies the ownership model for the current repository shape. Future slice work should treat the Go BFF as a first-class repository runtime.

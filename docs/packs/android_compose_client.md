@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use this pack when the target product is a native Android client that consumes an external HTTP API through a BFF boundary.
+Use this pack when the target product is a native Android client that consumes an HTTP API through a repository-owned Go BFF boundary.
 
 This pack defines reusable implementation defaults for Android repositories that need a thin UI shell, explicit use cases, and a stable API transport boundary.
 
@@ -11,14 +11,14 @@ This pack defines reusable implementation defaults for Android repositories that
 ## Shape
 
 - language: Kotlin
-- runtime topology: Android client plus Go BFF plus external API
-- architecture mode: layered Android client with explicit application and infrastructure boundaries, with the BFF owning backend-facing transport
+- runtime topology: Android client plus repository-owned Go BFF plus external API
+- architecture mode: layered Android client with explicit application and infrastructure boundaries, with the repository-owned BFF owning backend-facing transport
 
 ---
 
 ## Good Fit
 
-- native Android apps that consume an existing REST API through a BFF
+- native Android apps that consume an existing REST API through a BFF they own in the same repository
 - client-first products where the UI is part of the validation surface
 - slices that need deterministic state, request mapping, and offline-friendly test seams
 
@@ -61,7 +61,7 @@ scripts/
 - persistence and HTTP concerns live in `infrastructure/`
 - interface and rendering concerns live in `interfaces/`
 - shared contracts with the backend live in slice documents and transport mappers
-- BFF-facing contracts should live alongside the transport boundary, with the BFF mediating backend shape changes
+- BFF-facing contracts should live alongside the transport boundary, with the repository-owned BFF mediating backend shape changes
 
 ---
 
@@ -123,4 +123,4 @@ scripts/
 
 ## Notes
 
-This pack is a reusable default, not a law. If the repository later needs more than an Android client and one external API, record that change in `decisions.md` and refine the pack accordingly.
+This pack is a reusable default, not a law. If the repository later needs more than the Android client, its Go BFF, and one external API, record that change in `decisions.md` and refine the pack accordingly.

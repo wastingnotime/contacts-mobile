@@ -1,8 +1,8 @@
 # Contacts Mobile
 
-Contacts Mobile is a native Android client for the `axiom-exp-contacts` system. The app starts with the contacts list flow and is organized to keep UI, use cases, and transport concerns explicit.
+Contacts Mobile is a native Android client plus repository-owned Go BFF for the `axiom-exp-contacts` system. The app starts with the contacts list flow and is organized to keep UI, use cases, transport concerns, and BFF ownership explicit.
 
-The app should reach `contacts-api` through a Go BFF, not directly. The BFF can begin as a near 1:1 proxy for the backend contract and later evolve without forcing the mobile client to track backend changes.
+The repository should reach `contacts-api` through its Go BFF, not directly. The BFF can begin as a near 1:1 proxy for the backend contract and later evolve without forcing the mobile client to track backend changes.
 
 This repository uses MRL as the working method for shaping the codebase. For workflow details, read:
 
@@ -11,9 +11,9 @@ This repository uses MRL as the working method for shaping the codebase. For wor
 
 ## Project Shape
 
-The repository currently follows the `android_compose_client` pack and uses Jetpack Compose for the interface layer.
+The repository currently follows the `android_compose_client` pack and uses Jetpack Compose for the interface layer. It also owns the Go BFF runtime that fronts `contacts-api`.
 
-The client should talk to a Go BFF, which in turn talks to `contacts-api`. The first executable slice is the contacts list screen, which loads `GET /contacts` through that BFF and renders loading, empty, error, and list states.
+The client should talk to the repository-owned Go BFF, which in turn talks to `contacts-api`. The first executable slice is the contacts list screen, which loads `GET /contacts` through that BFF and renders loading, empty, error, and list states.
 
 ## Getting Started
 

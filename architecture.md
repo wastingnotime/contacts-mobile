@@ -31,7 +31,7 @@ Implementation shape is selected through a pack.
 This repository currently adopts the `android_compose_client` pack. In this repository, that pack is interpreted as a multi-runtime delivery shape:
 
 - Android Compose client runtime
-- Go web BFF runtime
+- repository-owned Go BFF runtime
 - external `contacts-api` runtime
 
 Other repositories may instead adopt:
@@ -49,7 +49,7 @@ If a repository changes pack, record the decision in `decisions.md` and update t
 
 ## Core Intent
 
-Within this repository, the system should behave like a **native Android client** with an explicit BFF boundary to the contacts backend.
+Within this repository, the system should behave like a **native Android client** with an explicit repository-owned BFF boundary to the contacts backend.
 
 It should prefer:
 
@@ -58,7 +58,7 @@ It should prefer:
 - ports and adapters over direct framework coupling
 - deterministic local simulation over distributed complexity
 - testability and inspectability over premature realism
-- a Go BFF boundary over direct Android-to-backend coupling
+- a repository-owned Go BFF boundary over direct Android-to-backend coupling
 
 This project is a **refinement environment**, not a microservices platform.
 
@@ -74,7 +74,8 @@ The project follows a layered approach:
 UI Screens -------------> Use Cases -----------------> Domain Models
 MainActivity/Compose ---> Use Cases -----------------> Repositories (ports)
                                        -------------> Go BFF client (port)
-                                                       -------------> External API clients (ports)
+                                                       -------------> Repository-owned Go BFF runtime
+                                                                           -------------> External API clients (ports)
 ```
 
 A more explicit view:
@@ -179,7 +180,7 @@ Some models span more than one runtime.
 
 Examples:
 
-- Android client plus Go BFF plus external HTTP API
+- Android client plus repository-owned Go BFF plus external HTTP API
 - simulation engine plus UI shell
 - event producer plus projection consumer
 

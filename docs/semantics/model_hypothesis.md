@@ -10,7 +10,7 @@ Use it during `extract`, `refine`, and `build` to define vocabulary, boundaries,
 
 ## Current Hypothesis
 
-The repository is a native Android client for the contacts product. Its current behavior is a contacts list experience with API-backed contact detail, create, edit, and delete flows. The app consumes the external `axiom-exp-contacts` system through a Go BFF, and keeps several pieces of presentation state local.
+The repository is a native Android client plus a repository-owned Go BFF for the contacts product. Its current behavior is a contacts list experience with API-backed contact detail, create, edit, and delete flows. The Android app consumes the downstream `axiom-exp-contacts` system through the in-repo Go BFF, and keeps several pieces of presentation state local.
 
 ### Core Concepts
 
@@ -28,8 +28,9 @@ The repository is a native Android client for the contacts product. Its current 
 - `ContactsFreshnessState`: the visible indicator for whether loaded data is fresh or stale
 - `ContactsStaleAcknowledgement`: the local acknowledgement that the stale indicator has been dismissed
 - `ContactsRepository`: the app port for retrieving contacts
-- `ContactsBffClient`: the infrastructure client that performs HTTP requests to the Go BFF
-- `ContactsBffBootstrap`: the interface-layer assembly that wires BFF base URL, API surface, auth headers, and client creation
+- `ContactsBff`: the repository-owned Go service that fronts `contacts-api`
+- `ContactsBffClient`: the infrastructure client that performs HTTP requests to the repository-owned Go BFF
+- `ContactsBffBootstrap`: the interface-layer assembly that wires repository-owned BFF base URL, API surface, auth headers, and client creation
 - `ContactsBootstrapConfigurationResolver`: the interface-layer resolver that maps BuildConfig values into bootstrap configuration
 - `ContactsBootstrapBuildConfigurationSource`: the interface-layer source that reads raw BuildConfig values for app startup
 - `ContactsBootstrapDependencies`: the interface-layer value object that groups the resolved BFF client and repository dependencies
@@ -74,7 +75,7 @@ The repository is a native Android client for the contacts product. Its current 
 - making stale preserved data explicit after a transient refresh or reload failure
 - dismissing a stale-data indicator after the user has acknowledged the warning, independently for list and detail surfaces
 - moving from error to retry and back to loading
-- forwarding list and detail requests through the BFF boundary before they reach `contacts-api`
+- forwarding list and detail requests through the repository-owned BFF boundary before they reach `contacts-api`
 - keeping the client on the fixed BFF `/api` surface instead of letting each use case assemble its own transport path
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing

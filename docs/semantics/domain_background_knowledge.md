@@ -33,14 +33,14 @@ The client-facing contract in this repository exposes snake_case JSON fields for
 - `last_name`
 - `phone_number`
 
-The mobile app should preserve that transport contract at the BFF boundary and map it into app-facing models internally.
+The mobile app should preserve that transport contract at the repository-owned BFF boundary and map it into app-facing models internally.
 
 Evaluation should watch for:
 
 - accidental camelCase assumptions at the HTTP boundary
 - hiding network failures behind empty screens
 - coupling the UI directly to transport payloads
-- coupling the mobile UI directly to the backend instead of the BFF boundary
+- coupling the mobile UI directly to `contacts-api` instead of the repository-owned BFF boundary
 - treating list selection as if it were the same thing as a backend-backed detail fetch
 - replacing already-loaded contacts with a blank error screen when a refresh fails, if the user still expects the last known data to stay visible
 - matching search queries on hidden identifiers when the UI only exposes names and phone numbers
