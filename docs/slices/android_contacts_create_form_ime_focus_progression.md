@@ -34,6 +34,7 @@ It moves focus through the required fields in a predictable order and lets the u
 - completing the final field should submit the form
 - validation rules for required fields remain unchanged
 - create submission and create success behavior remain unchanged
+- the keyboard progression should not alter field validation semantics
 
 ## Required Ports
 
@@ -47,6 +48,7 @@ It moves focus through the required fields in a predictable order and lets the u
 - verify the phone number field completes the create action
 - verify validation still blocks incomplete submission
 - verify the existing create submission path still reaches the backend use case
+- verify no change to create-success navigation
 
 ## Scenario Definition
 

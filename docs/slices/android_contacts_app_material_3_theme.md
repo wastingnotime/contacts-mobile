@@ -7,7 +7,7 @@
 
 ## Discovery Scope
 
-Implement a theme layer for the Android contacts app that aligns runtime UI and previews with Material 3 guidance:
+Implement a shared Material 3 theme layer for the Android contacts app:
 
 - apply a shared Compose Material 3 app theme
 - keep the current light and dark appearance paths
@@ -22,7 +22,7 @@ This slice changes style plumbing only. It does not change contacts behavior, na
 
 The app should expose one theme contract:
 
-- Contacts app theme
+- shared contacts app theme
 
 It provides a single Material 3 theme entrypoint used by the runtime app and by design-time previews.
 
@@ -33,6 +33,7 @@ It provides a single Material 3 theme entrypoint used by the runtime app and by 
 - previews should render through the same theme wrapper as runtime content
 - the existing screens should keep their current layout and behavior
 - the theme should stay within Material 3 rather than mixing design systems
+- the theme should not own screen-specific layout decisions
 
 ## Required Ports
 
@@ -45,6 +46,7 @@ It provides a single Material 3 theme entrypoint used by the runtime app and by 
 - verify runtime and preview code both use the shared theme wrapper
 - verify the theme can resolve light and dark color schemes deterministically
 - verify the current screen tests still pass under the shared theme
+- verify previews continue to render without changing app behavior
 
 ## Scenario Definition
 

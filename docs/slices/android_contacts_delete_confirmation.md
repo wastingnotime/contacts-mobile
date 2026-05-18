@@ -34,6 +34,7 @@ It guards the existing `DeleteContact` action with an explicit user confirmation
 - confirming delete should continue to remove the contact from the visible list and exit detail view on success
 - a failed delete should remain explicit and retryable while keeping the selected contact visible
 - current list, create, and edit behaviors should not regress
+- the confirmation step should not alter the delete transport contract
 
 ## Required Ports
 
@@ -47,6 +48,7 @@ It guards the existing `DeleteContact` action with an explicit user confirmation
 - verify confirming the action still invokes the existing delete flow
 - verify successful delete still removes the contact and returns to the list
 - verify delete failure behavior remains explicit and retryable after confirmation
+- verify confirmation does not change the BFF delete route
 
 ## Scenario Definition
 

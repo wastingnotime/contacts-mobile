@@ -34,6 +34,7 @@ It closes the create success surface after a successful create and relies on the
 - the created contact should remain reachable from the list by normal navigation
 - create validation and backend failure handling remain unchanged
 - edit success behavior is out of scope for this slice
+- the success surface should not become a separate permanent destination
 
 ## Required Ports
 
@@ -47,6 +48,7 @@ It closes the create success surface after a successful create and relies on the
 - verify the newly created contact remains reachable from the list
 - verify create validation and failure behavior remain unchanged
 - verify the create transport path still reaches the backend use case
+- verify the success flow does not alter create request mapping
 
 ## Scenario Definition
 

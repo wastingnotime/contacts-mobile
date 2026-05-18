@@ -35,6 +35,7 @@ It closes the edit success surface after a successful update and relies on the d
 - the updated contact should remain reachable from detail by normal navigation
 - edit validation and backend failure handling remain unchanged
 - create-success navigation and delete confirmation are out of scope for this slice
+- the success surface should not become a separate permanent destination
 
 ## Required Ports
 
@@ -48,6 +49,7 @@ It closes the edit success surface after a successful update and relies on the d
 - verify the updated contact remains visible in detail after success
 - verify edit validation and failure behavior remain unchanged
 - verify the edit transport path still reaches the backend use case
+- verify the success flow does not alter edit request mapping
 
 ## Scenario Definition
 
