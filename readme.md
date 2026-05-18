@@ -24,7 +24,12 @@ Read these files first:
 - `docs/building/project_structure.md`
 - `docs/operating/packs.md`
 - `docs/operating/best_practices.md`
-- `docs/operating/emulator_smoke_test_runbook.md` for emulator validation with backend simulation from `../runtime-sandbox`
+
+## Emulator Validation
+
+Use `docs/operating/emulator_smoke_test_runbook.md` for emulator validation.
+
+Backend simulation for that flow comes from `../runtime-sandbox`.
 
 ## Working Notes
 
