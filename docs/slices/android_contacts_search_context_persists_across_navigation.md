@@ -59,4 +59,4 @@ Clearing the query should still restore the full sorted list.
 - the active search context survives navigation to detail and forms
 - deterministic tests cover query persistence and restoration
 - the existing search-summary, filtered-empty, sort, and CRUD flows remain intact
-- the backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged

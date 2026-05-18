@@ -39,7 +39,7 @@ The UI should retain the current list viewport while the contacts collection cha
 - deleting a contact should not abruptly reset the visible list position
 - refreshing the list should keep the current viewport stable when possible
 - search filtering and list sorting should continue to determine which rows are visible
-- the backend contract should remain unchanged
+- the relevant exported contract docs under `contracts/` should remain unchanged
 
 ## Required Ports
 
@@ -53,7 +53,7 @@ The UI should retain the current list viewport while the contacts collection cha
 - verify the viewport remains stable after deleting a contact from the detail flow
 - verify the viewport remains stable after a successful refresh
 - verify search, sort, filtered-empty, stale-data, and CRUD flows remain reachable
-- verify the backend contract remains unchanged
+- verify the relevant exported contract docs under `contracts/` remain unchanged
 
 ## Scenario Definition
 
@@ -65,4 +65,4 @@ Given a loaded contacts list that is scrolled away from the top, when the user c
 - the visible list viewport survives list content changes
 - deterministic tests cover viewport behavior across CRUD and refresh transitions
 - the existing search, sort, stale-data, and navigation flows remain intact
-- the backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged

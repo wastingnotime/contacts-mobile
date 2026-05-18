@@ -60,4 +60,4 @@ The warning should reappear on the next transient failure, and a successful relo
 - stale indicators can be dismissed without hiding preserved content
 - deterministic tests cover dismissal and reappearance behavior
 - the existing retry, search, sort, and CRUD flows remain intact
-- the backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged

@@ -61,4 +61,4 @@ If repository-owned BFF startup configuration is invalid, the app should fail cl
 - the app module compiles in the Android Gradle project shape
 - repository-owned BFF wiring lives in one bootstrap seam instead of being assembled in `MainActivity`
 - deterministic tests cover bootstrap assembly and invalid configuration behavior
-- the repository documents the Android pack and repository-owned BFF bootstrap boundary explicitly
+- the repository documents the exported mobile contract boundary in `contracts/` explicitly

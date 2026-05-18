@@ -61,4 +61,4 @@ If build values are invalid, the resolver or bootstrap should fail clearly befor
 - the app module compiles in the Android Gradle project shape
 - BuildConfig mapping lives in one explicit bootstrap-configuration resolver
 - deterministic tests cover valid and invalid startup configuration resolution
-- the repository documents the Android pack and repository-owned BFF startup boundary explicitly
+- the repository documents the exported mobile contract boundary in `contracts/` explicitly

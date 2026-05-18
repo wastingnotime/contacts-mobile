@@ -35,7 +35,7 @@ The UI should preserve the user’s place inside the filtered result set when th
 - if the active query changes and the anchor contact disappears, keep the viewport near the closest surviving filtered row when possible
 - clearing the query should still restore the full sorted list
 - search filtering and list sorting should continue to determine which rows are visible
-- the backend contract should remain unchanged
+- the relevant exported contract docs under `contracts/` should remain unchanged
 - the viewport rule should remain consistent with the list-scroll continuity rules so search edits do not introduce a separate reset policy
 
 ## Required Ports
@@ -49,7 +49,7 @@ The UI should preserve the user’s place inside the filtered result set when th
 - verify the viewport falls back to the nearest surviving filtered row when the anchor is filtered out
 - verify clearing the query restores the full sorted list without losing the list neighborhood
 - verify search-summary, filtered-empty, stale-data, CRUD, and navigation flows remain reachable
-- verify the backend contract remains unchanged
+- verify the relevant exported contract docs under `contracts/` remain unchanged
 
 ## Scenario Definition
 
@@ -61,4 +61,4 @@ Given a loaded contacts list, when the user changes the search query, the Androi
 - the viewport rule is explicit for search-driven filter changes
 - deterministic tests cover filtered-result viewport continuity and fallback
 - the existing search, sort, stale-data, CRUD, and navigation flows remain intact
-- the backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged

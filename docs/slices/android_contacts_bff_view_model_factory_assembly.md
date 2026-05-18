@@ -63,4 +63,4 @@ If build values are invalid, the startup flow should fail clearly before the app
 - the app module compiles in the Android Gradle project shape
 - the view-model factory lives in one explicit interface-layer assembly object
 - deterministic tests cover factory assembly and the existing startup resolution seams
-- the repository documents the Android pack and repository-owned BFF view-model factory boundary explicitly
+- the repository documents the exported mobile contract boundary in `contracts/` explicitly

@@ -61,4 +61,4 @@ If build values are invalid, the startup flow should fail clearly before the app
 - the app module compiles in the Android Gradle project shape
 - raw `BuildConfig` reading lives in one explicit bootstrap-source seam instead of in the bootstrapper
 - deterministic tests cover build-configuration sourcing and the existing normalization seam
-- the repository documents the Android pack and repository-owned BFF startup-source boundary explicitly
+- the repository documents the exported mobile contract boundary in `contracts/` explicitly

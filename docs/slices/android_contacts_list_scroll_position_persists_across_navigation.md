@@ -35,7 +35,7 @@ The UI should retain the current list viewport while moving between list-oriente
 - the contacts list should remember its scroll position when the user opens and closes create or edit forms
 - search filtering and list sorting should continue to determine which rows are visible
 - clearing search or changing the visible result set should still produce deterministic list content
-- the backend contract should remain unchanged
+- the relevant exported contract docs under `contracts/` should remain unchanged
 
 ## Required Ports
 
@@ -48,7 +48,7 @@ The UI should retain the current list viewport while moving between list-oriente
 - verify the list viewport survives opening and closing create and edit forms
 - verify the viewport is restored after returning to the contacts list
 - verify search, sort, filtered-empty, stale-data, and CRUD flows remain reachable
-- verify the backend contract remains unchanged
+- verify the relevant exported contract docs under `contracts/` remain unchanged
 
 ## Scenario Definition
 
@@ -60,4 +60,4 @@ Given a loaded contacts list, when the user scrolls down, opens a contact or for
 - the visible list viewport survives navigation to detail and forms
 - deterministic tests cover viewport persistence and restoration
 - the existing search, sort, stale-data, and CRUD flows remain intact
-- the backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged

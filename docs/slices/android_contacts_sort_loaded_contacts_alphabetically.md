@@ -59,4 +59,4 @@ When the user refreshes, creates, edits, or deletes contacts, the same local ord
 - the contacts list renders in a deterministic alphabetical order
 - the ordering remains stable across refreshes and local mutations
 - deterministic tests cover ordering, tie-breaking, and interactions with the existing list flow
-- the existing backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged

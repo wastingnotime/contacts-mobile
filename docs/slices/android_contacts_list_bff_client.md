@@ -58,4 +58,4 @@ If the repository-owned BFF is unavailable, the screen should remain honest abou
 - the app module compiles in the Android Gradle project shape
 - the list screen can render contacts from the repository-owned BFF contract
 - deterministic tests cover mapping and load behavior
-- the repository documents the Android pack and repository-owned BFF boundary explicitly
+- the repository documents the exported mobile contract boundary in `contracts/` explicitly

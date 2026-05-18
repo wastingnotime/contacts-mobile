@@ -59,4 +59,4 @@ If the query only matches an internal identifier, the app should not show a resu
 - the local search matches only visible contact fields
 - deterministic tests cover visible-field matching and hidden-id exclusion
 - the existing search summary, filtered-empty, sort, and CRUD flows remain intact
-- the backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged

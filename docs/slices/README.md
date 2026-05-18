@@ -14,3 +14,5 @@ Each slice document should define:
 - initial test plan
 - scenario definition
 - done criteria
+
+If a slice touches the exported repository boundary, refer to the matching file under `contracts/` instead of repeating the boundary language inline.

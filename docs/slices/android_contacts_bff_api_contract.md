@@ -63,4 +63,4 @@ If the BFF path contract is misconfigured or missing, the client should fail cle
 - the app module compiles in the Android Gradle project shape
 - contacts requests consistently use the fixed repository-owned BFF `/api` surface
 - deterministic tests cover the explicit path contract and preserve the existing transport behavior
-- the repository documents the Android pack and repository-owned BFF contract boundary explicitly
+- the repository documents the exported mobile contract boundary in `contracts/` explicitly

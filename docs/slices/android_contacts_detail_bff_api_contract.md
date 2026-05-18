@@ -60,4 +60,4 @@ If the repository-owned BFF is unavailable or the contact is missing, the screen
 - the app module compiles in the Android Gradle project shape
 - the detail screen remains explicitly repository-owned BFF-backed
 - deterministic tests cover mapping, load behavior, route resolution, and detail navigation
-- the repository documents the repository-owned BFF detail boundary explicitly
+- the repository documents the exported mobile contract boundary in `contracts/` explicitly

@@ -61,4 +61,4 @@ Given a selected contact detail and a delete attempt fails, the app should keep 
 - stale preserved data is visibly distinct from fresh loaded data
 - deterministic tests cover stale indicators on list and detail surfaces
 - the existing retry, search, sort, and CRUD flows remain intact
-- the backend contract remains unchanged
+- the relevant exported contract docs under `contracts/` remain unchanged
