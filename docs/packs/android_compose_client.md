@@ -60,7 +60,8 @@ scripts/
 - orchestration lives in `application/`
 - persistence and HTTP concerns live in `infrastructure/`
 - interface and rendering concerns live in `interfaces/`
-- shared contracts with the backend live in slice documents and transport mappers
+- exported mobile-facing contracts live in `contracts/`
+- backend-facing transport details stay explicit in slice documents and transport mappers
 - BFF-facing contracts should live alongside the transport boundary, with the repository-owned BFF mediating backend shape changes
 
 ---
@@ -89,7 +90,7 @@ scripts/
   - `android/app`
   - `go/bff`
   - `external-api/axiom-exp-contacts`
-- cross-runtime contracts should live in slice documents and transport DTOs
+- cross-runtime contracts should live in `contracts/`, slice documents, and transport DTOs
 - event/message boundaries should be expressed in application use cases and documentation
 
 ---

@@ -63,6 +63,21 @@ project_root/
       domain_background_knowledge.md
     slices/
 
+  contracts/
+    README.md
+    mobile/
+      README.md
+    auth/
+      README.md
+    sync/
+      README.md
+    offline/
+      README.md
+    telemetry/
+      README.md
+    notifications/
+      README.md
+
   work/
     sources/
     changes/
@@ -138,6 +153,17 @@ Contains tracked working artifacts that preserve loop traceability without promo
 
 `work/` is repository memory, not personal scratch space.
 Preserve original evidence in `work/sources/` before extraction or refinement artifacts are produced elsewhere.
+
+### `contracts/`
+Contains the repository's exported mobile boundary documentation.
+
+- `contracts/README.md`: index and boundary overview
+- `contracts/mobile/`: app-facing interaction contract
+- `contracts/auth/`: session and request-claims contract
+- `contracts/sync/`: synchronization semantics
+- `contracts/offline/`: degraded-mode and offline semantics
+- `contracts/telemetry/`: mobile telemetry expectations
+- `contracts/notifications/`: notification expectations
 
 ### `src/`
 Contains production code shaped by the selected pack.

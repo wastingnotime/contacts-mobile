@@ -15,6 +15,19 @@ The repository currently follows the `android_compose_client` pack and uses Jetp
 
 The client should talk to the repository-owned Go BFF, which in turn talks to `contacts-api`. The first executable slice is the contacts list screen, which loads `GET /contacts` through that BFF and renders loading, empty, error, and list states.
 
+## Public Contracts
+
+The repository exports its mobile-facing boundary through `contracts/`.
+
+- `contracts/mobile/`
+- `contracts/auth/`
+- `contracts/sync/`
+- `contracts/offline/`
+- `contracts/telemetry/`
+- `contracts/notifications/`
+
+Treat those folders as the public navigation layer for the mobile boundary. Android implementation details stay inside `app/` and do not belong in the exported contract docs.
+
 ## Getting Started
 
 Read these files first:
@@ -43,4 +56,5 @@ Campaign issues use GitHub Actions in:
 - Treat `work/` as repository memory, not scratch space.
 - Preserve original evidence in `work/sources/` before creating downstream artifacts.
 - Keep the MRL loop generic and move implementation specifics into the selected pack and slice documents.
+- Use `contracts/` to describe the exported mobile boundary, not the internal Android implementation.
 - When a change is completed, commit it before starting the next one.
