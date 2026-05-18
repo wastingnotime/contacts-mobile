@@ -43,6 +43,7 @@ jobs:
           DISCORD_CHANNEL_ID: ${{ steps.classify.outputs.channel_id }}
           DISCORD_MESSAGE: ${{ steps.classify.outputs.message }}
         run: |
+          # Keep the close notifier aligned with the open notifier's dispatch path.
           python3 - <<'PY'
           import json
           import os
