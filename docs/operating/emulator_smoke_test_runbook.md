@@ -16,9 +16,7 @@ The emulator smoke-test backend should come from `../runtime-sandbox`.
 
 ## Emulator Access Tools
 
-Use `adb` alongside the Android Studio MCP server when you need direct emulator inspection or control.
-
-Preferred commands:
+Use `adb` or the Android Studio MCP server when you need direct emulator inspection or control.
 
 ```bash
 adb devices
@@ -30,7 +28,7 @@ adb shell am start ...
 adb exec-out screencap -p > screen.png
 ```
 
-Use these when you need:
+Use these for:
 
 - device availability checks
 - memory and graphics diagnostics
@@ -38,6 +36,8 @@ Use these when you need:
 - process inspection
 - explicit activity launches
 - screenshot evidence from the emulator
+
+Keep detailed emulator diagnostics in the access-tools note rather than expanding this runbook section further.
 
 ## Backend Simulation
 
