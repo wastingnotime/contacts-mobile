@@ -76,6 +76,8 @@ Treat `work/` as repository memory rather than scratch space.
 
 When the repository includes emulator validation guidance, keep the operator-facing path in `docs/operating/emulator_smoke_test_runbook.md` and keep the direct access note and helper slices separate from the MRL phase docs.
 
+Campaign issues in this repository also have GitHub Actions hooks for Discord notifications on open and close. Keep those notifications aligned with the campaign issue template and the campaign memory under `work/` and `management/`.
+
 ---
 
 ## Execution Model
