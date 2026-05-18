@@ -313,6 +313,8 @@ The Android client should call a Go BFF rather than calling `contacts-api` direc
 ### Consequences
 The mobile client owns a stable, client-facing API boundary instead of depending on backend transport details. The repository now has an explicit place to absorb backend contract drift without forcing coordinated mobile changes for every backend adjustment. The Go BFF also becomes the natural seam for transport mapping tests and request-shaping behavior.
 
+The exported meaning of that boundary should now be documented in `contracts/` so the public mobile promises stay separate from the implementation seam.
+
 ### Alternatives considered
 Keep the Android app pointed directly at `contacts-api`. That was rejected because it makes the mobile app the first consumer of backend transport changes and removes the opportunity to evolve a client-specific contract boundary.
 
@@ -335,8 +337,12 @@ This repository owns both the Android client and the Go BFF runtime. The BFF rem
 ### Consequences
 The repo can version Android and BFF changes together, keep the client-facing transport contract explicit, and record BFF behavior changes alongside the app slices that depend on them. The semantic docs, pack, and top-level README must describe the BFF as repository-owned instead of external.
 
+The public-facing mobile boundary is now documented separately in `contracts/`, which keeps exported promises distinct from the repository-owned BFF runtime implementation.
+
 ### Alternatives considered
 Keep the BFF in a separate repository and only point the Android client at it. That was rejected because it would keep the ownership boundary split from the artifact trail and make coordinated changes harder to reason about.
 
 ### Notes
 This decision clarifies the ownership model for the current repository shape. Future slice work should treat the Go BFF as a first-class repository runtime.
+
+When a behavior is meant to be publicly consumed as part of the mobile boundary, record it in `contracts/` rather than only in BFF implementation notes.
