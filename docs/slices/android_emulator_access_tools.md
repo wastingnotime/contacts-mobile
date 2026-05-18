@@ -7,7 +7,7 @@
 
 ## Discovery Scope
 
-Keep the emulator smoke-test runbook practical by documenting the small set of direct emulator access tools operators use when they need low-level inspection.
+Document the small set of direct emulator access tools operators can use when they need low-level inspection during smoke testing.
 
 This slice does not change app behavior. It keeps the access-tools guidance short, explicit, and subordinate to the main smoke-test runbook.
 
@@ -22,7 +22,7 @@ The access-tools note should make it explicit that:
 
 No new business use case is introduced.
 
-This slice documents operator tooling for manual validation. It does not change runtime behavior.
+This slice documents operator tooling for manual validation. It does not change runtime behavior or the smoke-test sequence.
 
 ## Main Business Rules
 
@@ -30,6 +30,7 @@ This slice documents operator tooling for manual validation. It does not change 
 - `adb` and the Android Studio MCP server should remain the only named direct-access tools
 - the runbook should remain the source of truth for smoke-test sequencing
 - the client repo should not imply ownership of emulator operations beyond inspection and capture
+- the note should not repeat the readiness, classification, outcomes, or session-record guidance
 
 ## Required Ports
 
@@ -42,6 +43,7 @@ This is a documentation slice only.
 - verify the access-tools guidance names `adb` explicitly
 - verify the access-tools guidance names the Android Studio MCP server explicitly
 - verify the guidance stays separate from the readiness, classification, and record-template slices
+- verify the guidance does not duplicate the smoke-test runbook procedure
 - verify no runtime app behavior changes are introduced
 
 ## Scenario Definition

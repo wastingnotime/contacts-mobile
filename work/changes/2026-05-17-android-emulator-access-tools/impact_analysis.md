@@ -38,6 +38,7 @@ The repository should answer:
 - which direct tools are appropriate when the operator needs low-level emulator access?
 
 The note should not repeat the smoke-test runbook, the outcomes matrix, or the session record template.
+The note should not imply ownership of backend readiness or session recording in this repository.
 
 ## Build Guidance
 
