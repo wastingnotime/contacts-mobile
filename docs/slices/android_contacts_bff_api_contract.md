@@ -28,11 +28,11 @@ This slice changes the transport contract for the existing contacts use cases:
 - `UpdateContact`
 - `DeleteContact`
 
-Each use case should reach the BFF under the same `/api/contacts` contract.
+Each use case should reach the repository-owned BFF under the same `/api/contacts` contract.
 
 ## Main Business Rules
 
-- the mobile app should treat `/api` as the client-facing BFF surface
+- the mobile app should treat `/api` as the client-facing repository-owned BFF surface
 - contacts behavior should stay unchanged while the transport path contract becomes explicit
 - transport still uses the backend's snake_case fields at the mapping boundary
 - request claims continue to apply to the same contacts requests
@@ -42,14 +42,14 @@ Each use case should reach the BFF under the same `/api/contacts` contract.
 
 - `ContactsRepository`
 - `ContactsBffClient`
-- optional configuration port for BFF API surface selection
+- optional configuration port for repository-owned BFF API surface selection
 
 ## Initial Test Plan
 
 - verify list requests resolve against `/api/contacts`
 - verify detail requests resolve against `/api/contacts/{id}`
 - verify create, update, and delete requests still use the same `/api` prefix
-- verify the BFF API surface is resolved from configuration rather than being duplicated at call sites
+- verify the repository-owned BFF API surface is resolved from configuration rather than being duplicated at call sites
 - verify transport mapping and claims behavior stay unchanged
 
 ## Scenario Definition
@@ -61,6 +61,6 @@ If the BFF path contract is misconfigured or missing, the client should fail cle
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- contacts requests consistently use the fixed BFF `/api` surface
+- contacts requests consistently use the fixed repository-owned BFF `/api` surface
 - deterministic tests cover the explicit path contract and preserve the existing transport behavior
 - the repository documents the Android pack and repository-owned BFF contract boundary explicitly

@@ -13,7 +13,7 @@ Keep the current startup behavior intact while renaming the final bootstrap obje
 
 - preserve the existing contacts flows and startup behavior
 - keep raw build-value sourcing, startup normalization, dependency resolution, use-case assembly, factory assembly, app-start facade, and bootstrap verb unchanged
-- rename the final bootstrap object away from BFF-specific naming
+- rename the final bootstrap object away from repository-owned BFF-specific naming
 - keep `MainActivity` consuming the same startup output, just with app-level vocabulary
 
 ## Use-Case Contract
@@ -34,7 +34,7 @@ The use cases should still run exactly as before, but the final object handed to
 
 - the final bootstrap object should be named for the app boundary
 - the startup chain should remain explicit and behavior-preserving
-- the activity should not need to care about BFF-specific naming for the final bootstrap
+- the activity should not need to care about repository-owned BFF-specific naming for the final bootstrap
 - invalid startup configuration should still fail early in the existing resolution path
 
 ## Required Ports
@@ -53,7 +53,7 @@ The use cases should still run exactly as before, but the final object handed to
 
 ## Scenario Definition
 
-Given valid build values, the app should source raw startup values once, normalize them once, resolve BFF dependencies once, assemble application use cases once, assemble the view-model factory once, wrap the final bootstrap once, hand that bootstrap through one startup facade, invoke `bootstrap()`, and reach the existing UI with no visible behavior change.
+Given valid build values, the app should source raw startup values once, normalize them once, resolve repository-owned BFF dependencies once, assemble application use cases once, assemble the view-model factory once, wrap the final bootstrap once, hand that bootstrap through one startup facade, invoke `bootstrap()`, and reach the existing UI with no visible behavior change.
 
 If build values are invalid, the startup flow should fail clearly before the app tries to construct a partial client, repository, use-case graph, UI factory, or final bootstrap object.
 

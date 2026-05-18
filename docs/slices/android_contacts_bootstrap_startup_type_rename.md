@@ -9,10 +9,10 @@
 
 ## Discovery Scope
 
-Keep the current startup behavior intact while renaming the startup-layer types away from BFF-specific naming:
+Keep the current startup behavior intact while renaming the startup-layer types away from repository-owned BFF-specific naming:
 
 - preserve the existing contacts flows and startup behavior
-- keep the transport-layer BFF client, auth headers, API surface, and repository unchanged
+- keep the transport-layer repository-owned BFF client, auth headers, API surface, and repository unchanged
 - rename the startup configuration, build-configuration source, dependency object, and their resolvers to app-level names
 - keep the final bootstrap object and app-start facade unchanged
 
@@ -28,12 +28,12 @@ This slice changes only the startup-layer naming for the existing contacts use c
 - `UpdateContact`
 - `DeleteContact`
 
-The use cases should still run exactly as before, but the startup configuration and dependency seams should read as app-level objects rather than BFF-branded ones.
+The use cases should still run exactly as before, but the startup configuration and dependency seams should read as app-level objects rather than repository-owned BFF-branded ones.
 
 ## Main Business Rules
 
 - startup-layer names should reflect the app boundary
-- transport-layer names should remain BFF-specific where they describe the actual HTTP boundary
+- transport-layer names should remain repository-owned BFF-specific where they describe the actual HTTP boundary
 - the startup flow should remain explicit and behavior-preserving
 - invalid startup configuration should still fail early in the existing resolution path
 

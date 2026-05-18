@@ -33,29 +33,29 @@ The repository is a native Android client plus a repository-owned Go BFF for the
 - `ContactsBffBootstrap`: the interface-layer assembly that wires repository-owned BFF base URL, API surface, auth headers, and client creation
 - `ContactsBootstrapConfigurationResolver`: the interface-layer resolver that maps BuildConfig values into bootstrap configuration
 - `ContactsBootstrapBuildConfigurationSource`: the interface-layer source that reads raw BuildConfig values for app startup
-- `ContactsBootstrapDependencies`: the interface-layer value object that groups the resolved BFF client and repository dependencies
-- `ContactsBffUseCaseAssembly`: the interface-layer assembly that turns the resolved BFF repository into the app use cases
+- `ContactsBootstrapDependencies`: the interface-layer value object that groups the resolved repository-owned BFF client and repository dependencies
+- `ContactsBffUseCaseAssembly`: the interface-layer assembly that turns the resolved repository-owned BFF repository into the app use cases
 - `ContactsBffViewModelFactoryAssembly`: the interface-layer assembly that turns the app use cases into the contacts view-model factory
 - `ContactsBootstrap`: the final interface-layer bootstrap object that exposes the view-model factory to the activity
 - `ContactsAppStart`: the interface-layer startup facade that returns the final bootstrap for the activity
 - `ContactsAppBootstrapVerb`: the startup verb that exposes the app bootstrap path through a single `bootstrap()` entry point
 - `LoadContactById`: the use case for loading one contact from the backend
-- request claims headers: explicit claims-style headers sent with every contacts BFF request
-- `ContactsBffApiSurface`: the client-facing `/api` path prefix used by the BFF contract
+- request claims headers: explicit claims-style headers sent with every repository-owned BFF request
+- `ContactsBffApiSurface`: the client-facing `/api` path prefix used by the repository-owned BFF contract
 
 ### Key Value Objects
 
 - contact identifiers
 - first and last names
 - phone numbers
-- BFF base URL configuration
-- BFF API surface configuration
-- BFF bootstrap configuration
+- repository-owned BFF base URL configuration
+- repository-owned BFF API surface configuration
+- repository-owned BFF bootstrap configuration
 - app bootstrap configuration
 - app bootstrap build configuration source
 - app bootstrap dependencies
-- BFF use-case assembly
-- BFF view-model factory assembly
+- repository-owned BFF use-case assembly
+- repository-owned BFF view-model factory assembly
 - app final bootstrap object
 - app start facade
 - app bootstrap verb
@@ -76,7 +76,7 @@ The repository is a native Android client plus a repository-owned Go BFF for the
 - dismissing a stale-data indicator after the user has acknowledged the warning, independently for list and detail surfaces
 - moving from error to retry and back to loading
 - forwarding list and detail requests through the repository-owned BFF boundary before they reach `contacts-api`
-- keeping the client on the fixed BFF `/api` surface instead of letting each use case assemble its own transport path
+- keeping the client on the fixed repository-owned BFF `/api` surface instead of letting each use case assemble its own transport path
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
 - moving from detail error or not-found back to loading on retry

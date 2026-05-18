@@ -55,6 +55,6 @@ If the configured claims are invalid or missing, the build or runtime should fai
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- contacts BFF requests carry explicit request claims headers
+- repository-owned BFF requests carry explicit request claims headers
 - deterministic tests cover header injection and configuration resolution
 - the repository documents the Android pack and request boundary explicitly

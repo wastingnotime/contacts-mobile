@@ -14,7 +14,7 @@ Implement the first native Android slice for the contacts product:
 - open the app
 - load contacts through the repository-owned Go BFF, which forwards to the external `axiom-exp-contacts` API
 - render loading, empty, error, and list states
-- keep the BFF base URL configurable for emulator and local use
+- keep the repository-owned BFF base URL configurable for emulator and local use
 
 ## Use-Case Contract
 
@@ -22,7 +22,7 @@ The app should expose one initial use case:
 
 - `LoadContacts`
 
-It loads `GET /api/contacts` from the Go BFF, maps the transport payload into app models, and returns a state the UI can render.
+It loads `GET /api/contacts` from the repository-owned Go BFF, maps the transport payload into app models, and returns a state the UI can render.
 
 ## Main Business Rules
 
@@ -31,7 +31,7 @@ It loads `GET /api/contacts` from the Go BFF, maps the transport payload into ap
 - successful loads render the full contact list
 - empty responses render an empty state
 - failures preserve an error state with a retry path
-- the mobile app should remain decoupled from direct `contacts-api` transport changes by way of the BFF
+- the mobile app should remain decoupled from direct `contacts-api` transport changes by way of the repository-owned BFF
 
 ## Required Ports
 
@@ -45,13 +45,13 @@ It loads `GET /api/contacts` from the Go BFF, maps the transport payload into ap
 - verify `LoadContacts` returns contacts from a fake repository
 - verify an empty repository result becomes the empty UI state
 - verify repository failures become the error UI state
-- verify the BFF client target is configurable without changing the UI layer
+- verify the repository-owned BFF client target is configurable without changing the UI layer
 
 ## Scenario Definition
 
 Given the repository-owned Go BFF returns one contact with `first_name`, `last_name`, and `phone_number` fields, the Android app should display that contact in the list view after loading completes.
 
-If the BFF is unavailable, the screen should remain honest about the failure and offer a retry.
+If the repository-owned BFF is unavailable, the screen should remain honest about the failure and offer a retry.
 
 ## Done Criteria
 

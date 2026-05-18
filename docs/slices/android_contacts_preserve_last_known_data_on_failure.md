@@ -13,7 +13,7 @@ Implement the next Android slice for the contacts product:
 - keep the existing contacts list and contact detail flows intact
 - preserve the last successfully loaded contacts or contact detail when a transient reload fails
 - surface the failure separately instead of replacing the already-visible content with a blank error screen
-- keep the BFF base URL and request-claims configuration unchanged
+- keep the repository-owned BFF base URL and request-claims configuration unchanged
 
 ## Use-Case Contract
 

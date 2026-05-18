@@ -48,7 +48,7 @@ It guards the existing `DeleteContact` action with an explicit user confirmation
 - verify confirming the action still invokes the existing delete flow
 - verify successful delete still removes the contact and returns to the list
 - verify delete failure behavior remains explicit and retryable after confirmation
-- verify confirmation does not change the BFF delete route
+- verify confirmation does not change the repository-owned BFF delete route
 
 ## Scenario Definition
 

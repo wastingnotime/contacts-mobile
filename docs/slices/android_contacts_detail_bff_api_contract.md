@@ -15,7 +15,7 @@ Keep the selected-contact detail experience intact while making the detail fetch
 - load the selected contact from `GET /api/contacts/{id}`
 - render loading, detail, not-found, and error states for the detail flow
 - keep the existing list, create, edit, and delete flows intact
-- keep the BFF API surface explicit instead of re-deriving backend paths at the detail call site
+- keep the repository-owned BFF API surface explicit instead of re-deriving backend paths at the detail call site
 
 ## Use-Case Contract
 
@@ -38,7 +38,7 @@ It loads the selected contact through the repository-owned BFF-backed repository
 
 - `ContactsRepository`
 - `ContactsBffClient`
-- optional BFF API surface configuration
+- optional repository-owned BFF API surface configuration
 
 ## Initial Test Plan
 
@@ -53,11 +53,11 @@ It loads the selected contact through the repository-owned BFF-backed repository
 
 Given the repository-owned BFF returns one contact with `id`, `first_name`, `last_name`, and `phone_number` fields, the Android app should display that contact in a detail view after the user taps the contact in the list.
 
-If the BFF is unavailable or the contact is missing, the screen should remain honest about the failure and offer a retry or back path.
+If the repository-owned BFF is unavailable or the contact is missing, the screen should remain honest about the failure and offer a retry or back path.
 
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
 - the detail screen remains explicitly repository-owned BFF-backed
 - deterministic tests cover mapping, load behavior, route resolution, and detail navigation
-- the repository documents the BFF detail boundary explicitly
+- the repository documents the repository-owned BFF detail boundary explicitly
