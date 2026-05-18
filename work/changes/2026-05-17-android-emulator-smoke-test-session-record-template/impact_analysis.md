@@ -2,9 +2,9 @@
 
 ## Slice Intent
 
-Keep the emulator smoke-test guidance unchanged while adding one compact record shape for manual sessions.
+Keep the emulator smoke-test guidance unchanged while adding one compact record form for manual sessions.
 
-The repository already requires backend readiness and session classification. The remaining pressure is to make the smoke-test record itself short and repeatable so operators can capture provenance and observations without turning the repo into the owner of runtime operations.
+The repository already requires backend readiness and session classification. The remaining pressure is to make the smoke-test record itself short and reusable so operators can capture provenance and observations without turning the repo into the owner of runtime operations.
 
 ## Why This Slice Now
 
@@ -18,11 +18,11 @@ This slice closes that gap without changing runtime behavior.
 
 - keep backend readiness as a required preflight
 - keep backend-ready and backend-not-ready classification explicit
-- keep backend provenance and Android observations in one compact record
+- keep backend provenance and Android observations in one compact form
 
 ### Documentation
 
-- update the emulator smoke-test guidance with a short session record template
+- update the smoke-test guidance with a short session record template
 - keep the detailed runbook and outcomes guidance intact
 
 ### Runtime Sandbox Boundary
@@ -50,7 +50,7 @@ The record should remain short enough that an operator can fill it during a manu
 
 If this slice is built later, the implementation should:
 
-- update the runbook or adjacent guidance with the compact record shape
-- keep the template short and repeatable
+- update the smoke-test guidance with the compact record form
+- keep the template short and reusable
 - preserve the existing emulator smoke-test sequence
 - avoid expanding into long-form reporting or sandbox ownership

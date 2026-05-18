@@ -13,22 +13,12 @@ Refine the emulator smoke-test workflow so each manual session has a compact rec
 
 - keep the Android client behavior unchanged
 - keep the backend-readiness preflight and session classification intact
-- record the backend command or seed source, the readiness result, and the observed Android client behavior in one place
+- record the backend command or seed source, readiness classification, and Android client observations in one place
 - avoid adding backend ownership to this repository
 
 This slice does not change app code. It makes the smoke-test record easier to interpret later and reduces ambiguity between backend setup and Android client behavior.
 
-## Use-Case Contract
-
-The exposure workflow should continue to support the existing Android client and emulator smoke-test flow:
-
-- launch the app on an emulator or local device
-- confirm backend readiness through the sandbox-backed preflight
-- record the backend command or seed source used for the session
-- classify the session as backend-ready or backend-not-ready
-- record the Android client observations
-
-## Record Shape
+## Template
 
 The session record should stay compact and consistently ordered:
 
@@ -39,6 +29,11 @@ backend readiness classification
 Android client observations
 follow-up notes
 ```
+
+Recommended values:
+
+- readiness classification: `backend-ready` or `backend-not-ready`
+- backend command or seed source: the exact sandbox command or provenance used for the session
 
 The record should make it obvious whether the backend was ready before any client observation is interpreted.
 
