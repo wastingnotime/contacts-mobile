@@ -5,9 +5,9 @@
 This review covers the current BFF transport boundary for the contacts client as a bundle:
 
 - `docs/slices/android_contacts_request_claims_headers.md`
-- `docs/slices/android_contacts_create_contact_api_client.md`
-- `docs/slices/android_contacts_edit_contact_api_client.md`
-- `docs/slices/android_contacts_delete_contact_api_client.md`
+- `docs/slices/android_contacts_create_contact_bff_contract.md`
+- `docs/slices/android_contacts_edit_contact_bff_contract.md`
+- `docs/slices/android_contacts_delete_contact_bff_contract.md`
 
 ## Evidence Reviewed
 

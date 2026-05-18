@@ -2,7 +2,7 @@
 
 ## Slice
 
-`docs/slices/android_contacts_list_api_client.md`
+`docs/slices/android_contacts_list_bff_client.md`
 
 ## Implemented
 

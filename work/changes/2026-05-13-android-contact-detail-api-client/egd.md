@@ -2,13 +2,13 @@
 
 ## Slice
 
-`docs/slices/android_contact_detail_api_client.md`
+`docs/slices/android_contact_detail_bff_contract.md`
 
 ## Evidence Reviewed
 
 - `docs/semantics/model_hypothesis.md`
 - `docs/semantics/domain_background_knowledge.md`
-- `docs/slices/android_contact_detail_api_client.md`
+- `docs/slices/android_contact_detail_bff_contract.md`
 - `work/changes/2026-05-13-android-contact-detail-api-client/impact_analysis.md`
 - `work/changes/2026-05-13-android-contact-detail-api-client/implementation.md`
 - implementation under `app/`

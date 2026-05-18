@@ -2,13 +2,13 @@
 
 ## Slice
 
-`docs/slices/android_contacts_list_api_client.md`
+`docs/slices/android_contacts_list_bff_client.md`
 
 ## Evidence Reviewed
 
 - `docs/semantics/model_hypothesis.md`
 - `docs/semantics/domain_background_knowledge.md`
-- `docs/slices/android_contacts_list_api_client.md`
+- `docs/slices/android_contacts_list_bff_client.md`
 - `work/changes/2026-05-13-android-client-bootstrap/implementation.md`
 - implementation under `app/`
 - `./gradlew test`

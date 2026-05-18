@@ -6,15 +6,15 @@ Android contacts CRUD guidance as one intent bundle.
 
 ## Constituents
 
-- `docs/slices/android_contacts_create_contact_api_client.md`
-- `docs/slices/android_contacts_edit_contact_api_client.md`
-- `docs/slices/android_contacts_delete_contact_api_client.md`
+- `docs/slices/android_contacts_create_contact_bff_contract.md`
+- `docs/slices/android_contacts_edit_contact_bff_contract.md`
+- `docs/slices/android_contacts_delete_contact_bff_contract.md`
 
 ## Evidence Reviewed
 
-- `docs/slices/android_contacts_create_contact_api_client.md`
-- `docs/slices/android_contacts_edit_contact_api_client.md`
-- `docs/slices/android_contacts_delete_contact_api_client.md`
+- `docs/slices/android_contacts_create_contact_bff_contract.md`
+- `docs/slices/android_contacts_edit_contact_bff_contract.md`
+- `docs/slices/android_contacts_delete_contact_bff_contract.md`
 - `work/changes/2026-05-14-android-contacts-create-contact-api-client/implementation.md`
 - `work/changes/2026-05-14-android-contacts-edit-contact-api-client/implementation.md`
 - `work/changes/2026-05-14-android-contacts-delete-contact-api-client/implementation.md`

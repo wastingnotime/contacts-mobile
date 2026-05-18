@@ -8,7 +8,7 @@ The mobile client is no longer modeled as a direct consumer of `contacts-api`. T
 
 - `docs/semantics/model_hypothesis.md`
 - `docs/semantics/domain_background_knowledge.md`
-- `docs/slices/android_contacts_list_api_client.md`
+- `docs/slices/android_contacts_list_bff_client.md`
 - `architecture.md`
 - `docs/packs/android_compose_client.md`
 - `decisions.md`
