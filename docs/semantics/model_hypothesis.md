@@ -12,6 +12,8 @@ Use it during `extract`, `refine`, and `build` to define vocabulary, boundaries,
 
 The repository is a native Android client plus a repository-owned Go BFF for the contacts product. Its current behavior is a contacts list experience with API-backed contact detail, create, edit, and delete flows. The Android app consumes the downstream `axiom-exp-contacts` system through the in-repo Go BFF, and keeps several pieces of presentation state local.
 
+The exported mobile boundary is documented in `contracts/`. Use that directory for public-facing promises about auth, sync, offline behavior, telemetry, notifications, and app-facing interaction. Use this file for the current model hypothesis that informs those contracts.
+
 ### Core Concepts
 
 - `Contact`: a read-only contact record loaded from the backend
@@ -30,18 +32,18 @@ The repository is a native Android client plus a repository-owned Go BFF for the
 - `ContactsRepository`: the app port for retrieving contacts
 - `ContactsBff`: the repository-owned Go service that fronts `contacts-api`
 - `ContactsBffClient`: the infrastructure client that performs HTTP requests to the repository-owned Go BFF
-- `ContactsBffBootstrap`: the interface-layer assembly that wires repository-owned BFF base URL, API surface, auth headers, and client creation
+- `ContactsBffBootstrap`: the interface-layer assembly that wires the repository-owned BFF client boundary described in `contracts/` with base URL, API surface, auth headers, and client creation
 - `ContactsBootstrapConfigurationResolver`: the interface-layer resolver that maps BuildConfig values into bootstrap configuration
 - `ContactsBootstrapBuildConfigurationSource`: the interface-layer source that reads raw BuildConfig values for app startup
-- `ContactsBootstrapDependencies`: the interface-layer value object that groups the resolved repository-owned BFF client and repository dependencies
-- `ContactsBffUseCaseAssembly`: the interface-layer assembly that turns the resolved repository-owned BFF repository into the app use cases
-- `ContactsBffViewModelFactoryAssembly`: the interface-layer assembly that turns the app use cases into the contacts view-model factory
+- `ContactsBootstrapDependencies`: the interface-layer value object that groups the resolved repository-owned BFF client and repository dependencies behind the exported contract boundary
+- `ContactsBffUseCaseAssembly`: the interface-layer assembly that turns the resolved repository-owned BFF repository into the app use cases described by the exported contracts
+- `ContactsBffViewModelFactoryAssembly`: the interface-layer assembly that turns the app use cases into the contacts view-model factory for the exported mobile boundary
 - `ContactsBootstrap`: the final interface-layer bootstrap object that exposes the view-model factory to the activity
 - `ContactsAppStart`: the interface-layer startup facade that returns the final bootstrap for the activity
 - `ContactsAppBootstrapVerb`: the startup verb that exposes the app bootstrap path through a single `bootstrap()` entry point
 - `LoadContactById`: the use case for loading one contact from the backend
-- request claims headers: explicit claims-style headers sent with every repository-owned BFF request
-- `ContactsBffApiSurface`: the client-facing `/api` path prefix used by the repository-owned BFF contract
+- request claims headers: explicit claims-style headers sent with every repository-owned BFF request, documented in `contracts/auth/`
+- `ContactsBffApiSurface`: the client-facing `/api` path prefix used by the repository-owned BFF contract, documented through the exported mobile boundary
 
 ### Key Value Objects
 
@@ -60,6 +62,7 @@ The repository is a native Android client plus a repository-owned Go BFF for the
 - app start facade
 - app bootstrap verb
 - bootstrap configuration resolution
+- exported mobile contract boundary
 
 ### Major State Transitions
 
@@ -76,7 +79,7 @@ The repository is a native Android client plus a repository-owned Go BFF for the
 - dismissing a stale-data indicator after the user has acknowledged the warning, independently for list and detail surfaces
 - moving from error to retry and back to loading
 - forwarding list and detail requests through the repository-owned BFF boundary before they reach `contacts-api`
-- keeping the client on the fixed repository-owned BFF `/api` surface instead of letting each use case assemble its own transport path
+- keeping the client on the fixed repository-owned BFF `/api` surface instead of letting each use case assemble its own transport path, with the public promise captured in `contracts/`
 - loading a contact detail by id from the backend
 - rendering an explicit not-found state when a requested contact is missing
 - moving from detail error or not-found back to loading on retry
