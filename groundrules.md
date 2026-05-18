@@ -16,6 +16,8 @@ The objective of this repository is to **refine business models** and make busin
 
 This is **not** a production rewrite, infrastructure exercise, or framework showcase.
 
+When a rule becomes part of the public mobile boundary, record it in `contracts/` rather than only in this document.
+
 Every implementation choice should be evaluated by asking:
 
 - does this clarify business behavior?

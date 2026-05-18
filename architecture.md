@@ -51,6 +51,8 @@ If a repository changes pack, record the decision in `decisions.md` and update t
 
 Within this repository, the system should behave like a **native Android client** with an explicit repository-owned BFF boundary to the contacts backend.
 
+The public-facing mobile contract boundary is documented in `contracts/`. Use that directory for exported promises about auth, sync, offline, telemetry, notifications, and app-facing interaction; keep this document focused on architecture and runtime shape.
+
 It should prefer:
 
 - explicit use cases over generic service blobs
