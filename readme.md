@@ -31,6 +31,13 @@ Use `docs/operating/emulator_smoke_test_runbook.md` for emulator validation.
 
 Backend simulation for that flow comes from `../runtime-sandbox`.
 
+## Campaign Notifications
+
+Campaign issues use GitHub Actions in:
+
+- [`.github/workflows/notify-discord-on-issue-open.yml`](/home/henrique/repos/github/wastingnotime/contacts-mobile/.github/workflows/notify-discord-on-issue-open.yml)
+- [`.github/workflows/notify-discord-on-issue-close.yml`](/home/henrique/repos/github/wastingnotime/contacts-mobile/.github/workflows/notify-discord-on-issue-close.yml)
+
 ## Working Notes
 
 - Treat `work/` as repository memory, not scratch space.
