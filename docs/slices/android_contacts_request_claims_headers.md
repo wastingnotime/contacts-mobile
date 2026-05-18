@@ -11,7 +11,7 @@
 Implement the next Android slice for the contacts product:
 
 - keep the current list and detail flows intact
-- attach explicit backend request claims to every contacts BFF request
+- attach explicit backend request claims to every contacts request through the repository-owned Go BFF
 - keep the claims source configurable for emulator, local-device, and production environments
 - preserve the existing transport and UI behavior while making the request boundary explicit
 
@@ -24,11 +24,11 @@ This slice changes the request boundary for the existing contacts use cases:
 - `LoadContacts`
 - `LoadContactById`
 
-Both use cases should reach the backend through the BFF with explicit claims-style headers.
+Both use cases should reach the backend through the repository-owned BFF with explicit claims-style headers.
 
 ## Main Business Rules
 
-- contacts BFF requests should include explicit request claims headers
+- contacts requests through the repository-owned BFF should include explicit request claims headers
 - the default local claims should be admin-shaped so the app can exercise the backend contract without a login flow
 - the app should not invent a browser-style login/session layer just to produce request claims
 - transport errors should continue to surface through the existing list and detail failure states
@@ -48,7 +48,7 @@ Both use cases should reach the backend through the BFF with explicit claims-sty
 
 ## Scenario Definition
 
-Given the BFF expects claims-style request headers, the Android app should load the list and a selected detail record successfully using its configured request claims.
+Given the repository-owned BFF expects claims-style request headers, the Android app should load the list and a selected detail record successfully using its configured request claims.
 
 If the configured claims are invalid or missing, the build or runtime should fail clearly rather than silently sending unauthenticated requests.
 

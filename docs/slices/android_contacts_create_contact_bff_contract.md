@@ -12,7 +12,7 @@ Implement the next product slice for the Android contacts client:
 
 - open the app
 - navigate to a create-contact form
-- submit a new contact to `POST /api/contacts`
+- submit a new contact to `POST /api/contacts` through the repository-owned Go BFF
 - render submitting, success, and failure states for the create flow
 - keep the existing list and detail flows intact
 
@@ -24,13 +24,13 @@ The app should expose one create use case:
 
 - `CreateContact`
 
-It submits the form data to `POST /api/contacts`, maps the transport response into app models, and returns a state the UI can render.
+It submits the form data to `POST /api/contacts`, maps the transport response into app models, and returns a state the UI can render through the repository-owned Go BFF.
 
 ## Main Business Rules
 
 - first name, last name, and phone number are the required contact fields for creation
 - the backend generates the new contact identity on success
-- a successful create should lead to a visible confirmation state and make the new contact reachable in the app flow
+- a successful create should lead to a visible confirmation state and make the new contact reachable in the app flow through the repository-owned BFF boundary
 - transport failures should remain explicit and retryable
 - the current list and detail read behaviors should not regress
 
@@ -50,13 +50,13 @@ It submits the form data to `POST /api/contacts`, maps the transport response in
 
 ## Scenario Definition
 
-Given a user opens the create-contact form, enters a first name, last name, and phone number, and submits the form, the Android app should send `POST /api/contacts` and show a successful outcome when the BFF accepts the new contact.
+Given a user opens the create-contact form, enters a first name, last name, and phone number, and submits the form, the Android app should send `POST /api/contacts` through the repository-owned Go BFF and show a successful outcome when the BFF accepts the new contact.
 
 If the backend rejects the request or is unavailable, the screen should remain honest about the failure and offer a retry path without disturbing the existing list and detail flows.
 
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- the app can submit a new contact through the BFF contract
+- the app can submit a new contact through the repository-owned BFF contract
 - deterministic tests cover create input, transport mapping, and success/failure behavior
 - the repository documents the Android pack and write boundary explicitly

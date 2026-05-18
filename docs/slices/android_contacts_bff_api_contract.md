@@ -9,11 +9,11 @@
 
 ## Discovery Scope
 
-Normalize the mobile client onto the fixed Go BFF `/api` surface without changing the user-facing contacts behavior:
+Normalize the mobile client onto the fixed repository-owned Go BFF `/api` surface without changing the user-facing contacts behavior:
 
 - keep the current contacts list, detail, create, edit, and delete flows intact
-- route every contacts request through the BFF `/api` prefix instead of assembling backend paths directly in each call site
-- keep the Go BFF base URL configurable for emulator, local-device, and production environments
+- route every contacts request through the repository-owned BFF `/api` prefix instead of assembling backend paths directly in each call site
+- keep the repository-owned Go BFF base URL configurable for emulator, local-device, and production environments
 - preserve the current request claims and transport mapping behavior while making the BFF path contract explicit
 
 ## Use-Case Contract
@@ -54,7 +54,7 @@ Each use case should reach the BFF under the same `/api/contacts` contract.
 
 ## Scenario Definition
 
-Given the Go BFF exposes contacts routes beneath `/api`, the Android app should continue to load, inspect, create, edit, and delete contacts without any visible behavior change.
+Given the repository-owned Go BFF exposes contacts routes beneath `/api`, the Android app should continue to load, inspect, create, edit, and delete contacts without any visible behavior change.
 
 If the BFF path contract is misconfigured or missing, the client should fail clearly rather than silently constructing backend routes itself.
 
@@ -63,4 +63,4 @@ If the BFF path contract is misconfigured or missing, the client should fail cle
 - the app module compiles in the Android Gradle project shape
 - contacts requests consistently use the fixed BFF `/api` surface
 - deterministic tests cover the explicit path contract and preserve the existing transport behavior
-- the repository documents the Android pack and BFF contract boundary explicitly
+- the repository documents the Android pack and repository-owned BFF contract boundary explicitly

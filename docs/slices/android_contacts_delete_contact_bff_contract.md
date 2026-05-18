@@ -11,7 +11,7 @@
 Implement the next product slice for the Android contacts client:
 
 - open an existing contact detail
-- delete the selected contact through `DELETE /api/contacts/{id}`
+- delete the selected contact through `DELETE /api/contacts/{id}` via the repository-owned Go BFF
 - render deleting, success, and failure states for the delete flow
 - keep the existing list, detail, create, and edit flows intact
 
@@ -23,12 +23,12 @@ The app should expose one delete use case:
 
 - `DeleteContact`
 
-It deletes the selected contact from `DELETE /api/contacts/{id}` and returns a state the UI can render.
+It deletes the selected contact from `DELETE /api/contacts/{id}` and returns a state the UI can render through the repository-owned Go BFF.
 
 ## Main Business Rules
 
 - delete is only available from an opened contact detail
-- a successful delete removes the contact from the visible list and returns the app to the list view
+- a successful delete removes the contact from the visible list and returns the app to the list view through the repository-owned BFF boundary
 - a failed delete should remain explicit and retryable while keeping the selected contact visible
 - the current list, detail, create, and edit behaviors should not regress
 
@@ -48,13 +48,13 @@ It deletes the selected contact from `DELETE /api/contacts/{id}` and returns a s
 
 ## Scenario Definition
 
-Given a user opens a contact detail and chooses delete, the Android app should send `DELETE /api/contacts/{id}` and remove the contact from the visible list when the BFF accepts the deletion.
+Given a user opens a contact detail and chooses delete, the Android app should send `DELETE /api/contacts/{id}` through the repository-owned Go BFF and remove the contact from the visible list when the BFF accepts the deletion.
 
 If the backend rejects the request or is unavailable, the screen should remain honest about the failure and keep the selected contact visible so the user can retry or go back.
 
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- the app can delete a contact through the BFF contract
+- the app can delete a contact through the repository-owned BFF contract
 - deterministic tests cover delete request mapping, success, and failure behavior
 - the repository documents the Android pack and delete boundary explicitly

@@ -12,7 +12,7 @@
 Implement the first native Android slice for the contacts product:
 
 - open the app
-- load contacts through the Go BFF, which forwards to the external `axiom-exp-contacts` API
+- load contacts through the repository-owned Go BFF, which forwards to the external `axiom-exp-contacts` API
 - render loading, empty, error, and list states
 - keep the BFF base URL configurable for emulator and local use
 
@@ -26,7 +26,7 @@ It loads `GET /api/contacts` from the Go BFF, maps the transport payload into ap
 
 ## Main Business Rules
 
-- contacts are read through the BFF, not locally authored in this slice
+- contacts are read through the repository-owned BFF, not locally authored in this slice
 - transport uses the backend's snake_case fields
 - successful loads render the full contact list
 - empty responses render an empty state
@@ -49,13 +49,13 @@ It loads `GET /api/contacts` from the Go BFF, maps the transport payload into ap
 
 ## Scenario Definition
 
-Given the Go BFF returns one contact with `first_name`, `last_name`, and `phone_number` fields, the Android app should display that contact in the list view after loading completes.
+Given the repository-owned Go BFF returns one contact with `first_name`, `last_name`, and `phone_number` fields, the Android app should display that contact in the list view after loading completes.
 
 If the BFF is unavailable, the screen should remain honest about the failure and offer a retry.
 
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- the list screen can render contacts from the BFF contract
+- the list screen can render contacts from the repository-owned BFF contract
 - deterministic tests cover mapping and load behavior
-- the repository documents the Android pack and BFF boundary explicitly
+- the repository documents the Android pack and repository-owned BFF boundary explicitly

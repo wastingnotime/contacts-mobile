@@ -12,7 +12,7 @@ Implement the next product slice for the Android contacts client:
 
 - open an existing contact detail
 - navigate to an edit-contact form
-- submit the updated contact to `PUT /api/contacts/{id}`
+- submit the updated contact to `PUT /api/contacts/{id}` through the repository-owned Go BFF
 - render editing, success, and failure states for the edit flow
 - keep the existing list, detail, and create flows intact
 
@@ -24,13 +24,13 @@ The app should expose one edit use case:
 
 - `UpdateContact`
 
-It submits the edited form data to `PUT /api/contacts/{id}`, maps the transport response into app models, and returns a state the UI can render.
+It submits the edited form data to `PUT /api/contacts/{id}`, maps the transport response into app models, and returns a state the UI can render through the repository-owned Go BFF.
 
 ## Main Business Rules
 
 - the edit form starts from the selected contact's current first name, last name, and phone number
 - the backend persists the update and returns the updated contact on success
-- a successful update should keep the edited contact visible and update any list representation that reflects the contact
+- a successful update should keep the edited contact visible and update any list representation that reflects the contact through the repository-owned BFF boundary
 - transport failures should remain explicit and retryable
 - the current list, detail, and create behaviors should not regress
 
@@ -50,13 +50,13 @@ It submits the edited form data to `PUT /api/contacts/{id}`, maps the transport 
 
 ## Scenario Definition
 
-Given a user opens a contact detail and chooses edit, the Android app should show a form prefilled with the current contact data, send `PUT /api/contacts/{id}` on submit, and show a successful outcome when the BFF accepts the update.
+Given a user opens a contact detail and chooses edit, the Android app should show a form prefilled with the current contact data, send `PUT /api/contacts/{id}` on submit through the repository-owned Go BFF, and show a successful outcome when the BFF accepts the update.
 
 If the backend rejects the request or is unavailable, the screen should remain honest about the failure and offer a retry path without disturbing the existing list, detail, or create flows.
 
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- the app can submit an updated contact through the BFF contract
+- the app can submit an updated contact through the repository-owned BFF contract
 - deterministic tests cover edit input, transport mapping, and success/failure behavior
 - the repository documents the Android pack and update boundary explicitly

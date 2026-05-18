@@ -28,7 +28,7 @@ This slice changes only the naming of the final bootstrap object for the existin
 - `UpdateContact`
 - `DeleteContact`
 
-The use cases should still run exactly as before, but the final object handed to the activity should be named for the app boundary rather than the BFF boundary.
+The use cases should still run exactly as before, but the final object handed to the activity should be named for the app boundary rather than the repository-owned BFF boundary.
 
 ## Main Business Rules
 
