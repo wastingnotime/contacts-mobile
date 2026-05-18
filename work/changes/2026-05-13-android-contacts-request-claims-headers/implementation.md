@@ -8,8 +8,8 @@
 
 - added build-time configuration for contacts API request claims subject and roles
 - added a request-claims configuration/resolution seam in the infrastructure config layer
-- updated the Android entry point to compose the contacts API client with explicit claims headers
-- extended the HTTP contacts client to apply `x-auth-subject` and `x-auth-roles` on every request
+- updated the Android entry point to compose the contacts BFF client with explicit claims headers
+- extended `HttpContactsBffClient` to apply `x-auth-subject` and `x-auth-roles` on every request
 - kept the existing contacts list and contact detail flows unchanged apart from the request boundary
 - added deterministic tests for auth claims resolution and HTTP header injection on list and detail requests
 
