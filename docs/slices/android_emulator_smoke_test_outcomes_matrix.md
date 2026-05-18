@@ -32,6 +32,7 @@ This slice documents manual validation expectations. It does not change runtime 
 - the matrix should be tied to the command-reference runbook
 - the matrix should keep `../runtime-sandbox` as the backend simulation source
 - the matrix should stay separate from application runtime logic
+- the matrix should stay compact and outcome-focused
 
 ## Required Ports
 
@@ -43,6 +44,7 @@ This is a documentation slice only.
 
 - verify the runbook can state success/failure expectations per step
 - verify the matrix references the sandbox-backed smoke path
+- verify the matrix stays shorter than the procedural runbook
 - verify no runtime app behavior changes are introduced
 
 ## Scenario Definition

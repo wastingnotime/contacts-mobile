@@ -13,7 +13,8 @@ Refine the emulator exposure workflow so manual smoke tests begin with an explic
 
 - keep the Android client behavior unchanged
 - keep the emulator smoke-test runbook intact
-- require a visible check that the contacts backend is reachable and seeded before interpreting app behavior
+- require a visible check that the contacts backend is reachable and seeded before installing or launching the app
+- keep backend readiness separate from later session recording or app-observation notes
 - avoid adding backend ownership to this repository
 
 This slice does not change the app code. It makes the exposure step clearer so emulator failures are not misread as client regressions when the backend simulation is unavailable.
@@ -32,6 +33,7 @@ The exposure workflow should continue to support the existing Android client and
 - the backend simulation must be verified before smoke-testing the app
 - an unreachable or unseeded backend should be recorded as an exposure setup issue, not a client behavior failure
 - navigation or viewport observations are only meaningful after backend readiness is confirmed
+- the readiness gate should happen before app install or launch, not after a failed client observation
 - this repository does not own the runtime sandbox implementation
 
 ## Required Ports
@@ -42,6 +44,7 @@ The exposure workflow should continue to support the existing Android client and
 ## Initial Test Plan
 
 - verify the smoke-test runbook begins with a backend-readiness check
+- verify the readiness check happens before app install or launch
 - verify the emulator session is not treated as a client failure when the backend simulation is unreachable
 - verify the backend readiness result is recorded before app behavior is judged
 - verify the existing emulator smoke-test guidance remains intact

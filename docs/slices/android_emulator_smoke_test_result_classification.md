@@ -13,8 +13,8 @@ Refine the emulator smoke-test workflow so every manual session records a simple
 
 - keep the Android client behavior unchanged
 - keep the emulator smoke-test runbook and backend-readiness preflight intact
-- classify the session as backend-ready or backend-not-ready before judging app observations
-- treat the classification as the operator record that the emulator can reach the local contacts API in `../runtime-sandbox`
+- classify the session as backend-ready or backend-not-ready after the readiness preflight and before judging app observations
+- treat the classification as the operator's single readiness outcome label for the session
 - avoid adding backend ownership to this repository
 
 This slice does not change product code. It makes the smoke-test record itself more explicit so backend setup problems and Android client behavior are not mixed together.
@@ -32,7 +32,7 @@ The exposure workflow should continue to support the existing Android client and
 ## Main Business Rules
 
 - every emulator smoke-test session should have an explicit backend-ready or backend-not-ready classification
-- backend-ready means the emulator can reach the local contacts API through the sandbox-backed setup
+- backend-ready means the readiness preflight succeeded and the emulator can reach the local contacts API through the sandbox-backed setup
 - app behavior should only be judged after backend-ready is recorded
 - backend-not-ready should be recorded as a setup issue rather than a client regression
 - navigation, viewport, and refresh observations are only meaningful once the session is backend-ready
@@ -48,6 +48,7 @@ The exposure workflow should continue to support the existing Android client and
 - verify the smoke-test guidance includes a session result classification step
 - verify backend-not-ready sessions are recorded separately from Android client observations
 - verify backend-ready sessions continue into app validation
+- verify the classification stays a single outcome label rather than a second readiness procedure
 - verify the existing backend-readiness and emulator smoke-test guidance remains intact
 
 ## Scenario Definition

@@ -31,6 +31,7 @@ This slice documents manual validation interpretation. It does not change runtim
 - the matrix should be tied to the emulator smoke-test runbook
 - the matrix should keep `../runtime-sandbox` as the backend simulation source
 - the matrix should help avoid misclassifying environment issues as client regressions
+- the matrix should stay diagnostic rather than procedural
 
 ## Required Ports
 
@@ -42,6 +43,7 @@ This is a documentation slice only.
 
 - verify the matrix names the backend sandbox path explicitly
 - verify the matrix separates environment failures from expected client states
+- verify the matrix does not repeat the full smoke-test procedure
 - verify no runtime app behavior changes are introduced
 
 ## Scenario Definition

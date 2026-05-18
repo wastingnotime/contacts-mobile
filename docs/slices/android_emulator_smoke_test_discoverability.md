@@ -16,7 +16,7 @@ This slice does not change app behavior. It tightens the documentation boundary 
 
 ## Scope
 
-- Add a visible pointer to the emulator smoke-test runbook from the repository root docs.
+- Add a visible pointer to the emulator smoke-test runbook from `README.md`.
 - Keep the runtime-sandbox dependency explicit.
 - Keep the existing runbook as the detailed source of commands and outcomes.
 
@@ -29,6 +29,7 @@ This slice does not change app behavior. It tightens the documentation boundary 
 ## Acceptance Criteria
 
 - A reader starting from the repository root can find the emulator smoke-test runbook without guessing the file path.
+- The root pointer stays short and direct.
 - The pointer makes it clear that backend simulation comes from `../runtime-sandbox`.
 - Existing runbook content remains the source of truth for commands, outcomes, and failure interpretation.
 
@@ -36,4 +37,3 @@ This slice does not change app behavior. It tightens the documentation boundary 
 
 - `README.md`
 - optionally a short pointer in `docs/operating/skills_workflow.md` if needed for workflow visibility
-
