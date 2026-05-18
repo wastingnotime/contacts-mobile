@@ -2,12 +2,12 @@
 
 ## Summary
 
-The mobile client is currently read-only. The backend API already exposes `POST /contacts`, so the next meaningful product slice is to add a create-contact write flow that preserves the existing list/detail experience.
+The mobile client is currently read-only. The BFF already exposes `POST /api/contacts`, so the next meaningful product slice is to add a create-contact write flow that preserves the existing list/detail experience.
 
 ## Affected Boundaries
 
 - application layer: new `CreateContact` use case
-- infrastructure layer: HTTP request/response mapping for `POST /contacts`
+- infrastructure layer: HTTP request/response mapping for `POST /api/contacts`
 - interface layer: create form and success/failure state handling
 - existing list/detail navigation: must remain intact
 
@@ -28,4 +28,3 @@ The mobile client is currently read-only. The backend API already exposes `POST 
 - add deterministic use-case tests for create success and create failure
 - add transport tests for request/response mapping
 - confirm the existing read flows and stale-data behavior stay unchanged
-

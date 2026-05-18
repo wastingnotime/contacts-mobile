@@ -2,12 +2,12 @@
 
 ## Summary
 
-The mobile client already supports reading, creating, and editing contacts. The backend API also exposes `DELETE /contacts/{id}`, so the next bounded product slice is to add a delete-contact flow that starts from the selected contact detail and preserves the existing flows.
+The mobile client already supports reading, creating, and editing contacts. The BFF also exposes `DELETE /api/contacts/{id}`, so the next bounded product slice is to add a delete-contact flow that starts from the selected contact detail and preserves the existing flows.
 
 ## Affected Boundaries
 
 - application layer: new `DeleteContact` use case
-- infrastructure layer: HTTP request mapping for `DELETE /contacts/{id}`
+- infrastructure layer: HTTP request mapping for `DELETE /api/contacts/{id}`
 - interface layer: delete action and failure/success state handling
 - existing list/detail/create/edit navigation: must remain intact
 
@@ -28,4 +28,3 @@ The mobile client already supports reading, creating, and editing contacts. The 
 - add deterministic use-case tests for delete success and delete failure
 - add transport tests for request mapping
 - confirm the existing list, detail, create, edit, and stale-data behaviors stay unchanged
-

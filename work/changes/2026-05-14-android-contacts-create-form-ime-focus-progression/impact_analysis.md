@@ -27,7 +27,7 @@ The current form is valid but not yet optimized for keyboard-driven input. This 
 - do not change create success navigation here
 - do not add a confirmation step
 - do not alter validation requirements
-- do not modify the contacts API client
+- do not modify the contacts BFF client
 
 ## Suggested Verification
 

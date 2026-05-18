@@ -1,4 +1,4 @@
-# Android Contacts Delete Contact API Client
+# Android Contacts Delete Contact BFF Contract
 
 - pack: android_compose_client
 - runtime_targets:
@@ -11,7 +11,7 @@
 Implement the next product slice for the Android contacts client:
 
 - open an existing contact detail
-- delete the selected contact through `DELETE /contacts/{id}`
+- delete the selected contact through `DELETE /api/contacts/{id}`
 - render deleting, success, and failure states for the delete flow
 - keep the existing list, detail, create, and edit flows intact
 
@@ -23,7 +23,7 @@ The app should expose one delete use case:
 
 - `DeleteContact`
 
-It deletes the selected contact from `DELETE /contacts/{id}` and returns a state the UI can render.
+It deletes the selected contact from `DELETE /api/contacts/{id}` and returns a state the UI can render.
 
 ## Main Business Rules
 
@@ -35,12 +35,12 @@ It deletes the selected contact from `DELETE /contacts/{id}` and returns a state
 ## Required Ports
 
 - `ContactsRepository`
-- `ContactsApiClient`
+- `ContactsBffClient`
 - optional configuration port for base URL selection
 
 ## Initial Test Plan
 
-- verify the delete request is sent to `DELETE /contacts/{id}`
+- verify the delete request is sent to `DELETE /api/contacts/{id}`
 - verify `DeleteContact` completes through a fake repository
 - verify the delete action is only available from the detail view
 - verify repository failures keep the contact detail visible with a failure state
@@ -48,14 +48,13 @@ It deletes the selected contact from `DELETE /contacts/{id}` and returns a state
 
 ## Scenario Definition
 
-Given a user opens a contact detail and chooses delete, the Android app should send `DELETE /contacts/{id}` and remove the contact from the visible list when the backend accepts the deletion.
+Given a user opens a contact detail and chooses delete, the Android app should send `DELETE /api/contacts/{id}` and remove the contact from the visible list when the BFF accepts the deletion.
 
 If the backend rejects the request or is unavailable, the screen should remain honest about the failure and keep the selected contact visible so the user can retry or go back.
 
 ## Done Criteria
 
 - the app module compiles in the Android Gradle project shape
-- the app can delete a contact through the backend API contract
+- the app can delete a contact through the BFF contract
 - deterministic tests cover delete request mapping, success, and failure behavior
 - the repository documents the Android pack and delete boundary explicitly
-

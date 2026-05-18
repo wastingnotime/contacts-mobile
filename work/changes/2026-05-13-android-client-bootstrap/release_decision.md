@@ -8,7 +8,7 @@ Accept.
 
 - The slice implementation is built and the unit test suite passes.
 - `git diff --check` passes.
-- The slice implementation matches the refined intent: the app loads `GET /contacts`, maps the backend payload into app models, and renders loading, empty, error, and list states deterministically.
+- The slice implementation matches the refined intent: the app loads `GET /api/contacts`, maps the backend payload into app models, and renders loading, empty, error, and list states deterministically.
 - The EGD artifact for this slice reports no blocking expectation gap.
 
 ## Notes

@@ -2,12 +2,12 @@
 
 ## Summary
 
-The mobile client can already read and create contacts. The backend API also exposes `PUT /contacts/{id}`, so the next bounded product slice is to add an edit-contact flow that starts from the selected contact detail and keeps the existing flows intact.
+The mobile client can already read and create contacts. The BFF also exposes `PUT /api/contacts/{id}`, so the next bounded product slice is to add an edit-contact flow that starts from the selected contact detail and keeps the existing flows intact.
 
 ## Affected Boundaries
 
 - application layer: new `UpdateContact` use case
-- infrastructure layer: HTTP request/response mapping for `PUT /contacts/{id}`
+- infrastructure layer: HTTP request/response mapping for `PUT /api/contacts/{id}`
 - interface layer: edit form and success/failure state handling
 - existing list/detail/create navigation: must remain intact
 
@@ -28,4 +28,3 @@ The mobile client can already read and create contacts. The backend API also exp
 - add deterministic use-case tests for update success and update failure
 - add transport tests for request/response mapping
 - confirm the existing list, detail, create, and stale-data behaviors stay unchanged
-

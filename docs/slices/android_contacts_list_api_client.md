@@ -22,7 +22,7 @@ The app should expose one initial use case:
 
 - `LoadContacts`
 
-It loads `GET /contacts` from the Go BFF, maps the transport payload into app models, and returns a state the UI can render.
+It loads `GET /api/contacts` from the Go BFF, maps the transport payload into app models, and returns a state the UI can render.
 
 ## Main Business Rules
 
@@ -31,7 +31,7 @@ It loads `GET /contacts` from the Go BFF, maps the transport payload into app mo
 - successful loads render the full contact list
 - empty responses render an empty state
 - failures preserve an error state with a retry path
-- the mobile app should remain decoupled from direct contacts-api transport changes
+- the mobile app should remain decoupled from direct `contacts-api` transport changes by way of the BFF
 
 ## Required Ports
 

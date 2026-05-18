@@ -50,7 +50,7 @@ It guards the existing `DeleteContact` action with an explicit user confirmation
 
 ## Scenario Definition
 
-Given a user opens a contact detail and chooses delete, the Android app should ask for confirmation before it issues `DELETE /contacts/{id}`.
+Given a user opens a contact detail and chooses delete, the Android app should ask for confirmation before it issues `DELETE /api/contacts/{id}`.
 
 If the user cancels, the detail view should remain visible and no backend delete should occur.
 

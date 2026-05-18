@@ -16,7 +16,7 @@
 
 ## Summary
 
-The implemented slice matches the refined intent. The app now treats contact detail as a backend-backed capability, loads `GET /contacts/{id}`, maps the single-contact payload at the transport boundary, and renders a real detail state with loading, not-found, error, and loaded outcomes.
+The implemented slice matches the refined intent. The app now treats contact detail as a BFF-backed capability, loads `GET /api/contacts/{id}`, maps the single-contact payload at the transport boundary, and renders a real detail state with loading, not-found, error, and loaded outcomes.
 
 The list flow remains intact, the base URL configuration remains build-driven, and the tests cover the new repository and view-model seams deterministically.
 
@@ -28,13 +28,13 @@ Observed behavior:
 
 - tapping a contact opens a detail fetch by id
 - the repository resolves a single contact from the backend rather than reusing list data only
-- `GET /contacts/{id}` is represented explicitly in the HTTP client
+- `GET /api/contacts/{id}` is represented explicitly in the HTTP client
 - the UI distinguishes loading, loaded, not-found, and error states
 
 Assessment:
 
 - this resolves the earlier semantic gap from the local-only detail screen
-- the implementation now matches the backend evidence that `GET /contacts/{id}` exists
+- the implementation now matches the BFF contract that `GET /api/contacts/{id}` exists
 - no blocking mismatch remains for the detail slice itself
 
 ### 2. Refresh and back behavior are plausible, but still minimal

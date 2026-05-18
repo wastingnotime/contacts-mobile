@@ -7,7 +7,7 @@
 ## Implemented
 
 - added a detail use case, `LoadContactById`, for the selected contact resource
-- extended the repository port and HTTP client to support `GET /contacts/{id}`
+- extended the repository port and HTTP client to support `GET /api/contacts/{id}`
 - added single-contact JSON parsing for snake_case transport payloads
 - replaced the local-only detail view with an API-backed detail state machine
 - kept the contacts list slice intact while allowing refresh to reload the active detail view
@@ -20,6 +20,6 @@
 
 ## Notes
 
-- `GET /contacts/{id}` returns a `NotFound` detail state when the backend does not return a contact
+- `GET /api/contacts/{id}` returns a `NotFound` detail state when the BFF does not return a contact
 - the existing build-time API base-url selection remains unchanged
 - detail loading and retry are handled in the view model without introducing a navigation library

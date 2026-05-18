@@ -15,7 +15,7 @@
 
 ## Summary
 
-The implemented Android slice matches the main expectation in the slice: the app loads `GET /contacts`, maps the snake_case transport payload into app models, and renders loading, empty, error, and list states with deterministic tests.
+The implemented Android slice matches the main expectation in the slice: the app loads `GET /api/contacts`, maps the snake_case transport payload into app models, and renders loading, empty, error, and list states with deterministic tests.
 
 The build is also aligned with the current Android 15 target policy and the base URL is configurable for emulator, local-device, and production environments.
 
@@ -26,7 +26,7 @@ The build is also aligned with the current Android 15 target policy and the base
 Observed behavior:
 
 - `LoadContacts` returns empty or loaded states from the repository
-- the HTTP client targets `GET /contacts`
+- the HTTP client targets `GET /api/contacts`
 - snake_case transport fields are mapped at the infrastructure boundary
 - the UI exposes loading, empty, error, and list states
 - retry is available on empty and error states

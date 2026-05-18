@@ -14,7 +14,7 @@ The list and detail flows are already implemented. The next remaining pressure i
 - the Android client should not silently assume anonymous access
 - local development should still be deterministic and low-friction
 
-This slice resolves that by making request claims a first-class config-backed input to the contacts API client.
+This slice resolves that by making request claims a first-class config-backed input to the contacts BFF client.
 
 ## Impacted Boundaries
 
@@ -24,7 +24,7 @@ This slice resolves that by making request claims a first-class config-backed in
 
 ### Infrastructure
 
-- `HttpContactsApiClient` must apply `x-auth-subject` and `x-auth-roles` to every request
+- `HttpContactsBffClient` must apply `x-auth-subject` and `x-auth-roles` to every request
 - the HTTP client should remain focused on transport, not on login/session logic
 
 ### Configuration
@@ -56,4 +56,3 @@ The build should:
 - add header injection through a small configuration seam
 - avoid introducing a navigation or auth framework
 - preserve the deterministic tests already in place for list and detail behavior
-

@@ -11,16 +11,16 @@
 - `docs/slices/android_contacts_request_claims_headers.md`
 - `work/changes/2026-05-13-android-contacts-request-claims-headers/impact_analysis.md`
 - `work/changes/2026-05-13-android-contacts-request-claims-headers/implementation.md`
-- `app/src/main/java/org/wastingnotime/contactsmobile/infrastructure/config/ContactsApiAuthConfiguration.kt`
-- `app/src/main/java/org/wastingnotime/contactsmobile/infrastructure/http/HttpContactsApiClient.kt`
+- `app/src/main/java/org/wastingnotime/contactsmobile/infrastructure/config/ContactsBffAuthConfiguration.kt`
+- `app/src/main/java/org/wastingnotime/contactsmobile/infrastructure/http/HttpContactsBffClient.kt`
 - `app/src/main/java/org/wastingnotime/contactsmobile/interfaces/MainActivity.kt`
-- `app/src/test/java/org/wastingnotime/contactsmobile/infrastructure/config/ContactsApiAuthHeadersResolverTest.kt`
-- `app/src/test/java/org/wastingnotime/contactsmobile/infrastructure/http/HttpContactsApiClientTest.kt`
+- `app/src/test/java/org/wastingnotime/contactsmobile/infrastructure/config/ContactsBffAuthHeadersResolverTest.kt`
+- `app/src/test/java/org/wastingnotime/contactsmobile/infrastructure/http/HttpContactsBffClientTest.kt`
 - `./gradlew test`
 
 ## Summary
 
-The implemented slice matches the refined intent. The Android client now resolves request-claims configuration at build time, composes the contacts API client with explicit claims headers, and applies `x-auth-subject` and `x-auth-roles` to every contacts API request without introducing login or session machinery.
+The implemented slice matches the refined intent. The Android client now resolves request-claims configuration at build time, composes the contacts BFF client with explicit claims headers, and applies `x-auth-subject` and `x-auth-roles` to every contacts BFF request without introducing login or session machinery.
 
 The existing list and detail flows remain intact, and the deterministic tests cover the config seam and transport boundary.
 
@@ -31,7 +31,7 @@ The existing list and detail flows remain intact, and the deterministic tests co
 Observed behavior:
 
 - `MainActivity` resolves auth claims from build config and passes them into the HTTP client composition
-- `HttpContactsApiClient` applies the headers on every request path
+- `HttpContactsBffClient` applies the headers on every request path
 - the tests confirm list, detail, create, update, and delete requests all carry the claims headers
 
 Assessment:

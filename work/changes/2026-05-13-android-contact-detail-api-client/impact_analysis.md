@@ -8,7 +8,7 @@ The current UI already has a local detail view, but the next slice should make d
 
 ## Why This Slice Now
 
-The backend already exposes `GET /contacts/{id}` and the current implementation has already proven the list flow. The strongest remaining semantic gap is that the app can show a selected contact locally, but it cannot yet prove that the selected contact is loadable as a standalone backend resource.
+The BFF already exposes `GET /api/contacts/{id}` and the current implementation has already proven the list flow. The strongest remaining semantic gap is that the app can show a selected contact locally, but it cannot yet prove that the selected contact is loadable as a standalone backend resource.
 
 This slice closes that gap without broadening into create, edit, search, or caching.
 
@@ -28,7 +28,7 @@ This slice closes that gap without broadening into create, edit, search, or cach
 
 ### Infrastructure
 
-- extend the HTTP client to call `GET /contacts/{id}`
+- extend the HTTP client to call `GET /api/contacts/{id}`
 - map single-contact transport payloads from snake_case into app models
 - preserve the build-time base URL selection already introduced
 
@@ -57,4 +57,3 @@ It should not:
 - redesign the entire list architecture
 - add a navigation library unless the current simple state model stops being sufficient
 - introduce extra contact actions beyond detail loading and retry
-

@@ -8,7 +8,7 @@ Accept.
 
 - The slice implementation is built and the unit test suite passes.
 - `git diff --check` passes.
-- The slice implementation matches the refined intent: contact detail is backend-backed, `GET /contacts/{id}` is loaded explicitly, and the UI renders loading, loaded, not-found, and error outcomes.
+- The slice implementation matches the refined intent: contact detail is BFF-backed, `GET /api/contacts/{id}` is loaded explicitly, and the UI renders loading, loaded, not-found, and error outcomes.
 - The EGD artifact for this slice reports no blocking expectation gap.
 
 ## Notes

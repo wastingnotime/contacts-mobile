@@ -1,4 +1,4 @@
-# Android Contact Detail API Client
+# Android Contact Detail BFF Contract
 
 - pack: android_compose_client
 - runtime_targets:
@@ -12,9 +12,9 @@ Implement the next Android slice for the contacts product:
 
 - open the app and load the contacts list
 - tap a contact to open a detail view
-- load the selected contact from `GET /contacts/{id}`
+- load the selected contact from `GET /api/contacts/{id}`
 - render loading, detail, not-found, and error states for the detail flow
-- keep the API base URL configurable for emulator, local-device, and production environments
+- keep the BFF base URL configurable for emulator, local-device, and production environments
 
 ## Use-Case Contract
 
@@ -22,7 +22,7 @@ The app should expose one detail use case:
 
 - `LoadContactById`
 
-It loads `GET /contacts/{id}`, maps the transport payload into app models, and returns a state the UI can render.
+It loads `GET /api/contacts/{id}`, maps the transport payload into app models, and returns a state the UI can render.
 
 ## Main Business Rules
 
@@ -35,7 +35,7 @@ It loads `GET /contacts/{id}`, maps the transport payload into app models, and r
 ## Required Ports
 
 - `ContactsRepository`
-- `ContactsApiClient`
+- `ContactsBffClient`
 - optional configuration port for base URL selection
 
 ## Initial Test Plan
@@ -48,7 +48,7 @@ It loads `GET /contacts/{id}`, maps the transport payload into app models, and r
 
 ## Scenario Definition
 
-Given the API returns one contact with `id`, `first_name`, `last_name`, and `phone_number` fields, the Android app should display that contact in a detail view after the user taps the contact in the list.
+Given the BFF returns one contact with `id`, `first_name`, `last_name`, and `phone_number` fields, the Android app should display that contact in a detail view after the user taps the contact in the list.
 
 If the API is unavailable or the contact is missing, the screen should remain honest about the failure and offer a retry or back path.
 
@@ -57,4 +57,4 @@ If the API is unavailable or the contact is missing, the screen should remain ho
 - the app module compiles in the Android Gradle project shape
 - the detail screen can render a contact from the API contract
 - deterministic tests cover mapping, load behavior, and detail navigation
-- the repository documents the Android pack and API boundary explicitly
+- the repository documents the Android pack and BFF boundary explicitly

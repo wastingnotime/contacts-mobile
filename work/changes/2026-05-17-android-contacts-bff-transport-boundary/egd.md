@@ -73,22 +73,22 @@ Assessment:
 - the list/detail/create/edit/delete flows remain coherent with the current UI model
 - there is no blocking mismatch between the transport boundary and the visible app behavior
 
-### 3. The only remaining tension is documentary, not behavioral
+### 3. The remaining tension is historical wording, not behavior
 
 Observed behavior:
 
-- some older slice docs still say `ContactsApiClient`
+- some older slice docs still use direct-API wording
 - the code now uses `ContactsBffClient`
 - the implementation notes have been aligned with the BFF naming
 
 Assessment:
 
 - this is doc drift, not a runtime defect
-- it is worth cleaning up later if we want the repository vocabulary fully aligned
+- the repository still carries some historical slice filenames, but the internal vocabulary is now aligned with the BFF boundary
 
 ## Review Questions
 
-1. Do we want to rename the remaining older slice docs from `ContactsApiClient` to `ContactsBffClient`, or leave them as historical slice names?
+1. Do we want to rename the remaining older slice docs to BFF terminology, or leave them as historical slice names?
 2. Should the transport boundary be treated as a release candidate now, or do we want one more doc sweep for vocabulary consistency first?
 
 ## Recommendation
