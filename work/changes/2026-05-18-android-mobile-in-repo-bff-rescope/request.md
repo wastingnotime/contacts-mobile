@@ -2,7 +2,7 @@
 
 ## Stakeholder Input
 
-The repository should own its own Go BFF rather than treating it as a separate adjacent repository or external boundary.
+The repository should own its own repository-owned Go BFF rather than treating it as a separate repository boundary.
 
 ## Requested Change
 
@@ -11,7 +11,7 @@ Re-scope the repository model so the Android client and the Go BFF are both part
 ## Boundaries
 
 - keep the Android client as the user-facing runtime
-- keep the Go BFF as the client-facing transport boundary
+- keep the repository-owned Go BFF as the client-facing transport boundary
 - keep the downstream `contacts-api` as the backend system behind the BFF
 - do not design implementation details in this request artifact
 

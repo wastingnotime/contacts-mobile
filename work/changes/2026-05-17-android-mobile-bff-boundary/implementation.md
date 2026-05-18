@@ -2,7 +2,7 @@
 
 ## Summary
 
-Shifted the Android client transport seam from a direct contacts API shape to a BFF-facing boundary while keeping the existing app behavior intact.
+Shifted the Android client transport seam from a direct contacts API shape to a repository-owned BFF-facing boundary while keeping the existing app behavior intact.
 
 ## What Changed
 
@@ -11,14 +11,14 @@ Shifted the Android client transport seam from a direct contacts API shape to a 
   - `HttpContactsBffClient`
   - `ContactsBffBaseUrlConfiguration`
   - `ContactsBffBaseUrlResolver`
-- Updated `DefaultContactsRepository` and `MainActivity` to use the BFF seam explicitly
+- Updated `DefaultContactsRepository` and `MainActivity` to use the repository-owned BFF seam explicitly
 - Added BFF build config fields so the app can resolve the BFF base URL and BFF auth headers from Gradle properties
-- Updated the BFF base URL resolver test to validate the new BFF-specific configuration messages
-- Removed the temporary `ContactsApi*` compatibility aliases and renamed the affected tests so the codebase now uses the BFF vocabulary consistently
-- Renamed the auth configuration and headers types and test file to the BFF naming convention
+- Updated the BFF base URL resolver test to validate the new repository-owned BFF-specific configuration messages
+- Removed the temporary `ContactsApi*` compatibility aliases and renamed the affected tests so the codebase now uses the repository-owned BFF vocabulary consistently
+- Renamed the auth configuration and headers types and test file to the repository-owned BFF naming convention
 
 ## Validation
 
 - `./gradlew test`
 
-The test suite passed after the BFF boundary refactor.
+The test suite passed after the repository-owned BFF boundary refactor.

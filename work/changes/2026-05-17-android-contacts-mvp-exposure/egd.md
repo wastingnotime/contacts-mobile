@@ -14,7 +14,7 @@
 
 ## Summary
 
-The exposure record matches the accepted internal release state. The plan points the released Android contacts MVP at realistic contexts: Android Studio previews, emulator or local-device runtime, and manual smoke testing against the configured BFF environment.
+The exposure record matches the accepted internal release state. The plan points the released Android contacts MVP at realistic contexts: Android Studio previews, emulator or local-device runtime, and manual smoke testing against the configured repository-owned BFF environment.
 
 The exposure record stays within the expected boundary for this repository. It does not claim backend-sandbox ownership, persistence, or telemetry, and it correctly leaves backend simulation with the adjacent runtime sandbox workflow.
 
@@ -24,7 +24,7 @@ The exposure record stays within the expected boundary for this repository. It d
 
 Observed behavior:
 
-- the exposure plan references the accepted BFF-backed list, detail, create, edit, and delete flows
+- the exposure plan references the accepted repository-owned BFF-backed list, detail, create, edit, and delete flows
 - the plan includes preview review and runtime installation, which are the natural first contact points for this client
 - the plan includes the BFF request-claims and backend-sandbox context that the release depends on
 

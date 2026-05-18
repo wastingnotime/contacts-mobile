@@ -6,7 +6,7 @@ Introduce a single shared Material 3 theme wrapper for the Android contacts app 
 
 ## Why This Slice Now
 
-The app already has BFF-backed contacts behavior and multiple previews. The remaining pressure is visual consistency, not product flow change.
+The app already has repository-owned BFF-backed contacts behavior and multiple previews. The remaining pressure is visual consistency, not product flow change.
 
 ## Impacted Boundaries
 

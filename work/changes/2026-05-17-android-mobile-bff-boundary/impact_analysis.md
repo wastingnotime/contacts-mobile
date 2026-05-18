@@ -2,7 +2,7 @@
 
 ## Context
 
-The mobile client is no longer modeled as a direct consumer of `contacts-api`. The repository now treats a Go BFF as the client-facing transport boundary.
+The mobile client is no longer modeled as a direct consumer of `contacts-api`. The repository now treats a repository-owned Go BFF as the client-facing transport boundary.
 
 ## Impacted Areas
 
@@ -17,11 +17,11 @@ The mobile client is no longer modeled as a direct consumer of `contacts-api`. T
 
 The main pressure is transport decoupling.
 
-The mobile app should remain stable even if `contacts-api` changes its request or response shape. The Go BFF should absorb that drift first, even when the initial implementation is close to 1:1 forwarding.
+The mobile app should remain stable even if `contacts-api` changes its request or response shape. The repository-owned Go BFF should absorb that drift first, even when the initial implementation is close to 1:1 forwarding.
 
 ## Next Slice Boundaries
 
-The next build slice should implement the list flow against the BFF boundary, not against the backend directly.
+The next build slice should implement the list flow against the repository-owned BFF boundary, not against the backend directly.
 
 That means the slice needs:
 
@@ -33,5 +33,5 @@ That means the slice needs:
 ## Constraints
 
 - do not reintroduce direct Android-to-backend coupling
-- keep the BFF contract narrow for the first slice
-- keep the BFF implementation replaceable as the backend evolves
+- keep the repository-owned BFF contract narrow for the first slice
+- keep the repository-owned BFF implementation replaceable as the backend evolves

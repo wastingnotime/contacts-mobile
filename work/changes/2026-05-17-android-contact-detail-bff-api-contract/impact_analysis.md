@@ -2,13 +2,13 @@
 
 ## Slice Intent
 
-Keep the selected-contact detail experience intact while tightening the contract at the BFF boundary.
+Keep the selected-contact detail experience intact while tightening the contract at the repository-owned BFF boundary.
 
 The app already has API-backed detail behavior. The remaining pressure is to make the detail route and its boundary language explicit so the detail flow does not drift back toward direct backend coupling.
 
 ## Why This Slice Now
 
-The current implementation already resolves a contact by id, but the older slice description still speaks in direct-API terms. The refined slice should align the detail story with the Go BFF boundary and keep the selected-contact fetch contract explicit.
+The current implementation already resolves a contact by id, but the older slice description still speaks in direct-API terms. The refined slice should align the detail story with the repository-owned Go BFF boundary and keep the selected-contact fetch contract explicit.
 
 ## Impacted Boundaries
 
@@ -26,28 +26,28 @@ The current implementation already resolves a contact by id, but the older slice
 ### Infrastructure
 
 - keep the BFF client as the only transport seam for the selected-contact fetch
-- keep the `/api/contacts/{id}` route explicit through the BFF surface helper
+- keep the `/api/contacts/{id}` route explicit through the repository-owned BFF surface helper
 - preserve snake_case transport mapping at the HTTP boundary
 
 ### Tests
 
 - add or preserve deterministic tests for single-contact mapping
 - add or preserve tests for detail lookup success, not-found, and failure
-- add or preserve tests that the selected contact opens the BFF-backed detail loading flow
+- add or preserve tests that the selected contact opens the repository-owned BFF-backed detail loading flow
 
 ## Model Pressure
 
-The repository now treats contact detail as a backend-backed capability. The pressure here is not whether detail should exist, but whether the detail route remains visibly anchored to the BFF contract instead of slipping back into backend-specific path composition.
+The repository now treats contact detail as a backend-backed capability. The pressure here is not whether detail should exist, but whether the detail route remains visibly anchored to the repository-owned BFF contract instead of slipping back into backend-specific path composition.
 
 The slice should stay narrow:
 
 - one selected contact
-- one BFF-backed detail fetch
+- one repository-owned BFF-backed detail fetch
 - no edit, create, delete, or cache redesign
 
 ## Build Guidance
 
-The build step, if needed later, should prefer the smallest change that keeps the detail contract explicit at the BFF boundary.
+The build step, if needed later, should prefer the smallest change that keeps the detail contract explicit at the repository-owned BFF boundary.
 
 It should not:
 

@@ -2,7 +2,7 @@
 
 ## Context
 
-The mobile client already routes through a Go BFF, but the path contract is still implicit in the client implementation. The next slice makes the `/api` surface explicit so the app does not assemble backend routes ad hoc.
+The mobile client already routes through a repository-owned Go BFF, but the path contract is still implicit in the client implementation. The next slice makes the `/api` surface explicit so the app does not assemble backend routes ad hoc.
 
 ## Impacted Areas
 
@@ -16,7 +16,7 @@ The mobile client already routes through a Go BFF, but the path contract is stil
 
 The pressure here is contract normalization, not new behavior.
 
-The repository should be able to explain the mobile-to-BFF path in one place:
+The repository should be able to explain the mobile-to-repository-owned-BFF path in one place:
 
 - the BFF base URL decides where the service lives
 - the `/api` prefix decides how the client reaches it

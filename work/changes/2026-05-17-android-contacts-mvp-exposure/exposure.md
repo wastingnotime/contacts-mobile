@@ -2,10 +2,10 @@
 
 ## Released State
 
-The accepted internal release is the BFF-backed Android contacts client with:
+The accepted internal release is the repository-owned BFF-backed Android contacts client with:
 
 - list, detail, create, edit, and delete flows
-- request claims at the BFF boundary
+- request claims at the repository-owned BFF boundary
 - shared Material 3 theme support
 - create/edit/delete navigation refinements
 - emulator access and smoke-test guidance
@@ -16,7 +16,7 @@ Expose the released state in the following concrete contexts:
 
 - Android Studio previews for runtime UI inspection
 - runtime installation on an Android emulator or local device
-- manual smoke testing against the configured contacts BFF environment
+- manual smoke testing against the configured repository-owned BFF environment
 - manual inspection of the create/edit/delete navigation policies in the running app
 
 ## Exposure Plan
@@ -25,14 +25,14 @@ Expose the released state in the following concrete contexts:
 - install the app on an emulator or local device using the configured BFF base URL and request-claims settings
 - use `../runtime-sandbox` as the backend simulation source for emulator smoke tests
 - validate that list, detail, create, edit, and delete flows still behave as released
-- observe any friction around the BFF boundary, navigation policies, or visual consistency
+- observe any friction around the repository-owned BFF boundary, navigation policies, or visual consistency
 
 ## Expected Feedback Channels
 
 - Android Studio preview review during UI iteration
 - manual smoke testing on emulator or local device
 - direct feedback from anyone exercising the released MVP in a real device session
-- notes about mismatches between the BFF contract, the navigation policy, and the rendered UI
+- notes about mismatches between the repository-owned BFF contract, the navigation policy, and the rendered UI
 
 ## Notes
 

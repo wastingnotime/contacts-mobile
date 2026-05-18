@@ -33,7 +33,7 @@ This review covers the current BFF transport boundary for the contacts client as
 
 ## Summary
 
-The built contacts-client behavior matches the transport-boundary intent. The app routes list, detail, create, update, and delete requests through the BFF client seam, applies explicit request claims headers to every request, and preserves the existing list/detail UI behavior while broadening the transport contract.
+The built contacts-client behavior matches the transport-boundary intent. The app routes list, detail, create, update, and delete requests through the repository-owned BFF client seam, applies explicit request claims headers to every request, and preserves the existing list/detail UI behavior while broadening the transport contract.
 
 The deterministic tests cover:
 
@@ -57,7 +57,7 @@ Assessment:
 
 - the transport boundary is explicit and consistent
 - the client is not silently relying on anonymous access
-- the BFF boundary is the right level of coupling for the current repository state
+- the repository-owned BFF boundary is the right level of coupling for the current repository state
 
 ### 2. The CRUD flows remain aligned with the existing UI expectations
 
@@ -84,7 +84,7 @@ Observed behavior:
 Assessment:
 
 - this is doc drift, not a runtime defect
-- the repository still carries some historical slice filenames, but the internal vocabulary is now aligned with the BFF boundary
+- the repository still carries some historical slice filenames, but the internal vocabulary is now aligned with the repository-owned BFF boundary
 
 ## Review Questions
 
