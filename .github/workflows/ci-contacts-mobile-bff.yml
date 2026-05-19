@@ -19,7 +19,6 @@ permissions:
 
 env:
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
-  ECR_ROLE_ARN: ${{ secrets.ECR_ROLE_ARN }}
   IMAGE_NAME: contacts-mobile-bff
   TARGET_REPOSITORY: wastingnotime/integration-sandbox
   EVENT_TYPE: candidate-image-updated
@@ -45,7 +44,7 @@ jobs:
   publish-and-dispatch:
     runs-on: ubuntu-latest
     needs: server-tests
-    if: github.ref == 'refs/heads/main' && env.AWS_DEFAULT_REGION != '' && env.ECR_ROLE_ARN != ''
+    if: github.ref == 'refs/heads/main'
 
     outputs:
       image_uri: ${{ steps.image.outputs.image_uri }}
@@ -54,11 +53,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v5
 
+      - name: Validate publish inputs
+        env:
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          ECR_ROLE_ARN: ${{ secrets.ECR_ROLE_ARN }}
+        run: |
+          : "${AWS_DEFAULT_REGION:?Repository variable AWS_DEFAULT_REGION is required}"
+          : "${ECR_ROLE_ARN:?Repository secret ECR_ROLE_ARN is required}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.1.1
         with:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
-          role-to-assume: ${{ env.ECR_ROLE_ARN }}
+          role-to-assume: ${{ secrets.ECR_ROLE_ARN }}
           role-session-name: ${{ vars.ECR_ROLE_NAME }}
 
       - name: Login to Amazon ECR
