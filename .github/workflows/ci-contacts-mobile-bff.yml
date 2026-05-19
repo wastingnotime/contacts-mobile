@@ -1,0 +1,109 @@
+name: ci-contacts-mobile-bff
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ci-contacts-mobile-bff.yml
+      - server/**
+  workflow_dispatch:
+
+concurrency:
+  group: ci-contacts-mobile-bff
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  IMAGE_NAME: contacts-mobile-bff
+  TARGET_REPOSITORY: wastingnotime/integration-sandbox
+  EVENT_TYPE: candidate-image-updated
+
+jobs:
+  publish-and-dispatch:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    outputs:
+      image_uri: ${{ steps.image.outputs.image_uri }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+
+      - name: Run Go tests
+        working-directory: server
+        run: go test ./...
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.1
+        with:
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ secrets.ECR_ROLE_ARN }}
+          role-session-name: ${{ vars.ECR_ROLE_NAME }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image URI
+        id: image
+        run: echo "image_uri=${{ steps.login-ecr.outputs.registry }}/${IMAGE_NAME}:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+        with:
+          driver: docker-container
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=true
+            type=raw,value=${{ github.sha }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Dispatch integration-sandbox repository event
+        env:
+          GH_TOKEN: ${{ secrets.GH_INTEGRATION_SANDBOX_DISPATCH_TOKEN }}
+          CANDIDATE_IMAGE_URI: ${{ steps.image.outputs.image_uri }}
+        run: |
+          candidate_image="${CANDIDATE_IMAGE_URI%:*}"
+
+          gh api "repos/${TARGET_REPOSITORY}/dispatches" \
+            -X POST \
+            --input - <<EOF
+          {
+            "event_type": "${EVENT_TYPE}",
+            "client_payload": {
+              "service": "contacts-mobile-bff",
+              "image": "${candidate_image}",
+              "sha": "${GITHUB_SHA}"
+            }
+          }
+          EOF

@@ -47,6 +47,7 @@ Backend simulation for that flow comes from `../runtime-sandbox`.
 ## BFF Runtime
 
 Use `docs/operating/contacts_bff_runtime_runbook.md` for the local Go BFF startup command and required environment.
+Use `.github/workflows/ci-contacts-mobile-bff.yml` for the CI path that builds, pushes, and dispatches the candidate BFF image.
 
 ## Campaign Notifications
 
