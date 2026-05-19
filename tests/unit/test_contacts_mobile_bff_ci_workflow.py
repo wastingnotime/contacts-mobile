@@ -15,7 +15,7 @@ def test_contacts_mobile_bff_workflow_publishes_and_dispatches():
     assert "go test ./..." in workflow
     assert "needs: server-tests" in workflow
     assert "Validate publish inputs" in workflow
-    assert "Repository secret ECR_ROLE_ARN is required" in workflow
+    assert "arn:aws:iam::590183855481:role/github-actions-ecr" in workflow
     assert "aws-actions/configure-aws-credentials@v6.1.1" in workflow
     assert "aws-actions/amazon-ecr-login@v2" in workflow
     assert "docker/build-push-action@v7" in workflow

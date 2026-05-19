@@ -31,4 +31,4 @@ Keep this file short. It documents repository settings, not workflow internals.
 ## Notes
 
 The workflow builds the `contacts-mobile-bff` image, pushes it to ECR, and dispatches the resulting candidate image to integration-sandbox for validation.
-The publish job only runs when the repository has `AWS_DEFAULT_REGION` and `ECR_ROLE_ARN` configured; otherwise the test job still runs and the publish path is skipped.
+The publish job uses the canonical `github-actions-ecr` role ARN from the infrastructure contract in `infra-platform` and still requires `AWS_DEFAULT_REGION` to be configured.
