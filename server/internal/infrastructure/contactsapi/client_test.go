@@ -14,7 +14,7 @@ import (
 func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 	t.Run("list", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
-			assertRequest(t, request, http.MethodGet, "/api/contacts")
+			assertRequest(t, request, http.MethodGet, "/contacts")
 			writeJSON(t, responseWriter, []contactDocument{{
 				ID:          "1",
 				FirstName:   "Ada",
@@ -24,7 +24,7 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 		}))
 		defer server.Close()
 
-		client, err := NewClient(server.URL, "/api", "subject", "admin")
+		client, err := NewClient(server.URL, "subject", "admin")
 		if err != nil {
 			t.Fatalf("NewClient() error = %v", err)
 		}
@@ -40,7 +40,7 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 
 	t.Run("load", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
-			assertRequest(t, request, http.MethodGet, "/api/contacts/1")
+			assertRequest(t, request, http.MethodGet, "/contacts/1")
 			writeJSON(t, responseWriter, contactDocument{
 				ID:          "1",
 				FirstName:   "Ada",
@@ -50,7 +50,7 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 		}))
 		defer server.Close()
 
-		client, err := NewClient(server.URL, "/api", "subject", "admin")
+		client, err := NewClient(server.URL, "subject", "admin")
 		if err != nil {
 			t.Fatalf("NewClient() error = %v", err)
 		}
@@ -66,7 +66,7 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 
 	t.Run("create", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
-			assertRequest(t, request, http.MethodPost, "/api/contacts")
+			assertRequest(t, request, http.MethodPost, "/contacts")
 			assertJSONBody(t, request.Body, map[string]any{
 				"first_name":   "Ada",
 				"last_name":    "Lovelace",
@@ -81,7 +81,7 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 		}))
 		defer server.Close()
 
-		client, err := NewClient(server.URL, "/api", "subject", "admin")
+		client, err := NewClient(server.URL, "subject", "admin")
 		if err != nil {
 			t.Fatalf("NewClient() error = %v", err)
 		}
@@ -101,7 +101,7 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 
 	t.Run("update", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
-			assertRequest(t, request, http.MethodPut, "/api/contacts/1")
+			assertRequest(t, request, http.MethodPut, "/contacts/1")
 			assertJSONBody(t, request.Body, map[string]any{
 				"first_name":   "Grace",
 				"last_name":    "Hopper",
@@ -116,7 +116,7 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 		}))
 		defer server.Close()
 
-		client, err := NewClient(server.URL, "/api", "subject", "admin")
+		client, err := NewClient(server.URL, "subject", "admin")
 		if err != nil {
 			t.Fatalf("NewClient() error = %v", err)
 		}
@@ -136,12 +136,12 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 
 	t.Run("delete", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
-			assertRequest(t, request, http.MethodDelete, "/api/contacts/1")
+			assertRequest(t, request, http.MethodDelete, "/contacts/1")
 			responseWriter.WriteHeader(http.StatusNoContent)
 		}))
 		defer server.Close()
 
-		client, err := NewClient(server.URL, "/api", "subject", "admin")
+		client, err := NewClient(server.URL, "subject", "admin")
 		if err != nil {
 			t.Fatalf("NewClient() error = %v", err)
 		}

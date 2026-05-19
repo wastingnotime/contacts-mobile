@@ -5,6 +5,8 @@
 This runbook gives the minimal local command for starting the repository-owned Go BFF.
 
 Keep this file short. It is a runnable note, not a deployment manual.
+Use `../runtime-sandbox` for emulator validation; this runbook is for standalone BFF checks only.
+The BFF code still lives in `contacts-mobile`, but the sandbox is the preferred local launch venue for emulator smoke tests.
 
 ---
 

@@ -18,7 +18,6 @@ func main() {
 
 	repository, err := contactsapi.NewClient(
 		cfg.ContactsAPIBaseURL,
-		cfg.APIPathPrefix,
 		cfg.AuthSubject,
 		cfg.AuthRoles,
 	)

@@ -42,11 +42,13 @@ Read these files first:
 
 Use `docs/operating/emulator_smoke_test_runbook.md` for emulator validation.
 
-Backend simulation for that flow comes from `../runtime-sandbox`.
+Backend simulation and local launch orchestration for that flow come from `../runtime-sandbox`.
+`contacts-mobile` still owns the BFF code and contract; the sandbox only owns the local execution path for emulator validation.
 
 ## BFF Runtime
 
-Use `docs/operating/contacts_bff_runtime_runbook.md` for the local Go BFF startup command and required environment.
+Use `docs/operating/contacts_bff_runtime_runbook.md` for standalone local Go BFF checks and required environment.
+That runbook is not the emulator validation path; emulator smoke tests should use the sandbox-backed launch path in `../runtime-sandbox`.
 Use `.github/workflows/ci-contacts-mobile-bff.yml` for the CI path that builds, pushes, and dispatches the candidate BFF image.
 Use `docs/operating/contacts_bff_ci_requirements.md` for the repository-level GitHub Actions variables and secrets that support that workflow.
 

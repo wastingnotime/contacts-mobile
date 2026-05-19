@@ -17,24 +17,18 @@ import (
 
 type Client struct {
 	baseURL    string
-	apiPrefix  string
 	subject    string
 	roles      string
 	httpClient *http.Client
 }
 
-func NewClient(baseURL, apiPrefix, subject, roles string) (*Client, error) {
+func NewClient(baseURL, subject, roles string) (*Client, error) {
 	normalizedBaseURL := strings.TrimSpace(baseURL)
 	if normalizedBaseURL == "" {
 		return nil, fmt.Errorf("contactsApiBaseUrl must not be blank")
 	}
 	if _, err := url.ParseRequestURI(normalizedBaseURL); err != nil {
 		return nil, fmt.Errorf("contactsApiBaseUrl must be a valid URL: %w", err)
-	}
-
-	normalizedPrefix := normalizePathPrefix(apiPrefix)
-	if normalizedPrefix == "" {
-		return nil, fmt.Errorf("contactsBffApiPrefix must not be blank")
 	}
 
 	normalizedSubject := strings.TrimSpace(subject)
@@ -49,7 +43,6 @@ func NewClient(baseURL, apiPrefix, subject, roles string) (*Client, error) {
 
 	return &Client{
 		baseURL:    strings.TrimRight(normalizedBaseURL, "/"),
-		apiPrefix:  normalizedPrefix,
 		subject:    normalizedSubject,
 		roles:      normalizedRoles,
 		httpClient: &http.Client{Timeout: 10 * time.Second},
@@ -151,11 +144,11 @@ func (c *Client) doJSONRequest(
 }
 
 func (c *Client) contactsPath() string {
-	return joinPath(c.apiPrefix, "contacts")
+	return "/contacts"
 }
 
 func (c *Client) contactPath(id string) string {
-	return joinPath(c.apiPrefix, "contacts", url.PathEscape(id))
+	return joinPath("/contacts", url.PathEscape(id))
 }
 
 type contactDocument struct {
@@ -186,18 +179,6 @@ func (document contactDocument) toDomain() domain.Contact {
 		LastName:    document.LastName,
 		PhoneNumber: document.PhoneNumber,
 	}
-}
-
-func normalizePathPrefix(prefix string) string {
-	normalized := strings.TrimSpace(prefix)
-	normalized = strings.TrimRight(normalized, "/")
-	if normalized == "" {
-		return ""
-	}
-	if !strings.HasPrefix(normalized, "/") {
-		normalized = "/" + normalized
-	}
-	return normalized
 }
 
 func joinPath(prefix string, parts ...string) string {
