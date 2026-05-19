@@ -44,6 +44,14 @@ jobs:
         working-directory: server
         run: go test ./...
 
+      - name: Validate publish inputs
+        env:
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+          ECR_ROLE_ARN: ${{ secrets.ECR_ROLE_ARN }}
+        run: |
+          : "${AWS_DEFAULT_REGION:?Repository variable AWS_DEFAULT_REGION is required}"
+          : "${ECR_ROLE_ARN:?Repository secret ECR_ROLE_ARN is required}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.1.1
         with:
