@@ -7,6 +7,8 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  CONTACTS_BFF_ENVIRONMENT: production
+  CONTACTS_BFF_PRODUCTION_BASE_URL: ${{ vars.CONTACTS_BFF_PRODUCTION_BASE_URL }}
 
 jobs:
   build-debug-apk:
@@ -30,8 +32,16 @@ jobs:
         with:
           packages: "platform-tools platforms;android-36 build-tools;36.0.0"
 
+      - name: Validate production APK inputs
+        run: |
+          : "${CONTACTS_BFF_PRODUCTION_BASE_URL:?Repository variable CONTACTS_BFF_PRODUCTION_BASE_URL is required}"
+
       - name: Run unit tests
-        run: ./gradlew --no-daemon testDebugUnitTest assembleDebug
+        run: |
+          ./gradlew --no-daemon \
+            -PcontactsBffEnvironment="${CONTACTS_BFF_ENVIRONMENT}" \
+            -PcontactsBffProductionBaseUrl="${CONTACTS_BFF_PRODUCTION_BASE_URL}" \
+            testDebugUnitTest assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v6

@@ -18,6 +18,7 @@ Keep this file short. It documents repository settings, not workflow internals.
 
 - `AWS_DEFAULT_REGION`: `us-east-1`
 - `ECR_ROLE_NAME`: `github-actions-ecr`
+- `CONTACTS_BFF_PRODUCTION_BASE_URL`: production BFF base URL used by the APK build workflow
 
 ---
 
@@ -30,5 +31,6 @@ Keep this file short. It documents repository settings, not workflow internals.
 
 ## Notes
 
-The workflow builds the `contacts-mobile-bff` image, pushes it to ECR, and dispatches the resulting candidate image to integration-sandbox for validation.
+The BFF publish workflow builds the `contacts-mobile-bff` image, pushes it to ECR, and dispatches the resulting candidate image to integration-sandbox for validation.
+The APK build workflow uses `CONTACTS_BFF_PRODUCTION_BASE_URL` to point the generated APK at the production BFF endpoint.
 The publish job uses the canonical `github-actions-ecr` role ARN from the infrastructure contract in `infra-platform` and still requires `AWS_DEFAULT_REGION` to be configured.
