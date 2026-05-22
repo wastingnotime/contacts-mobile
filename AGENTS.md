@@ -114,6 +114,7 @@ Use tests as specification. Start with domain tests, add integration tests for m
 If a requested change affects more than one repository, look for the current campaign in `/home/henrique/repos/bitbucket/solareclipseglasses/management/campaigns/<campaign-name>/` and follow `/home/henrique/repos/bitbucket/solareclipseglasses/management/references/decisions/campaign_management_protocol_decision.md`.
 
 For cross-repository findings discovered locally, follow `docs/operating/cross_repo_findings_guidance.md`. Create findings in this repository, escalate multi-repository impact to management, and do not implement fixes owned by another repository.
+For MRL-managed work resolved by code or configuration changes, follow `docs/operating/issue_pr_linking_guidance.md`. Open a pull request in this repository and link it back to the issue, campaign record, or finding record.
 
 ## Ownership Expectations
 Changes to public contracts should be reflected in the matching `contracts/` document and, when the change has architectural weight, in `decisions.md`.
