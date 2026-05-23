@@ -1,6 +1,6 @@
 module github.com/wastingnotime/contacts-mobile/server
 
-go 1.25
+go 1.25.0
 
 require (
 	go.opentelemetry.io/contrib/bridges/otelslog v0.18.0
