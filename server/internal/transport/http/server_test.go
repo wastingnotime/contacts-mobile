@@ -2,6 +2,7 @@ package transporthttp
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -37,9 +38,13 @@ func (fakeRepository) DeleteContact(ctx context.Context, id string) error {
 	return nil
 }
 
+func (fakeRepository) Ready(ctx context.Context) error {
+	return nil
+}
+
 func TestServerRoutesContactsEndpoints(t *testing.T) {
 	service := application.NewService(fakeRepository{})
-	server, err := NewServer(service, "/api")
+	server, err := NewServer(service, "/api", nil)
 	if err != nil {
 		t.Fatalf("NewServer() error = %v", err)
 	}
@@ -127,7 +132,91 @@ func TestServerRoutesContactsEndpoints(t *testing.T) {
 }
 
 func TestServerRejectsBlankPrefix(t *testing.T) {
-	if _, err := NewServer(application.NewService(fakeRepository{}), " "); err == nil {
+	if _, err := NewServer(application.NewService(fakeRepository{}), " ", nil); err == nil {
 		t.Fatal("NewServer() error = nil, want error")
+	}
+}
+
+func TestServerExposesHealthEndpoints(t *testing.T) {
+	service := application.NewService(fakeRepository{})
+	server, err := NewServer(service, "/api", nil)
+	if err != nil {
+		t.Fatalf("NewServer() error = %v", err)
+	}
+
+	testServer := httptest.NewServer(server.Handler())
+	defer testServer.Close()
+
+	tests := []struct {
+		name           string
+		path           string
+		wantStatusCode int
+		wantContains   string
+	}{
+		{
+			name:           "live",
+			path:           "/health/live",
+			wantStatusCode: http.StatusOK,
+			wantContains:   "\"status\":\"alive\"",
+		},
+		{
+			name:           "ready",
+			path:           "/health/ready",
+			wantStatusCode: http.StatusOK,
+			wantContains:   "\"status\":\"ready\"",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			response, err := http.Get(testServer.URL + test.path)
+			if err != nil {
+				t.Fatalf("Get() error = %v", err)
+			}
+			defer response.Body.Close()
+
+			if response.StatusCode != test.wantStatusCode {
+				t.Fatalf("StatusCode = %d, want %d", response.StatusCode, test.wantStatusCode)
+			}
+
+			body, err := io.ReadAll(response.Body)
+			if err != nil {
+				t.Fatalf("ReadAll() error = %v", err)
+			}
+			if !strings.Contains(string(body), test.wantContains) {
+				t.Fatalf("response body = %s, want to contain %s", string(body), test.wantContains)
+			}
+		})
+	}
+}
+
+type failingReadyRepository struct {
+	fakeRepository
+}
+
+func (f failingReadyRepository) Ready(ctx context.Context) error {
+	return errReadinessFailure
+}
+
+var errReadinessFailure = errors.New("contacts-api is unavailable")
+
+func TestServerReturnsUnavailableWhenReadyCheckFails(t *testing.T) {
+	service := application.NewService(failingReadyRepository{})
+	server, err := NewServer(service, "/api", nil)
+	if err != nil {
+		t.Fatalf("NewServer() error = %v", err)
+	}
+
+	testServer := httptest.NewServer(server.Handler())
+	defer testServer.Close()
+
+	response, err := http.Get(testServer.URL + "/health/ready")
+	if err != nil {
+		t.Fatalf("Get() error = %v", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusServiceUnavailable {
+		t.Fatalf("StatusCode = %d, want %d", response.StatusCode, http.StatusServiceUnavailable)
 	}
 }

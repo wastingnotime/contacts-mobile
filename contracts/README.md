@@ -11,6 +11,7 @@ Use it to understand what the repository exposes to visitors, integrators, and o
 - `sync/`: synchronization posture, freshness rules, and conflict handling
 - `offline/`: degraded-mode and offline expectations
 - `telemetry/`: mobile telemetry semantics and visibility rules
+- `runtime/`: process liveness, readiness, and operational health expectations
 - `notifications/`: notification semantics and delivery expectations
 
 ## Boundary Rule

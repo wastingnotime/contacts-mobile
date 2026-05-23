@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"time"
 
 	"github.com/wastingnotime/contacts-mobile/server/internal/domain"
 )
@@ -12,6 +13,7 @@ type Repository interface {
 	CreateContact(ctx context.Context, draft domain.ContactDraft) (domain.Contact, error)
 	UpdateContact(ctx context.Context, id string, draft domain.ContactDraft) (domain.Contact, error)
 	DeleteContact(ctx context.Context, id string) error
+	Ready(ctx context.Context) error
 }
 
 type Service struct {
@@ -40,4 +42,11 @@ func (s *Service) UpdateContact(ctx context.Context, id string, draft domain.Con
 
 func (s *Service) DeleteContact(ctx context.Context, id string) error {
 	return s.repository.DeleteContact(ctx, id)
+}
+
+func (s *Service) Ready(ctx context.Context) error {
+	timeoutContext, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+
+	return s.repository.Ready(timeoutContext)
 }

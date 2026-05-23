@@ -150,6 +150,23 @@ func TestClientRoutesContactsRequestsThroughTheConfiguredSurface(t *testing.T) {
 			t.Fatalf("DeleteContact() error = %v", err)
 		}
 	})
+
+	t.Run("ready", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+			assertRequest(t, request, http.MethodGet, "/healthz")
+			responseWriter.WriteHeader(http.StatusOK)
+		}))
+		defer server.Close()
+
+		client, err := NewClient(server.URL, "subject", "admin")
+		if err != nil {
+			t.Fatalf("NewClient() error = %v", err)
+		}
+
+		if err := client.Ready(context.Background()); err != nil {
+			t.Fatalf("Ready() error = %v", err)
+		}
+	})
 }
 
 func assertRequest(t *testing.T, request *http.Request, method, path string) {
