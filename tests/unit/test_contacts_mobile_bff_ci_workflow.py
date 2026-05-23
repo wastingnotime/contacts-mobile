@@ -32,4 +32,5 @@ def test_contacts_mobile_bff_dockerfile_builds_the_server_binary():
     assert "COPY cmd ./cmd" in dockerfile
     assert "COPY internal ./internal" in dockerfile
     assert "go build -trimpath -o /out/contacts-bff ./cmd/contacts-bff" in dockerfile
+    assert 'HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD ["/contacts-bff", "healthcheck"]' in dockerfile
     assert "ENTRYPOINT [\"/contacts-bff\"]" in dockerfile

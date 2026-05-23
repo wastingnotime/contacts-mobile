@@ -1,8 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"log"
+	"net"
 	"net/http"
+	"os"
+	"strings"
+	"time"
 
 	"github.com/wastingnotime/contacts-mobile/server/internal/application"
 	"github.com/wastingnotime/contacts-mobile/server/internal/config"
@@ -12,6 +18,14 @@ import (
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "healthcheck" {
+		if err := runHealthcheck(); err != nil {
+			log.Print(err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
@@ -53,4 +67,40 @@ func run() error {
 		return err
 	}
 	return nil
+}
+
+func runHealthcheck() error {
+	client := &http.Client{Timeout: 2 * time.Second}
+	request, err := http.NewRequest(http.MethodGet, healthcheckURL(), nil)
+	if err != nil {
+		return fmt.Errorf("build healthcheck request: %w", err)
+	}
+
+	response, err := client.Do(request)
+	if err != nil {
+		return fmt.Errorf("perform healthcheck request: %w", err)
+	}
+	defer response.Body.Close()
+
+	_, _ = io.Copy(io.Discard, response.Body)
+
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("healthcheck returned %s", response.Status)
+	}
+
+	return nil
+}
+
+func healthcheckURL() string {
+	listenAddr := strings.TrimSpace(os.Getenv("CONTACTS_BFF_LISTEN_ADDR"))
+	if listenAddr == "" {
+		listenAddr = ":8080"
+	}
+
+	_, port, err := net.SplitHostPort(listenAddr)
+	if err != nil || strings.TrimSpace(port) == "" {
+		port = "8080"
+	}
+
+	return fmt.Sprintf("http://127.0.0.1:%s/health/ready", port)
 }

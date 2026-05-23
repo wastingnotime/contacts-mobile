@@ -43,3 +43,4 @@ Optional environment:
 
 - `GET /health/live` reports process liveness only
 - `GET /health/ready` reports whether the BFF can serve production traffic and reach the downstream `contacts-api`
+- the release image uses `/health/ready` through the `contacts-bff healthcheck` command for Docker `HEALTHCHECK` metadata
