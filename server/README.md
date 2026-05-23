@@ -34,3 +34,12 @@ Optional environment:
 - `CONTACTS_BFF_API_PREFIX`
 - `CONTACTS_BFF_AUTH_SUBJECT`
 - `CONTACTS_BFF_AUTH_ROLES`
+- `OTEL_EXPORTER_OTLP_ENDPOINT`
+- `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT`
+- `OTEL_SERVICE_NAME`
+- `OTEL_SERVICE_VERSION`
+
+## Health
+
+- `GET /health/live` reports process liveness only
+- `GET /health/ready` reports whether the BFF can serve production traffic and reach the downstream `contacts-api`

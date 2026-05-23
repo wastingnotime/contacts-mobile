@@ -92,6 +92,10 @@ func (c *Client) DeleteContact(ctx context.Context, id string) error {
 	return c.doJSONRequest(ctx, http.MethodDelete, c.contactPath(id), nil, nil)
 }
 
+func (c *Client) Ready(ctx context.Context) error {
+	return c.doJSONRequest(ctx, http.MethodGet, "/healthz", nil, nil)
+}
+
 func (c *Client) doJSONRequest(
 	ctx context.Context,
 	method, requestPath string,

@@ -49,6 +49,10 @@ func (r *fakeRepository) DeleteContact(ctx context.Context, id string) error {
 	return nil
 }
 
+func (r *fakeRepository) Ready(ctx context.Context) error {
+	return nil
+}
+
 func TestServiceDelegatesToRepository(t *testing.T) {
 	repository := &fakeRepository{
 		contacts: []domain.Contact{{ID: "1", FirstName: "Ada", LastName: "Lovelace", PhoneNumber: "123"}},
@@ -61,5 +65,13 @@ func TestServiceDelegatesToRepository(t *testing.T) {
 	}
 	if len(contacts) != 1 || contacts[0].ID != "1" {
 		t.Fatalf("ListContacts() = %#v", contacts)
+	}
+}
+
+func TestServiceReadyDelegatesToRepository(t *testing.T) {
+	service := NewService(&fakeRepository{})
+
+	if err := service.Ready(context.Background()); err != nil {
+		t.Fatalf("Ready() error = %v", err)
 	}
 }

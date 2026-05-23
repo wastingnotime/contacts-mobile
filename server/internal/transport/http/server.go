@@ -4,18 +4,22 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/wastingnotime/contacts-mobile/server/internal/application"
 	"github.com/wastingnotime/contacts-mobile/server/internal/domain"
 )
 
 type Server struct {
-	mux *http.ServeMux
+	mux    *http.ServeMux
+	logger *slog.Logger
 }
 
-func NewServer(service *application.Service, apiPrefix string) (*Server, error) {
+func NewServer(service *application.Service, apiPrefix string, logger *slog.Logger) (*Server, error) {
 	if service == nil {
 		return nil, fmt.Errorf("contacts service must not be nil")
 	}
@@ -24,24 +28,61 @@ func NewServer(service *application.Service, apiPrefix string) (*Server, error) 
 	if normalizedPrefix == "" {
 		return nil, fmt.Errorf("contactsBffApiPrefix must not be blank")
 	}
+	if logger == nil {
+		logger = noopLogger()
+	}
 
-	handler := &handler{service: service}
+	handler := &handler{service: service, logger: logger}
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health/live", handler.live)
+	mux.HandleFunc("GET /health/ready", handler.ready)
 	mux.HandleFunc("GET "+normalizedPrefix+"/contacts", handler.listContacts)
 	mux.HandleFunc("GET "+normalizedPrefix+"/contacts/{id}", handler.loadContact)
 	mux.HandleFunc("POST "+normalizedPrefix+"/contacts", handler.createContact)
 	mux.HandleFunc("PUT "+normalizedPrefix+"/contacts/{id}", handler.updateContact)
 	mux.HandleFunc("DELETE "+normalizedPrefix+"/contacts/{id}", handler.deleteContact)
 
-	return &Server{mux: mux}, nil
+	return &Server{mux: mux, logger: logger}, nil
 }
 
 func (s *Server) Handler() http.Handler {
-	return s.mux
+	return http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		startedAt := time.Now()
+		recorder := &statusRecordingResponseWriter{ResponseWriter: responseWriter, statusCode: http.StatusOK}
+		s.mux.ServeHTTP(recorder, request)
+
+		if strings.HasPrefix(request.URL.Path, "/health/") {
+			return
+		}
+
+		s.logger.InfoContext(
+			request.Context(),
+			"http request completed",
+			"method", request.Method,
+			"path", request.URL.Path,
+			"status_code", recorder.statusCode,
+			"duration_ms", time.Since(startedAt).Milliseconds(),
+		)
+	})
 }
 
 type handler struct {
 	service *application.Service
+	logger  *slog.Logger
+}
+
+func (h *handler) live(responseWriter http.ResponseWriter, request *http.Request) {
+	writeJSON(responseWriter, http.StatusOK, map[string]string{"status": "alive"})
+}
+
+func (h *handler) ready(responseWriter http.ResponseWriter, request *http.Request) {
+	if err := h.service.Ready(request.Context()); err != nil {
+		h.logger.WarnContext(request.Context(), "readiness check failed", "error", err)
+		http.Error(responseWriter, "service not ready", http.StatusServiceUnavailable)
+		return
+	}
+
+	writeJSON(responseWriter, http.StatusOK, map[string]string{"status": "ready"})
 }
 
 func (h *handler) listContacts(responseWriter http.ResponseWriter, request *http.Request) {
@@ -172,4 +213,18 @@ func normalizePathPrefix(prefix string) string {
 		normalized = "/" + normalized
 	}
 	return normalized
+}
+
+type statusRecordingResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (w *statusRecordingResponseWriter) WriteHeader(statusCode int) {
+	w.statusCode = statusCode
+	w.ResponseWriter.WriteHeader(statusCode)
+}
+
+func noopLogger() *slog.Logger {
+	return slog.New(slog.NewTextHandler(io.Discard, nil))
 }
