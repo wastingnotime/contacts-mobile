@@ -2,7 +2,27 @@ name: Build APK
 
 on:
   push:
+    paths:
+      - ".github/workflows/build-apk.yml"
+      - "app/**"
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "gradle/libs.versions.toml"
+      - "gradle/wrapper/**"
+      - "gradlew"
+      - "gradlew.bat"
+      - "settings.gradle.kts"
   pull_request:
+    paths:
+      - ".github/workflows/build-apk.yml"
+      - "app/**"
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "gradle/libs.versions.toml"
+      - "gradle/wrapper/**"
+      - "gradlew"
+      - "gradlew.bat"
+      - "settings.gradle.kts"
   workflow_dispatch:
 
 env:
