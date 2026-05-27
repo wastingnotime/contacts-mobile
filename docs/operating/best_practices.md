@@ -4,6 +4,11 @@
 
 This document captures practical guidance for running MRL well.
 
+## Scope
+
+This document defines portable MRL guidance.
+It does not define project-specific architecture or domain policy.
+
 Use it for habits that improve phase discipline, artifact quality, and architectural timing without changing the core loop definition.
 
 ---
