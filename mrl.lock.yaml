@@ -2,8 +2,8 @@ overlay:
   name: mrl-starter
   version: 0.1.0
   source: git
-  source_ref: 5eb41907539e8d2ae394f2b40a694f92921a431b
+  source_ref: 347171a9cfe3b0d69ed066a5229c5e49dfdce5c1
   manifest_path: manifest.yaml
-installed_at: '2026-05-27T21:25:44Z'
+installed_at: '2026-05-30T22:54:56Z'
 installed_by: mrl-cli
 policy: explicit

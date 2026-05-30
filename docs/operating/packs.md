@@ -90,7 +90,6 @@ This metadata keeps the semantic model shared while making implementation placem
 ## Suggested Initial Packs
 
 - `python_ddd_monolith`
-- `typescript_application`
 - `polyglot_client_server`
 
 Repositories do not need all packs. They should define only the packs they actually intend to use.
