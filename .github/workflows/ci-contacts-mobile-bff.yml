@@ -61,7 +61,7 @@ jobs:
           : "${AWS_DEFAULT_REGION:?Repository variable AWS_DEFAULT_REGION is required}"
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.1.1
+        uses: aws-actions/configure-aws-credentials@v6.2.0
         with:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
           role-to-assume: arn:aws:iam::590183855481:role/github-actions-ecr
