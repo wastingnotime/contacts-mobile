@@ -16,7 +16,7 @@ def test_contacts_mobile_bff_workflow_publishes_and_dispatches():
     assert "needs: server-tests" in workflow
     assert "Validate publish inputs" in workflow
     assert "arn:aws:iam::590183855481:role/github-actions-ecr" in workflow
-    assert "aws-actions/configure-aws-credentials@v6.1.1" in workflow
+    assert "aws-actions/configure-aws-credentials@v6.2.0" in workflow
     assert "aws-actions/amazon-ecr-login@v2" in workflow
     assert "docker/build-push-action@v7" in workflow
     assert "contacts-mobile-bff" in workflow
@@ -28,9 +28,9 @@ def test_contacts_mobile_bff_workflow_publishes_and_dispatches():
 def test_contacts_mobile_bff_dockerfile_builds_the_server_binary():
     dockerfile = DOCKERFILE.read_text(encoding="utf-8")
 
-    assert "FROM golang:1.25-bookworm AS build" in dockerfile
+    assert "FROM golang:1.26-bookworm AS build" in dockerfile
     assert "COPY cmd ./cmd" in dockerfile
     assert "COPY internal ./internal" in dockerfile
     assert "go build -trimpath -o /out/contacts-bff ./cmd/contacts-bff" in dockerfile
-    assert 'HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD ["/contacts-bff", "healthcheck"]' in dockerfile
+    assert 'HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD ["/contacts-bff", "healthcheck", "/health/live", "/health/ready"]' in dockerfile
     assert "ENTRYPOINT [\"/contacts-bff\"]" in dockerfile

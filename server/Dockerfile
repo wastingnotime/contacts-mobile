@@ -20,7 +20,7 @@ COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifica
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD ["/contacts-bff", "healthcheck"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD ["/contacts-bff", "healthcheck", "/health/live", "/health/ready"]
 
 USER nonroot:nonroot
 

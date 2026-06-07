@@ -19,7 +19,7 @@ import (
 
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "healthcheck" {
-		if err := runHealthcheck(); err != nil {
+		if err := runHealthcheck(os.Args[2:]...); err != nil {
 			log.Print(err)
 			os.Exit(1)
 		}
@@ -69,29 +69,35 @@ func run() error {
 	return nil
 }
 
-func runHealthcheck() error {
+func runHealthcheck(paths ...string) error {
+	if len(paths) == 0 {
+		paths = []string{"/health/live", "/health/ready"}
+	}
+
 	client := &http.Client{Timeout: 2 * time.Second}
-	request, err := http.NewRequest(http.MethodGet, healthcheckURL(), nil)
-	if err != nil {
-		return fmt.Errorf("build healthcheck request: %w", err)
-	}
+	for _, path := range paths {
+		request, err := http.NewRequest(http.MethodGet, healthcheckURL(path), nil)
+		if err != nil {
+			return fmt.Errorf("build healthcheck request for %s: %w", path, err)
+		}
 
-	response, err := client.Do(request)
-	if err != nil {
-		return fmt.Errorf("perform healthcheck request: %w", err)
-	}
-	defer response.Body.Close()
+		response, err := client.Do(request)
+		if err != nil {
+			return fmt.Errorf("perform healthcheck request for %s: %w", path, err)
+		}
+		defer response.Body.Close()
 
-	_, _ = io.Copy(io.Discard, response.Body)
+		_, _ = io.Copy(io.Discard, response.Body)
 
-	if response.StatusCode != http.StatusOK {
-		return fmt.Errorf("healthcheck returned %s", response.Status)
+		if response.StatusCode != http.StatusOK {
+			return fmt.Errorf("healthcheck for %s returned %s", path, response.Status)
+		}
 	}
 
 	return nil
 }
 
-func healthcheckURL() string {
+func healthcheckURL(path string) string {
 	listenAddr := strings.TrimSpace(os.Getenv("CONTACTS_BFF_LISTEN_ADDR"))
 	if listenAddr == "" {
 		listenAddr = ":8080"
@@ -102,5 +108,5 @@ func healthcheckURL() string {
 		port = "8080"
 	}
 
-	return fmt.Sprintf("http://127.0.0.1:%s/health/ready", port)
+	return fmt.Sprintf("http://127.0.0.1:%s%s", port, path)
 }
